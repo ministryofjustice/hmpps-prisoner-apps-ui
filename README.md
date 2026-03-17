@@ -183,7 +183,7 @@ While there are multiple ways to keep your project up-to-date this [method](http
 
 In your service, add the template as a remote:
 
-`git remote add template https://github.com/ministryofjustice/hmpps-prisoner-apps-ui`
+`git remote add template https://github.com/ministryofjustice/hmpps-template-typescript`
 
 Create a branch and switch to it, eg:
 
