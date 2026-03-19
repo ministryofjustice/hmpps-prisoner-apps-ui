@@ -97,7 +97,7 @@
   "overrides": {
     "flatted": "^3.4.0",
     "@aws-sdk/xml-builder": {
-      "fast-xml-parser": "^5.5.1"
+      "fast-xml-parser": "^5.5.6"
     }
   }
 }
