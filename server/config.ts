@@ -74,6 +74,7 @@ export default {
       agent: new AgentConfig(Number(get('LAUNCHPAD_AUTH_TIMEOUT_RESPONSE', 10000))),
       apiClientId: get('LAUNCHPAD_API_CLIENT_ID', 'clientid', requiredInProduction),
       apiClientSecret: get('LAUNCHPAD_API_CLIENT_SECRET', 'clientsecret', requiredInProduction),
+      nonce: get('LAUNCHPAD_AUTH_NONCE', 'true') !== 'false',
       scopes: [
         {
           type: 'user.basic.read',
