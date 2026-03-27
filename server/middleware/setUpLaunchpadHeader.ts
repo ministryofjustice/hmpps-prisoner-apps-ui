@@ -10,7 +10,7 @@ export const setUpLaunchpadHeader: RequestHandler = (req, res, next) => {
   res.locals.launchpadHeaderConfig = {
     user: { name: user?.name },
     translations: {
-      enabled: true,
+      enabled: false,
       currentLanguageCode: 'en',
       options: [
         { href: hrefOf('en'), code: 'en', label: 'English' },

@@ -39,13 +39,6 @@ test.describe('SignIn', () => {
     await expect(homePage.usersName).toHaveText('A TestUser')
   })
 
-  test('Language toggle visible in header', async ({ page }) => {
-    await loginWithPrisonerAuth(page)
-
-    await expect(page.getByRole('link', { name: 'English' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Cymraeg' })).toBeVisible()
-  })
-
   test('User can sign out', async ({ page }) => {
     await loginWithPrisonerAuth(page)
 

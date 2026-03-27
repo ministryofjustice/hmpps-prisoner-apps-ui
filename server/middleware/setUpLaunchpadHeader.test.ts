@@ -18,7 +18,7 @@ describe('setUpLaunchpadHeader', () => {
     expect(res.locals.launchpadHeaderConfig).toEqual({
       user: { name: 'A Test User' },
       translations: {
-        enabled: true,
+        enabled: false,
         currentLanguageCode: 'en',
         options: [
           { href: '?lang=en', code: 'en', label: 'English' },
