@@ -1,5 +1,4 @@
 import { Request, Response, Router } from 'express'
-import asyncMiddleware from '../../middleware/asyncMiddleware'
 import AuditService from '../../services/auditService'
 
 import { URLS } from '../../constants/urls'
@@ -12,13 +11,12 @@ export default function viewAppsRouter({ auditService }: { auditService: AuditSe
   const router = Router()
 
   router.get(
-    URLS.APPLICATIONS,
-    asyncMiddleware(async (req: Request, res: Response) => {
+    URLS.APPLICATIONS,  async (req: Request, res: Response) => {
       res.render(PATHS.APPLICATIONS.LIST, {
         pagination: getPaginationData(Number(req.query.page) || 1, 20),
         query: req.query,
       })
-    }),
+    },
   )
 
   return router
