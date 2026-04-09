@@ -3,6 +3,7 @@ import AbstractPage from './abstractPage'
 
 export default class ExamplePage extends AbstractPage {
   readonly header: Locator
+
   readonly timestamp: Locator
 
   private constructor(page: Page) {
