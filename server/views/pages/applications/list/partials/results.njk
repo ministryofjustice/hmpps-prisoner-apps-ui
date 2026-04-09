@@ -1,0 +1,19 @@
+{% from "../../../../components/pagination/macro.njk" import pagination as paginationMacro %}
+
+<div class="app-results-table">
+  {{ govukTable({
+    head: [
+      { text: "Date sent" },
+      { text: "Request" },
+      { text: "Status" },
+      { text: "" }
+    ],
+      rows: apps,
+      classes: "govuk-table",
+      attributes: { "data-qa": "app-results-table", "data-module": "moj-sortable-table" }
+    }) }}
+
+  {{ paginationMacro(pagination, query) }}
+
+  <p class="govuk-body">Showing {{ pagination.min }} to {{ pagination.max }} of {{ pagination.totalCount }} total results</p>
+</div>

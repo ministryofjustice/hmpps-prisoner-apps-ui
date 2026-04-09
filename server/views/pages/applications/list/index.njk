@@ -1,0 +1,27 @@
+{% extends "../../../partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Apps" %}
+{% set mainClasses = "govuk-body" %}
+
+{% block content %}
+  <div class="govuk-width-container govuk-!-padding-top-5 govuk-!-padding-bottom-5">
+    <h1 class="govuk-heading-xl">Apps</h1>
+
+    {% if apps and apps.length %}
+      {{ govukButton({
+        text: "New application",
+        href: URLS.APPLICATIONS
+      }) }}
+
+      {% include "./partials/results.njk" %}
+    {% else %}
+      <p class="govuk-body">You have not submitted any applications.</p>
+
+      {{ govukButton({
+        text: "New application",
+        href: URLS.APPLICATIONS
+      }) }}
+    {% endif %}
+  </div>
+{% endblock %}

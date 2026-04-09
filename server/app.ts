@@ -16,7 +16,7 @@ import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
 
-import routes from './routes'
+import routes from './routes/applications'
 import type { Services } from './services'
 
 export default function createApp(services: Services): express.Application {
