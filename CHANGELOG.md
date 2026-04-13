@@ -4,7 +4,7 @@
 
 Ensure renovate config matches npmrc config for stability days
 
-See PR [#711](https://github.com/ministryofjustice/hmpps-template-typescript/pull/711)
+See PR [#711](https://github.com/ministryofjustice/hmpps-prisoner-apps-ui/pull/711)
 
 **March 30th 2026** - `.npmrc` security improvements.
 
@@ -17,7 +17,7 @@ Adding new support for:
 
 To override min-release-age for manual audit fixes, might need to do: `npm audit fix --min-release-age=null`
 
-See PR [#706](https://github.com/ministryofjustice/hmpps-template-typescript/pull/706)
+See PR [#706](https://github.com/ministryofjustice/hmpps-prisoner-apps-ui/pull/706)
 
 **February 26th 2026** - Run lint, tests and type checking on package-lock changes.
 
