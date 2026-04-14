@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import exampleApi from '../mockApis/exampleApi'
+import managingAppsApi from '../mockApis/managingAppsApi'
 
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import ExamplePage from '../pages/examplePage'
@@ -9,19 +9,18 @@ test.describe('Example', () => {
     await resetStubs()
   })
 
-  test('Time from exampleApi is visible on page', async ({ page }) => {
-    await exampleApi.stubExampleTime()
+  test('Applications page is visible after login', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page)
 
-    const examplePage = await ExamplePage.verifyOnPage(page)
-
-    expect(examplePage.timestamp).toHaveText('The time is currently 2025-01-01T12:00:00Z')
+    await ExamplePage.verifyOnPage(page)
   })
 
-  test('ExampleApi failure shows error page', async ({ page }) => {
-    await exampleApi.stubExampleTime(500)
+  test('Managing apps API failure shows error page', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps(500)
 
     await loginWithPrisonerAuth(page)
+    await page.goto('/applications')
 
     await expect(page.locator('h1', { hasText: 'Internal Server Error' })).toBeVisible()
   })

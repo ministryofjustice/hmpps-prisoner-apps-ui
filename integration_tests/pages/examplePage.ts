@@ -4,12 +4,9 @@ import AbstractPage from './abstractPage'
 export default class ExamplePage extends AbstractPage {
   readonly header: Locator
 
-  readonly timestamp: Locator
-
   private constructor(page: Page) {
     super(page)
-    this.header = page.locator('h1', { hasText: 'This site is under construction...' })
-    this.timestamp = page.getByTestId('timestamp')
+    this.header = page.getByRole('heading', { name: 'Apps', level: 1 })
   }
 
   static async verifyOnPage(page: Page): Promise<ExamplePage> {
