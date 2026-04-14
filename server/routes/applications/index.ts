@@ -1,24 +1,18 @@
 import { Request, Response, Router } from 'express'
 
 import type { Services } from '../../services'
-import { Page } from '../../services/auditService'
+import { URLS } from '../../constants/urls'
 
 import viewAppsRouter from './view'
 
-export default function applicationsRoutes({ auditService, exampleService }: Services): Router {
+export default function applicationsRoutes({ auditService, managingAppsService }: Services): Router {
   const router = Router()
 
-  router.get('/', async (req: Request, res: Response, next) => {
-    await auditService.logPageView(Page.EXAMPLE_PAGE, {
-      who: res.locals.user.username,
-      correlationId: req.id,
-    })
-
-    const currentTime = await exampleService.getCurrentTime()
-    return res.render('pages/index', { currentTime })
+  router.get('/', (req: Request, res: Response) => {
+    return res.redirect(URLS.APPLICATIONS)
   })
 
-  router.use(viewAppsRouter({ auditService }))
+  router.use(viewAppsRouter({ auditService, managingAppsService }))
 
   return router
 }
