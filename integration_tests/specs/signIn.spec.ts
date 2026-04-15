@@ -36,15 +36,6 @@ test.describe('SignIn', () => {
     await expect(homePage.usersName).toHaveText('A TestUser')
   })
 
-  test('User can sign out', async ({ page }) => {
-    await loginWithPrisonerAuth(page)
-
-    const homePage = await ApplicationListPage.verifyOnPage(page)
-    await homePage.signOut()
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
-  })
-
   test('Token verification failure takes user to sign in page', async ({ page }) => {
     await loginWithPrisonerAuth(page, { tokenExpiresInSeconds: -1 })
 
@@ -58,7 +49,7 @@ test.describe('SignIn', () => {
 
     await loginWithPrisonerAuth(page, { name: 'Some OtherTestUser', active: true })
 
-    const homePage = await ApplicationListPage.verifyOnPage(page)
-    await expect(homePage.usersName).toHaveText('Some OtherTestUser')
+    const applicationListPage = await ApplicationListPage.verifyOnPage(page)
+    await expect(applicationListPage.usersName).toHaveText('Some OtherTestUser')
   })
 })

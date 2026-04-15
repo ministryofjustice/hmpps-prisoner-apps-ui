@@ -22,11 +22,11 @@ function createRefreshOrAccessToken(userToken: LaunchpadUserToken) {
 function createIdToken(userToken: LaunchpadUserToken) {
   const payload = {
     name: userToken.name,
-    given_name: '',
-    family_name: '',
+    given_name: 'A',
+    family_name: 'TestUser',
     iat: new Date().getTime(),
     aud: 'clientid',
-    sub: 'A-BOOKING-ID',
+    sub: 'A-PRISONER-ID',
     exp: Date.now() / 1000 + userToken.expiresInSeconds,
     booking: {
       id: 'A-BOOKING-ID',
