@@ -3,6 +3,7 @@ import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import prisonerAuth from '../mockApis/prisonerAuth'
 
 import ApplicationListPage from '../pages/applicationListPage'
+import managingAppsApi from '../mockApis/managingAppsApi'
 
 test.describe('SignIn', () => {
   test.use({
@@ -29,11 +30,12 @@ test.describe('SignIn', () => {
   })
 
   test('User name visible in header', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page, { name: 'A TestUser' })
 
-    const homePage = await ApplicationListPage.verifyOnPage(page)
+    const applicationListPage = await ApplicationListPage.verifyOnPage(page)
 
-    await expect(homePage.usersName).toHaveText('A TestUser')
+    await expect(applicationListPage.usersName).toHaveText('A TestUser')
   })
 
   test('Token verification failure takes user to sign in page', async ({ page }) => {
@@ -47,6 +49,7 @@ test.describe('SignIn', () => {
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Authorisation Error')
 
+    await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page, { name: 'Some OtherTestUser', active: true })
 
     const applicationListPage = await ApplicationListPage.verifyOnPage(page)
