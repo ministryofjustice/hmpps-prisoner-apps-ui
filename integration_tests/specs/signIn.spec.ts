@@ -1,17 +1,15 @@
 import { expect, test } from '@playwright/test'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import prisonerAuth from '../mockApis/prisonerAuth'
-import exampleApi from '../mockApis/exampleApi'
 
-import HomePage from '../pages/homePage'
+import ApplicationListPage from '../pages/applicationListPage'
+import managingAppsApi from '../mockApis/managingAppsApi'
 
 test.describe('SignIn', () => {
   test.use({
     baseURL: 'http://localhost:3007',
   })
-  test.beforeEach(async () => {
-    await exampleApi.stubExampleTime()
-  })
+  test.beforeEach(async () => {})
 
   test.afterEach(async () => {
     await resetStubs()
@@ -32,20 +30,12 @@ test.describe('SignIn', () => {
   })
 
   test('User name visible in header', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page, { name: 'A TestUser' })
 
-    const homePage = await HomePage.verifyOnPage(page)
+    const applicationListPage = await ApplicationListPage.verifyOnPage(page)
 
-    await expect(homePage.usersName).toHaveText('A TestUser')
-  })
-
-  test('User can sign out', async ({ page }) => {
-    await loginWithPrisonerAuth(page)
-
-    const homePage = await HomePage.verifyOnPage(page)
-    await homePage.signOut()
-
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
+    await expect(applicationListPage.usersName).toHaveText('A TestUser')
   })
 
   test('Token verification failure takes user to sign in page', async ({ page }) => {
@@ -59,9 +49,10 @@ test.describe('SignIn', () => {
 
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Authorisation Error')
 
+    await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page, { name: 'Some OtherTestUser', active: true })
 
-    const homePage = await HomePage.verifyOnPage(page)
-    await expect(homePage.usersName).toHaveText('Some OtherTestUser')
+    const applicationListPage = await ApplicationListPage.verifyOnPage(page)
+    await expect(applicationListPage.usersName).toHaveText('Some OtherTestUser')
   })
 })

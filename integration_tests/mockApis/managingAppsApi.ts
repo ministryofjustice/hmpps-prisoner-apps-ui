@@ -1,4 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
+
+import { prisonerAppsResponse } from '../../server/testData'
 import { stubFor } from './wiremock'
 
 export default {
@@ -6,7 +8,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/example-api/health/ping',
+        urlPattern: '/managingPrisonerApps/health/ping',
       },
       response: {
         status: httpStatus,
@@ -15,16 +17,16 @@ export default {
       },
     }),
 
-  stubExampleTime: (httpStatus = 200): SuperAgentRequest =>
+  stubGetPrisonerApps: (httpStatus = 200): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
-        urlPattern: '/example-api/example/time',
+        urlPath: '/managingPrisonerApps/v1/prisoners/apps',
       },
       response: {
         status: httpStatus,
-        headers: { 'Content-Type': 'application/text;charset=UTF-8' },
-        body: '2025-01-01T12:00:00Z',
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: prisonerAppsResponse,
       },
     }),
 }
