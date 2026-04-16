@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, user } from './testutils/appSetup'
-import { prisonerAppsResponse } from '../testData'
+import { prisonerAppsPageResponse } from '../testData'
 import AuditService, { Page } from '../services/auditService'
 import ManagingAppsService from '../services/managingAppsService'
 
@@ -36,7 +36,7 @@ describe('GET /', () => {
 describe('GET /applications', () => {
   it('should render applications page', () => {
     auditService.logPageView.mockResolvedValue(null)
-    managingAppsService.getPrisonerApps.mockResolvedValue(prisonerAppsResponse)
+    managingAppsService.getPrisonerApps.mockResolvedValue(prisonerAppsPageResponse)
 
     return request(app)
       .get('/applications')
@@ -47,7 +47,7 @@ describe('GET /applications', () => {
           who: user.username,
           correlationId: expect.any(String),
         })
-        expect(managingAppsService.getPrisonerApps).toHaveBeenCalledWith(user.userId)
+        expect(managingAppsService.getPrisonerApps).toHaveBeenCalledWith(user.userId, 1, 10)
       })
   })
 

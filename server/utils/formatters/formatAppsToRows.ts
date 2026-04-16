@@ -1,6 +1,14 @@
 import { format, getTime } from 'date-fns'
 import type { ViewAppListDto } from '../../@types/managingAppsApi'
 
+const statusTagMap: Record<ViewAppListDto['status'], string> = {
+  PENDING: '<strong class="govuk-tag govuk-tag--yellow">Pending</strong>',
+  DECLINED: '<strong class="govuk-tag govuk-tag--red">Declined</strong>',
+  APPROVED: '<strong class="govuk-tag govuk-tag--green">Approved</strong>',
+}
+
+const getStatusTagHtml = (status: ViewAppListDto['status']) => statusTagMap[status]
+
 // eslint-disable-next-line import/prefer-default-export
 export const formatAppsToRows = (apps: ViewAppListDto[]) => {
   return apps.map(({ prisonerId, applicationType, createdDate, status }) => {
@@ -16,7 +24,7 @@ export const formatAppsToRows = (apps: ViewAppListDto[]) => {
         classes: 'govuk-!-text-nowrap',
       },
       { text: applicationType },
-      { text: status },
+      { html: getStatusTagHtml(status) },
       {
         html: `<a href="/applications/${prisonerId}" class="govuk-link">View</a>`,
       },
