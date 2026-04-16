@@ -4,4 +4,7 @@ export const PATHS = {
     VIEW: 'pages/applications/view/index',
     LIST: 'pages/applications/list/index',
   },
+  LOG_APPLICATION: {
+    APPLICATION_DETAILS: 'pages/log-application/application-details/index',
+  },
 }

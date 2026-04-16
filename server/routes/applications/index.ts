@@ -4,6 +4,7 @@ import type { Services } from '../../services'
 import { URLS } from '../../constants/urls'
 
 import viewAppsRouter from './view'
+import appDetailsRouter from './appDetails'
 
 export default function applicationsRoutes({ auditService, managingAppsService }: Services): Router {
   const router = Router()
@@ -13,6 +14,6 @@ export default function applicationsRoutes({ auditService, managingAppsService }
   })
 
   router.use(viewAppsRouter({ auditService, managingAppsService }))
-
+  router.use(appDetailsRouter({ auditService }))
   return router
 }
