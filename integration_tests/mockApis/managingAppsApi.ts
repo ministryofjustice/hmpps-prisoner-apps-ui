@@ -1,6 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import { prisonerAppsResponse } from '../../server/testData'
+import { prisonerAppsPageResponse } from '../../server/testData'
 import { stubFor } from './wiremock'
 
 export default {
@@ -26,7 +26,7 @@ export default {
       response: {
         status: httpStatus,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: prisonerAppsResponse,
+        jsonBody: prisonerAppsPageResponse,
       },
     }),
 }

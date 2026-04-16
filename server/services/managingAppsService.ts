@@ -1,10 +1,10 @@
-import type { ViewAppListDto } from '../@types/managingAppsApi'
+import type { PrisonerAppsPage } from '../@types/managingAppsApi'
 import ManagingAppsApiClient from '../data/managingAppsApiClient'
 
 export default class ManagingAppsService {
   constructor(private readonly managingAppsApiClient: ManagingAppsApiClient) {}
 
-  getPrisonerApps(userId: string): Promise<ViewAppListDto[]> {
-    return this.managingAppsApiClient.getPrisonerApps(userId)
+  getPrisonerApps(userId: string, pageNum: number, pageSize?: number): Promise<PrisonerAppsPage> {
+    return this.managingAppsApiClient.getPrisonerApps(userId, pageNum, pageSize)
   }
 }

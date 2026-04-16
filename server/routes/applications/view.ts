@@ -21,22 +21,19 @@ export default function viewAppsRouter({
 
   router.get(URLS.APPLICATIONS, async (req: Request, res: Response) => {
     const { userId } = res.locals.user
+    const page = Number(req.query.page) || 1
 
     await auditService.logPageView(Page.VIEW_APPLICATIONS_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,
     })
 
-    const prisonerApps = await managingAppsService.getPrisonerApps(userId)
-
-    const page = Number(req.query.page) || 1
-    const pagination = getPaginationData(page, prisonerApps.length, ITEMS_PER_PAGE)
-
-    const pageStart = (pagination.page - 1) * ITEMS_PER_PAGE
-    const apps = formatAppsToRows(prisonerApps.slice(pageStart, pageStart + ITEMS_PER_PAGE))
+    const prisonerApps = await managingAppsService.getPrisonerApps(userId, page, ITEMS_PER_PAGE)
+    const pagination = getPaginationData(page, prisonerApps.totalRecords, ITEMS_PER_PAGE)
+    const rows = formatAppsToRows(prisonerApps.apps)
 
     res.render(PATHS.APPLICATIONS.LIST, {
-      apps,
+      apps: rows,
       pagination,
       query: req.query,
     })

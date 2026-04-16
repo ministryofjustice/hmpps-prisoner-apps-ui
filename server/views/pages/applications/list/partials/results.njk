@@ -4,7 +4,12 @@
 <div class="app-results-table">
   {{ govukTable({
     head: [
-      { text: "Date sent" },
+      {
+        text: "Date sent",
+        attributes: {
+          "aria-sort": "ascending"
+        }
+      },
       { text: "Request" },
       { text: "Status" },
       { text: "" }

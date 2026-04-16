@@ -175,11 +175,15 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get: operations['getAppsByPrisonerId']
+    /**
+     * Get apps for  a prisoner
+     * @description This api endpoint to get prisoner apps. Requires role ROLE_MANAGING_PRISONER_APPS
+     */
+    get: operations['getPrisonerApps']
     put?: never
     /**
      * Submit App request for a prisoner
-     * @description This api endpoint is for submitting app request for a prisoner. The logged staff and prisoner should belongs to same establishment. Requires role ROLE_MANAGING_PRISONER_APPS
+     * @description This api endpoint is for submitting app request by  a logged prisoner.  Requires role ROLE_MANAGING_PRISONER_APPS
      */
     post: operations['submitApp_2']
     delete?: never
@@ -412,10 +416,30 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get app by id for a prisoner
-     * @description This api endpoint to get prisoner app. The logged staff and prisoner should belongs to same establishment. Requires role ROLE_MANAGING_PRISONER_APPS
+     * Get app by app id for a logged prisoner
+     * @description This api endpoint to get prisoner app by app id . Requires role ROLE_MANAGING_PRISONER_APPS
      */
-    get: operations['getPrisonerAppById']
+    get: operations['getPrisonerAppByAppId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/v1/prisoners/apps/types': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get app groups and app types.
+     * @description This api endpoint to app groups and app types for a logged prisoner. Requires role ROLE_MANAGING_PRISONER_APPS
+     */
+    get: operations['getPrisonerAppTypes']
     put?: never
     post?: never
     delete?: never
@@ -567,10 +591,10 @@ export interface components {
     ErrorResponse: {
       /** Format: int32 */
       status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
+      errorCode?: string | null
+      userMessage?: string | null
+      developerMessage?: string | null
+      moreInfo?: string | null
     }
     AppUpdateDto: {
       firstNightCenter: boolean
@@ -580,10 +604,10 @@ export interface components {
     }
     AppResponseDtoObjectObject: {
       /** Format: uuid */
-      id?: string
-      reference?: string
+      id?: string | null
+      reference?: string | null
       assignedGroup: unknown
-      /** @enum {string} */
+      /** @enum {string|null} */
       appType?:
         | 'PIN_PHONE_EMERGENCY_CREDIT_TOP_UP'
         | 'PIN_PHONE_ADD_NEW_SOCIAL_CONTACT'
@@ -591,6 +615,7 @@ export interface components {
         | 'PIN_PHONE_REMOVE_CONTACT'
         | 'PIN_PHONE_CREDIT_SWAP_VISITING_ORDERS'
         | 'PIN_PHONE_SUPPLY_LIST_OF_CONTACTS'
+        | null
       applicationType: components['schemas']['ApplicationTypeResponse']
       genericForm: boolean
       applicationGroup: components['schemas']['ApplicationGroupResponse']
@@ -600,9 +625,9 @@ export interface components {
       createdDate: string
       createdBy: string
       /** Format: date-time */
-      lastModifiedDate?: string
-      lastModifiedBy?: string
-      comments?: string[]
+      lastModifiedDate?: string | null
+      lastModifiedBy?: string | null
+      comments?: string[] | null
       requests: {
         [key: string]: unknown
       }[]
@@ -612,7 +637,7 @@ export interface components {
       /** @enum {string} */
       status: 'PENDING' | 'APPROVED' | 'DECLINED'
       establishmentId: string
-      responses?: string[]
+      responses?: string[] | null
       firstNightCenter: boolean
       files: components['schemas']['FileResponseDto'][]
     }
@@ -620,17 +645,17 @@ export interface components {
       /** Format: int64 */
       id: number
       name: string
-      appTypes?: components['schemas']['ApplicationTypeResponse'][]
+      appTypes?: components['schemas']['ApplicationTypeResponse'][] | null
     }
     ApplicationTypeResponse: {
       /** Format: int64 */
       id: number
       name: string
-      genericType?: boolean
-      genericForm?: boolean
-      logDetailRequired?: boolean
+      genericType?: boolean | null
+      genericForm?: boolean | null
+      logDetailRequired?: boolean | null
       /** Format: int64 */
-      count?: number
+      count?: number | null
     }
     FileResponseDto: {
       /** Format: uuid */
@@ -644,22 +669,22 @@ export interface components {
       fileType: string
     }
     AppRequestDto: {
-      reference?: string
-      type?: string
+      reference?: string | null
+      type?: string | null
       /** Format: int64 */
-      applicationType?: number
+      applicationType?: number | null
       genericForm: boolean
       /** Format: int64 */
-      applicationGroup?: number
+      applicationGroup?: number | null
       /** Format: date-time */
-      requestedDate?: string
+      requestedDate?: string | null
       requests: {
         [key: string]: unknown
       }[]
       /** @description Pass this value only for type PIN_PHONE_ADD_NEW_SOCIAL_CONTACT. No value passed is set as false. For other type this value is always false. */
-      firstNightCenter?: boolean
+      firstNightCenter?: boolean | null
       /** Format: uuid */
-      department?: string
+      department?: string | null
       fileRequestDtos: components['schemas']['FileRequestDto'][]
     }
     FileRequestDto: {
@@ -674,11 +699,11 @@ export interface components {
       /** Format: int64 */
       size: number
       status: ('PENDING' | 'APPROVED' | 'DECLINED')[]
-      applicationTypes?: number[]
-      requestedBy?: string
-      assignedGroups?: string[]
-      firstNightCenter?: boolean
-      oldestAppFirst?: boolean
+      applicationTypes?: number[] | null
+      requestedBy?: string | null
+      assignedGroups?: string[] | null
+      firstNightCenter?: boolean | null
+      oldestAppFirst?: boolean | null
     }
     AppListViewDto: {
       /** Format: uuid */
@@ -715,7 +740,7 @@ export interface components {
       id: string
       name: string
       /** Format: int64 */
-      count?: number
+      count?: number | null
     }
     CommentRequestDto: {
       message: string
@@ -752,9 +777,9 @@ export interface components {
       createdBy: unknown
     }
     AppRequestPrisoner: {
-      reference?: string
+      reference?: string | null
       /** Format: int64 */
-      applicationType?: number
+      applicationType?: number | null
       genericForm: boolean
       requests: {
         [key: string]: unknown
@@ -762,8 +787,8 @@ export interface components {
     }
     AppResponsePrisonerObjectObject: {
       /** Format: uuid */
-      id?: string
-      reference?: string
+      id?: string | null
+      reference?: string | null
       assignedGroup: unknown
       applicationType: components['schemas']['ApplicationTypeResponse']
       genericForm: boolean
@@ -774,8 +799,8 @@ export interface components {
       createdDate: string
       createdBy: string
       /** Format: date-time */
-      lastModifiedDate?: string
-      lastModifiedBy?: string
+      lastModifiedDate?: string | null
+      lastModifiedBy?: string | null
       requests: {
         [key: string]: unknown
       }[]
@@ -788,7 +813,7 @@ export interface components {
     }
     ActivityMessage: {
       header: string
-      body?: string
+      body?: string | null
     }
     HistoryResponse: {
       /** Format: uuid */
@@ -828,15 +853,23 @@ export interface components {
       /** @enum {string} */
       status: 'PENDING' | 'APPROVED' | 'DECLINED'
     }
+    PrisonerAppsPage: {
+      /** Format: int32 */
+      page: number
+      /** Format: int64 */
+      totalRecords: number
+      exhausted: boolean
+      apps: components['schemas']['AppListPrisonerFacing'][]
+    }
     AssignedGroupDto: {
       /** Format: uuid */
       id: string
       name: string
       establishment: components['schemas']['EstablishmentDto']
       /** Format: int64 */
-      initialApp?: number
-      /** @enum {string} */
-      type?: 'WING' | 'DEPARTMENT'
+      initialApp?: number | null
+      /** @enum {string|null} */
+      type?: 'WING' | 'DEPARTMENT' | null
     }
     EstablishmentDto: {
       id: string
@@ -882,7 +915,7 @@ export interface components {
       /** @description The content of the subject access request response */
       content: unknown
       /** @description The details of any attachments for the subject access request response */
-      attachments?: components['schemas']['Attachment'][]
+      attachments?: components['schemas']['Attachment'][] | null
     }
   }
   responses: never
@@ -1293,22 +1326,43 @@ export interface operations {
       }
     }
   }
-  getAppsByPrisonerId: {
+  getPrisonerApps: {
     parameters: {
-      query?: never
+      query: {
+        pageNum: number
+        pageSize?: number
+      }
       header?: never
       path?: never
       cookie?: never
     }
     requestBody?: never
     responses: {
-      /** @description OK */
+      /** @description Successfully got prisoner apps. */
       200: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AppListPrisonerFacing'][]
+          'application/json': components['schemas']['PrisonerAppsPage']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -1327,7 +1381,7 @@ export interface operations {
     }
     responses: {
       /** @description App request submitted */
-      200: {
+      201: {
         headers: {
           [name: string]: unknown
         }
@@ -1800,7 +1854,7 @@ export interface operations {
       }
     }
   }
-  getPrisonerAppById: {
+  getPrisonerAppByAppId: {
     parameters: {
       query?: never
       header?: never
@@ -1811,13 +1865,51 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description Successfully got app by id. */
+      /** @description Successfully got app by app id. */
       200: {
         headers: {
           [name: string]: unknown
         }
         content: {
           '*/*': components['schemas']['AppResponsePrisonerObjectObject']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getPrisonerAppTypes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description App request created. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ApplicationGroupResponse'][]
         }
       }
       /** @description Unauthorized to access this endpoint */

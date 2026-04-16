@@ -12,7 +12,7 @@ describe(formatAppsToRows.name, () => {
   })
 
   it('should correctly format applications into table rows', () => {
-    ;(format as jest.Mock).mockReturnValue('10/01/2024')
+    ;(format as jest.Mock).mockReturnValue('10/01/2026')
 
     const applications = [
       {
@@ -30,14 +30,14 @@ describe(formatAppsToRows.name, () => {
     expect(result).toEqual([
       [
         {
-          text: '10/01/2024',
+          text: '10/01/2026',
           attributes: {
             'data-sort-value': '1704844800000',
           },
           classes: 'govuk-!-text-nowrap',
         },
         { text: 'Transfer' },
-        { text: 'PENDING' },
+        { html: '<strong class="govuk-tag govuk-tag--yellow">Pending</strong>' },
         {
           html: '<a href="/applications/A1234BC" class="govuk-link">View</a>',
         },

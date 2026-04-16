@@ -1,4 +1,4 @@
-import type { ViewAppListDto } from '../../@types/managingAppsApi'
+import type { PrisonerAppsPage, ViewAppListDto } from '../../@types/managingAppsApi'
 
 export const prisonerApp: ViewAppListDto = {
   id: '1',
@@ -10,3 +10,10 @@ export const prisonerApp: ViewAppListDto = {
 }
 
 export const prisonerAppsResponse: ViewAppListDto[] = [prisonerApp]
+
+export const prisonerAppsPageResponse: PrisonerAppsPage = {
+  page: 1,
+  totalRecords: prisonerAppsResponse.length,
+  exhausted: true,
+  apps: prisonerAppsResponse,
+}
