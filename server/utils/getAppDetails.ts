@@ -14,6 +14,13 @@ export default async function getApplicationDetails(
   }
 
   switch (applicationDetails.type) {
+    case 5: {
+      const { amount, reason } = application?.requests?.[0] ?? {}
+      return {
+        amount: applicationDetails.amount || String(amount ?? ''),
+        reason: applicationDetails.reason || reason || '',
+      }
+    }
     case 4:
     case 7:
     case 6: {
