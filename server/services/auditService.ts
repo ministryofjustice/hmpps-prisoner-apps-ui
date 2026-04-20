@@ -4,6 +4,7 @@ export enum Page {
   EXAMPLE_PAGE = 'EXAMPLE_PAGE',
   LOG_GROUP_PAGE = 'LOG_GROUP_PAGE',
   VIEW_APPLICATIONS_PAGE = 'VIEW_APPLICATIONS_PAGE',
+  LOG_DETAILS_PAGE = 'LOG_DETAILS_PAGE',
 }
 
 export interface PageViewEventDetails {
