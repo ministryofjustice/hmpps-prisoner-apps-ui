@@ -1,21 +1,21 @@
-import { Request, Response, Router } from "express";
+import { Request, Response, Router } from 'express'
 
-import type { Services } from "../../services";
-import { URLS } from "../../constants/urls";
+import type { Services } from '../../services'
+import { URLS } from '../../constants/urls'
 
-import viewAppsRouter from "./view";
-import selectGroupRouter from "./selectGroup";
-import appDetailsRouter from "./appDetails";
+import viewAppsRouter from './view'
+import selectGroupRouter from './selectGroup'
+import appDetailsRouter from './appDetails'
 
 export default function applicationsRoutes({ auditService, managingAppsService }: Services): Router {
-  const router = Router();
+  const router = Router()
 
-  router.get("/", (req: Request, res: Response) => {
-    return res.redirect(URLS.APPLICATIONS);
-  });
+  router.get('/', (req: Request, res: Response) => {
+    return res.redirect(URLS.APPLICATIONS)
+  })
 
-  router.use(viewAppsRouter({ auditService, managingAppsService }));
-  router.use(selectGroupRouter({ auditService, managingAppsService }));
-  router.use(appDetailsRouter({ auditService }));
-  return router;
+  router.use(viewAppsRouter({ auditService, managingAppsService }))
+  router.use(selectGroupRouter({ auditService, managingAppsService }))
+  router.use(appDetailsRouter({ auditService }))
+  return router
 }

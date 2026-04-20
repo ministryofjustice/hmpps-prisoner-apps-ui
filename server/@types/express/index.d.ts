@@ -1,27 +1,27 @@
-import { LaunchpadHeaderLocals, LaunchpadFooterLocals } from "@ministryofjustice/hmpps-prisoner-facing-components";
-import { HmppsUser } from "../../interfaces/hmppsUser";
+import { LaunchpadHeaderLocals, LaunchpadFooterLocals } from '@ministryofjustice/hmpps-prisoner-facing-components'
+import { HmppsUser } from '../../interfaces/hmppsUser'
 
-export declare module "express-session" {
+export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
-    returnTo: string;
-    applicationData?: ApplicationData;
+    returnTo: string
+    applicationData?: ApplicationData
   }
 
   interface ApplicationData {
-    additionalData?: AdditionalApplicationData;
+    additionalData?: AdditionalApplicationData
     group?: {
-      name: string;
-      value: string;
-    };
+      name: string
+      value: string
+    }
     type?: {
-      key: string;
-      name: string;
-      value: string;
-      genericType?: boolean;
-      genericForm?: boolean;
-      legacyKey?: string;
-    };
+      key: string
+      name: string
+      value: string
+      genericType?: boolean
+      genericForm?: boolean
+      legacyKey?: string
+    }
   }
 
   type AdditionalApplicationData =
@@ -32,83 +32,83 @@ export declare module "express-session" {
     | AddNewOfficialPinPhoneContactDetails
     | RemovePinPhoneContactDetails
     | GeneralPinPhoneEnquiryDetails
-    | GenericLogDetails;
+    | GenericLogDetails
 
   interface SwapVOsForPinCreditDetails {
-    details?: string;
+    details?: string
   }
   interface AddEmergencyPinPhoneCreditDetails {
-    amount?: string;
-    reason?: string;
+    amount?: string
+    reason?: string
   }
 
   interface SupplyListOfPinPhoneContactsDetails {
-    details?: string;
+    details?: string
   }
 
   interface GeneralPinPhoneEnquiryDetails {
-    details: string;
+    details: string
   }
 
   interface GenericLogDetails {
-    details: string;
+    details: string
   }
 
   interface AddNewSocialPinPhoneContactDetails {
-    earlyDaysCentre: string;
-    firstName: string;
-    lastName: string;
-    dateOfBirthOrAge: "dateofbirth" | "age" | "donotknow";
+    earlyDaysCentre: string
+    firstName: string
+    lastName: string
+    dateOfBirthOrAge: 'dateofbirth' | 'age' | 'donotknow'
     dob?: {
-      day: string;
-      month: string;
-      year: string;
-    };
-    age?: string;
-    relationship: string;
-    addressLine1?: string;
-    addressLine2?: string;
-    townOrCity?: string;
-    postcode?: string;
-    country?: string;
-    telephone1: string;
-    telephone2?: string;
+      day: string
+      month: string
+      year: string
+    }
+    age?: string
+    relationship: string
+    addressLine1?: string
+    addressLine2?: string
+    townOrCity?: string
+    postcode?: string
+    country?: string
+    telephone1: string
+    telephone2?: string
   }
 
   interface AddNewOfficialPinPhoneContactDetails {
-    firstName: string;
-    lastName: string;
-    organisation?: string;
-    relationship: string;
-    telephone1: string;
-    telephone2?: string;
+    firstName: string
+    lastName: string
+    organisation?: string
+    relationship: string
+    telephone1: string
+    telephone2?: string
   }
 
   interface RemovePinPhoneContactDetails {
-    firstName: string;
-    lastName: string;
-    telephone1: string;
-    telephone2?: string;
-    relationship?: string;
+    firstName: string
+    lastName: string
+    telephone1: string
+    telephone2?: string
+    relationship?: string
   }
 }
 
 export declare global {
   namespace Express {
     interface User {
-      username: string;
-      token: string;
-      authSource: string;
+      username: string
+      token: string
+      authSource: string
     }
 
     interface Request {
-      verified?: boolean;
-      id: string;
-      logout(done: (err: unknown) => void): void;
+      verified?: boolean
+      id: string
+      logout(done: (err: unknown) => void): void
     }
 
     interface Locals extends LaunchpadHeaderLocals, LaunchpadFooterLocals {
-      user: HmppsUser;
+      user: HmppsUser
     }
   }
 }

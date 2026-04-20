@@ -1,38 +1,38 @@
-import { components } from "./managing-prisoner-apps-api";
+import { components } from './managing-prisoner-apps-api'
 
-export type ApplicationDto = components["schemas"]["AppResponseDtoObjectObject"];
-export type AssignedGroup = components["schemas"]["AssignedGroupDto"];
+export type ApplicationDto = components['schemas']['AppResponseDtoObjectObject']
+export type AssignedGroup = components['schemas']['AssignedGroupDto']
 
-export type ViewAppListDto = components["schemas"]["AppListPrisonerFacing"];
-export type PrisonerAppsPage = components["schemas"]["PrisonerAppsPage"];
-export type ApplicationGroup = components["schemas"]["ApplicationGroupResponse"];
+export type ViewAppListDto = components['schemas']['AppListPrisonerFacing']
+export type PrisonerAppsPage = components['schemas']['PrisonerAppsPage']
+export type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
 
 export interface App extends ApplicationDto {
   applicationType: {
-    id: number;
-    name: string;
-  };
-  assignedGroup: AssignedGroup;
-  requestedBy: AppRequestedBy;
-  requests: AppRequest[];
+    id: number
+    name: string
+  }
+  assignedGroup: AssignedGroup
+  requestedBy: AppRequestedBy
+  requests: AppRequest[]
 }
 
 export interface AppRequest {
-  id: string;
-  responseId: string;
-  amount?: number;
-  reason?: string;
-  details?: string;
-  [key: string]: unknown;
+  id: string
+  responseId: string
+  amount?: number
+  reason?: string
+  details?: string
+  [key: string]: unknown
 }
 
 export interface AppRequestedBy {
-  username: string;
-  userId: string;
-  firstName: string;
-  lastName: string;
-  category: string;
-  cellLocation: string;
-  location: string;
-  iep: string;
+  username: string
+  userId: string
+  firstName: string
+  lastName: string
+  category: string
+  cellLocation: string
+  location: string
+  iep: string
 }
