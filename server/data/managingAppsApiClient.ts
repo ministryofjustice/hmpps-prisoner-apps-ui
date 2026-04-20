@@ -23,12 +23,9 @@ export default class ManagingAppsApiClient extends RestClient {
 
   getGroupsAndTypes(): Promise<ApplicationGroup[] | null> {
     try {
-      return this.get(
-        {
-          path: `/v2/establishments/apps/groups`,
-        },
-        asSystem(),
-      )
+      return this.get({
+        path: `/v2/establishments/apps/groups`,
+      })
     } catch (error) {
       logger.error(`Error fetching application groups and types.`, error)
       return null
