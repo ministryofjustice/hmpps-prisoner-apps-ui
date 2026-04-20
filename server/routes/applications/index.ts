@@ -6,7 +6,11 @@ import { URLS } from '../../constants/urls'
 import viewAppsRouter from './view'
 import appDetailsRouter from './appDetails'
 
-export default function applicationsRoutes({ auditService, managingAppsService }: Services): Router {
+export default function applicationsRoutes({
+  auditService,
+  managingAppsService,
+  personalRelationshipsService,
+}: Services): Router {
   const router = Router()
 
   router.get('/', (req: Request, res: Response) => {
@@ -14,6 +18,6 @@ export default function applicationsRoutes({ auditService, managingAppsService }
   })
 
   router.use(viewAppsRouter({ auditService, managingAppsService }))
-  router.use(appDetailsRouter({ auditService }))
+  router.use(appDetailsRouter({ auditService, personalRelationshipsService }))
   return router
 }

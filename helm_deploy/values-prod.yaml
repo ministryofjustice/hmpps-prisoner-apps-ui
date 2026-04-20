@@ -11,6 +11,7 @@ generic-service:
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api.prison.service.justice.gov.uk"
     LAUNCHPAD_AUTH_URL: "https://launchpad-auth.hmpps.service.justice.gov.uk" 
     EXAMPLE_API_URL: 'https://template-kotlin.hmpps.service.justice.gov.uk'
+    PERSONAL_RELATIONSHIPS_API_URL: 'https://personal-relationships-api.hmpps.service.justice.gov.uk'
     AUDIT_ENABLED: "false"
 
 generic-prometheus-alerts:
