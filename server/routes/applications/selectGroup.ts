@@ -30,7 +30,7 @@ export default function selectGroupRouter({
   router.get(URLS.LOG_GROUP, async (req: Request, res: Response) => {
     const { user } = res.locals
 
-    const groups = await managingAppsService.getGroupsAndTypes()
+    const groups = await managingAppsService.getGroupsAndTypes(user.userId)
     const selectedValue = req.session?.applicationData?.group?.value || null
 
     await auditService.logPageView(Page.LOG_GROUP_PAGE, {
@@ -46,9 +46,10 @@ export default function selectGroupRouter({
   })
 
   router.post(URLS.LOG_GROUP, async (req: Request, res: Response) => {
+    const { user } = res.locals
     const selectedValue = req.body.group
 
-    const groups = await managingAppsService.getGroupsAndTypes()
+    const groups = await managingAppsService.getGroupsAndTypes(user.userId)
     const selectedGroup = groups.find(group => group.id.toString() === selectedValue)
 
     if (!selectedGroup) {

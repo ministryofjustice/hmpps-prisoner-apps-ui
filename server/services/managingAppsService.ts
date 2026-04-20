@@ -8,7 +8,7 @@ export default class ManagingAppsService {
     return this.managingAppsApiClient.getPrisonerApps(userId, pageNum, pageSize)
   }
 
-  getGroupsAndTypes(): Promise<ApplicationGroup[]> {
-    return this.managingAppsApiClient.getGroupsAndTypes()
+  getGroupsAndTypes(userId: string): Promise<ApplicationGroup[]> {
+    return this.managingAppsApiClient.getGroupsAndTypes(userId)
   }
 }
