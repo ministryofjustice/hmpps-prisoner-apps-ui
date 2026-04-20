@@ -39,7 +39,7 @@ describe(formatAppsToRows.name, () => {
         { text: 'Transfer' },
         { html: '<strong class="govuk-tag govuk-tag--yellow">Pending</strong>' },
         {
-          html: '<a href="/applications/A1234BC" class="govuk-link">View</a>',
+          html: '<a href="/applications/" class="govuk-link">View</a>',
         },
       ],
     ])
