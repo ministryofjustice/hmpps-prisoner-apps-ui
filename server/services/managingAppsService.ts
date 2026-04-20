@@ -1,4 +1,4 @@
-import type { PrisonerAppsPage } from '../@types/managingAppsApi'
+import type { ApplicationGroup, PrisonerAppsPage } from '../@types/managingAppsApi'
 import ManagingAppsApiClient from '../data/managingAppsApiClient'
 
 export default class ManagingAppsService {
@@ -6,5 +6,9 @@ export default class ManagingAppsService {
 
   getPrisonerApps(userId: string, pageNum: number, pageSize?: number): Promise<PrisonerAppsPage> {
     return this.managingAppsApiClient.getPrisonerApps(userId, pageNum, pageSize)
+  }
+
+  getGroupsAndTypes(): Promise<ApplicationGroup[]> {
+    return this.managingAppsApiClient.getGroupsAndTypes()
   }
 }

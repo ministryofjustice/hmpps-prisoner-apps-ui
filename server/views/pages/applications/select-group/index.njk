@@ -1,0 +1,54 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% extends "../../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - " + title %}
+{% set mainClasses = "app-container govuk-body applications-landing-page" %}
+
+{% block content %}
+  <div class="govuk-body govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {{ govukBackLink({
+          text: "Back",
+          href: "/"
+        }) }}
+
+        {% if errorSummary %}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errorSummary
+          }) }}
+        {% endif %}
+
+        <span class="govuk-caption-xl">New application</span>
+
+        <form method="POST" id="select-app-group">
+          <input type="hidden" name="_csrf" value="{{ csrfToken }}"/>
+
+          {{ govukRadios({
+            name: "group",
+            fieldset: {
+              legend: {
+                text: "Select application group",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--xl"
+              }
+            },
+            items: groups,
+            errorMessage: { text: errorMessage } if errorMessage else undefined
+          }) }}
+
+          {{ govukButton({
+            text: "Continue",
+            preventDoubleClick: true
+          }) }}
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
