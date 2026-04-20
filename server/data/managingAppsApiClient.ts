@@ -23,7 +23,7 @@ export default class ManagingAppsApiClient extends RestClient {
 
   getGroupsAndTypes(userId: string): Promise<ApplicationGroup[] | null> {
     try {
-      return this.get(
+      return this.get<ApplicationGroup[]>(
         {
           path: `/v2/establishments/apps/groups`,
         },
