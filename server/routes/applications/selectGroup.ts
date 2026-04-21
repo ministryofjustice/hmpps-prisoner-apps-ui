@@ -64,9 +64,10 @@ export default function selectGroupRouter({
     req.session.applicationData = {
       ...req.session.applicationData,
       group: { name: selectedGroup.name, value: selectedGroup.id.toString() },
+      type: undefined,
     }
 
-    return res.redirect('/')
+    return res.redirect(URLS.LOG_TYPE)
   })
 
   return router

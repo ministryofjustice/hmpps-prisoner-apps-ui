@@ -2,5 +2,6 @@
 export const URLS = {
   APPLICATIONS: '/applications',
   LOG_GROUP: '/log/group',
+  LOG_TYPE: '/log/type',
   LOG_APPLICATION_DETAILS: '/log/application-details',
 }
