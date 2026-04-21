@@ -1,0 +1,282 @@
+{% from "dps/components/address-autosuggest/macro.njk" import addressAutosuggest %}
+
+{{ govukRadios({
+  classes: "govuk-radios--inline",
+  name: "earlyDaysCentre",
+  fieldset: {
+    legend: {
+      text: "Is this person in the first night or early days centre?",
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+  items: [
+    {
+      value: "yes",
+      text: "Yes"
+    },
+    {
+      value: "no",
+      text: "No"
+    }
+  ],
+  value: earlyDaysCentre or '',
+  errorMessage: { text: errors.earlyDaysCentre.text } if errors.earlyDaysCentre else undefined
+}) }}
+
+<h2 class="govuk-heading-m">New social contact to add</h2>
+
+{% set dayClass = "govuk-input--width-2" %}
+{% if errors['dob-day'] %}
+  {% set dayClass = dayClass + " govuk-input--error" %}
+{% endif %}
+
+{% set monthClass = "govuk-input--width-2" %}
+{% if errors['dob-month'] %}
+  {% set monthClass = monthClass + " govuk-input--error" %}
+{% endif %}
+
+{% set yearClass = "govuk-input--width-4" %}
+{% if errors['dob-year'] %}
+  {% set yearClass = yearClass + " govuk-input--error" %}
+{% endif %}
+
+{{ govukInput({
+  id: "firstName",
+  name: "firstName",
+  label: {
+    text: "First name",
+    classes: "govuk-label--s"
+  }, 
+  value: firstName,
+  errorMessage: errors.firstName
+}) }}
+
+{{ govukInput({
+  id: "lastName",
+  name: "lastName",
+  label: {
+    text: "Last name",
+    classes: "govuk-label--s"
+  },
+  value: lastName,
+  errorMessage: errors.lastName,
+  classes: "govuk-!-width-width-full"
+}) }}
+
+{% set dateOfBirthHtml %}
+  {{ govukDateInput({
+    id: "dob",
+    namePrefix: "dob",
+    fieldset: {
+      legend: {
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--s"
+      }
+    },
+    value: dob,
+    errorMessage: errors.dob,
+    hint: {
+      text: "For example, 7/10/2002"
+    },
+    items: [
+      {
+        name: "day",
+        classes: dayClass,
+        autocomplete: "dob-day",
+        value: dob.day,
+        errorMessage: errors['dob-day']
+      },
+      {
+        name: "month",
+        classes: monthClass,
+        autocomplete: "dob-month",
+        value: dob.month,
+        errorMessage: errors['dob-month']
+      },
+      {
+        name: "year",
+        classes: yearClass,
+        autocomplete: "dob-year",
+        value: dob.year,
+        errorMessage: errors['dob-year']
+      }
+    ]
+  }) }}
+{% endset -%}
+
+{% set ageHtml %}
+  {{ govukInput({
+    id: "age",
+    name: "age",
+    label: {
+      classes: "govuk-label--s"
+    },
+    classes: "govuk-input--width-5",
+    inputmode: "numeric",
+    spellcheck: false,
+    value: age,
+    errorMessage: errors.age
+  }) }}
+{% endset -%}
+
+{{ govukRadios({
+  name: "dateOfBirthOrAge",
+  fieldset: {
+    legend: {
+      text: "Date of birth or age",
+      isPageHeading: true,
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+  errorMessage: errors.dateOfBirthOrAge,
+  items: [
+    {
+      value: "dateofbirth",
+      text: "Date of birth",
+      checked: (dateOfBirthOrAge is defined and dateOfBirthOrAge == 'dateofbirth'),
+      conditional: {
+        html: dateOfBirthHtml
+      }
+    },
+    {
+      value: "age",
+      text: "Age",
+      checked: (dateOfBirthOrAge is defined and dateOfBirthOrAge == 'age'),
+      conditional: {
+        html: ageHtml
+      }
+      },
+    {
+      value: "donotknow",
+      text: "I do not know their age or date of birth",
+      checked: (dateOfBirthOrAge is defined and dateOfBirthOrAge == 'donotknow')
+    }
+  ]
+}) }}
+
+{{ govukSelect({
+  id: "relationship",
+  name: "relationship",
+  label: {
+    text: "Relationship",
+     classes: "govuk-label--s"
+  },
+  items: formattedRelationshipList,
+  errorMessage: errors.relationship
+}) }}
+
+<h2 class="govuk-heading-m govuk-!-margin-bottom-1">Address</h2>
+<p class="govuk-hint">Fill this in if your establishment requires it</p>
+
+<div id="address-lookup-section">
+  <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Find address</h3>
+  <p class="govuk-hint">Type part of address or postcode to begin</p>
+
+  {{ addressAutosuggest({
+    uprn: uprn,
+    inputValue: addressAutosuggestInput,
+    errorMessage: errors.addressAutosuggest.text if errors.addressAutosuggest else undefined,
+    classes: 'govuk-!-margin-bottom-4',
+    findUrl: '/api/addresses/find'
+  }) }}
+
+  <p class="govuk-body">
+    <a href="#" class="govuk-link" id="enter-address-manually-link">Enter address manually</a>
+  </p>
+</div>
+
+<div id="manual-address-fields" class="govuk-!-display-none">
+  {{ govukInput({
+    id: "addressline1",
+    name: "addressLine1",
+    label: {
+      text: "Address line 1",
+      classes: "govuk-label--s"
+    },
+    value: addressLine1
+  }) }}
+
+  {{ govukInput({
+    id: "addressline2",
+    name: "addressLine2",
+    label: {
+      text: "Address line 2",
+      classes: "govuk-label--s"
+    },
+    value: addressLine2
+  }) }}
+
+  {{ govukInput({
+    id: "townorcity",
+    name: "townOrCity",
+    label: {
+      text: "Town or city",
+      classes: "govuk-label--s"
+    },
+    value: townOrCity,
+    classes: "govuk-input--width-20"
+  }) }}
+
+  {{ govukInput({
+    id: "postcode",
+    name: "postcode",
+    label: {
+      text: "Postcode",
+      classes: "govuk-label--s"
+    },
+    value: postcode,
+    classes: "govuk-!-width-one-half"
+  }) }}
+
+  {{ govukSelect({
+    id: "country",
+    name: "country",
+    label: {
+      text: "Country",
+       classes: "govuk-label--s"
+    },
+    items: countries
+  }) }}
+
+  <p class="govuk-body">
+    <a href="#" class="govuk-link" id="lookup-address-link">Look up address</a>
+  </p>
+</div>
+
+<h2 class="govuk-heading-m govuk-!-margin-bottom-1">Telephone numbers</h2>
+<p class="govuk-hint">Enter a phone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192. Include area code or international code, if overseas.</p>
+
+{{ govukInput({
+  label: {
+    text: "Telephone number 1",
+    classes: "govuk-label--s",
+    isPageHeading: true
+  },
+  classes: "govuk-input--width-20",
+  id: "telephone1",
+  name: "telephone1",
+  type: "tel",
+  autocomplete: "tel",
+  inputmode: "numeric",
+  spellcheck: false,
+  errorMessage: errors.telephone1,
+  value: telephone1
+}) }}
+
+{{ govukInput({
+  label: {
+    text: "Telephone number 2 (optional)",
+    classes: "govuk-label--s",
+    isPageHeading: true
+  },
+  classes: "govuk-input--width-20",
+  id: "telephone2",
+  name: "telephone2",
+  type: "tel",
+  autocomplete: "tel",
+  inputmode: "numeric",
+  errorMessage: errors.telephone2,
+  value: telephone2,
+  spellcheck: false
+}) }}
