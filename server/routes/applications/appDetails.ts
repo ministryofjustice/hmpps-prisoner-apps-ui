@@ -17,7 +17,7 @@ export default function appDetailsRouter({
   personalRelationshipsService,
 }: {
   auditService: AuditService
-   managingAppsService: ManagingAppsService
+  managingAppsService: ManagingAppsService
   personalRelationshipsService: PersonalRelationshipsService
 }): Router {
   const router = Router()
