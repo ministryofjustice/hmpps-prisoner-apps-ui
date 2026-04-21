@@ -5,6 +5,7 @@ export type AssignedGroup = components['schemas']['AssignedGroupDto']
 
 export type ViewAppListDto = components['schemas']['AppListPrisonerFacing']
 export type PrisonerAppsPage = components['schemas']['PrisonerAppsPage']
+export type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
 
 export interface App extends ApplicationDto {
   applicationType: {

@@ -11,7 +11,7 @@
     {% if apps and apps.length %}
       {{ govukButton({
         text: "New application",
-        href: URLS.APPLICATIONS
+        href: '/log/group'
       }) }}
       <h2 class="govuk-heading-m">Your applications</h2>
       {% include "./partials/results.njk" %}
@@ -20,7 +20,7 @@
 
       {{ govukButton({
         text: "New application",
-        href: URLS.APPLICATIONS
+        href: '/log/group'
       }) }}
     {% endif %}
   </div>
