@@ -11,7 +11,7 @@ const getStatusTagHtml = (status: ViewAppListDto['status']) => statusTagMap[stat
 
 // eslint-disable-next-line import/prefer-default-export
 export const formatAppsToRows = (apps: ViewAppListDto[]) => {
-  return apps.map(({ prisonerId, applicationType, createdDate, status }) => {
+  return apps.map(({ applicationType, createdDate, status }) => {
     const date = new Date(createdDate)
 
     const formattedDate = format(date, 'dd/MM/yyyy')
@@ -26,7 +26,7 @@ export const formatAppsToRows = (apps: ViewAppListDto[]) => {
       { text: applicationType },
       { html: getStatusTagHtml(status) },
       {
-        html: `<a href="/applications/${prisonerId}" class="govuk-link">View</a>`,
+        html: `<a href="/applications/" class="govuk-link">View</a>`,
       },
     ]
   })

@@ -7,8 +7,15 @@ import getApplicationDetails from '../../utils/getAppDetails'
 
 import AuditService, { Page } from '../../services/auditService'
 import { getAppTypeLogDetailsData } from '../../utils/getAppTypeLogDetails'
+import PersonalRelationshipsService from '../../services/personalRelationshipsService'
 
-export default function appDetailsRouter({ auditService }: { auditService: AuditService }): Router {
+export default function appDetailsRouter({
+  auditService,
+  personalRelationshipsService,
+}: {
+  auditService: AuditService
+  personalRelationshipsService: PersonalRelationshipsService
+}): Router {
   const router = Router()
 
   router.get(URLS.LOG_APPLICATION_DETAILS, async (req: Request, res: Response) => {
@@ -16,7 +23,7 @@ export default function appDetailsRouter({ auditService }: { auditService: Audit
 
     const logDetails = getAppTypeLogDetailsData(undefined, applicationData?.additionalData || {}, undefined)
 
-    const templateFields = await getApplicationDetails(logDetails, undefined, undefined, undefined)
+    const templateFields = await getApplicationDetails(logDetails, personalRelationshipsService, undefined, undefined)
 
     await auditService.logPageView(Page.VIEW_APPLICATIONS_PAGE, {
       who: res.locals.user.username,

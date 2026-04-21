@@ -7,7 +7,11 @@ import viewAppsRouter from './view'
 import selectGroupRouter from './selectGroup'
 import appDetailsRouter from './appDetails'
 
-export default function applicationsRoutes({ auditService, managingAppsService }: Services): Router {
+export default function applicationsRoutes({
+  auditService,
+  managingAppsService,
+  personalRelationshipsService,
+}: Services): Router {
   const router = Router()
 
   router.get('/', (req: Request, res: Response) => {
@@ -15,7 +19,7 @@ export default function applicationsRoutes({ auditService, managingAppsService }
   })
 
   router.use(viewAppsRouter({ auditService, managingAppsService }))
+  router.use(appDetailsRouter({ auditService, personalRelationshipsService }))
   router.use(selectGroupRouter({ auditService, managingAppsService }))
-  router.use(appDetailsRouter({ auditService }))
   return router
 }

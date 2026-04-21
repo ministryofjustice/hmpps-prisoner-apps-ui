@@ -114,6 +114,16 @@ export default {
       agent: new AgentConfig(Number(get('MANAGING_APPS_API_TIMEOUT_RESPONSE', 10000))),
       enabled: get('MANAGING_APPS_ENABLED', 'false') === 'true',
     },
+    personalRelationships: {
+      url: get('PERSONAL_RELATIONSHIPS_API_URL', 'http://localhost:8080', requiredInProduction),
+      healthPath: '/health/ping',
+      timeout: {
+        response: Number(get('PERSONAL_RELATIONSHIPS_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('PERSONAL_RELATIONSHIPS_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('PERSONAL_RELATIONSHIPS_API_TIMEOUT_RESPONSE', 10000))),
+      enabled: get('PERSONAL_RELATIONSHIPS_ENABLED', 'false') === 'true',
+    },
   },
   sqs: {
     audit: auditConfig(),
