@@ -5,6 +5,7 @@ export const PATHS = {
     LIST: 'pages/applications/list/index',
   },
   LOG_APPLICATION: {
+    SELECT_GROUP: 'pages/applications/select-group/index',
     APPLICATION_DETAILS: 'pages/log-application/application-details/index',
   },
 }
