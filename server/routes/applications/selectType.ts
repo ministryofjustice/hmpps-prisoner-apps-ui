@@ -94,6 +94,7 @@ export default function selectTypeRouter({
         genericType: selectedType.genericType ?? undefined,
         genericForm: selectedType.genericForm ?? undefined,
       },
+      additionalData: undefined,
     }
 
     return res.redirect(URLS.LOG_APPLICATION_DETAILS)

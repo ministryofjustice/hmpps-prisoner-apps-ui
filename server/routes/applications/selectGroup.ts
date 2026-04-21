@@ -65,6 +65,7 @@ export default function selectGroupRouter({
       ...req.session.applicationData,
       group: { name: selectedGroup.name, value: selectedGroup.id.toString() },
       type: undefined,
+      additionalData: undefined,
     }
 
     return res.redirect(URLS.LOG_TYPE)
