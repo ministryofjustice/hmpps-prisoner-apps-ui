@@ -88,7 +88,11 @@ export default function selectTypeRouter({
     req.session.applicationData = {
       ...req.session.applicationData,
       type: {
-        key: selectedType.id.toString(),
+        key: selectedType.name
+          .replace(/[^\w\s]/g, '')
+          .trim()
+          .toLowerCase()
+          .replace(/\s+/g, '-'),
         name: selectedType.name,
         value: selectedType.id.toString(),
         genericType: selectedType.genericType ?? undefined,

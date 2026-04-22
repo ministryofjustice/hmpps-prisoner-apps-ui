@@ -1,15 +1,21 @@
 import { Request, Response, Router } from 'express'
 
+import { countries } from '../../constants/countries'
 import { PATHS } from '../../constants/paths'
 import { URLS } from '../../constants/urls'
 
-import getApplicationDetails from '../../utils/getAppDetails'
+import { getAppType } from '../../helpers/application/getAppType'
 
 import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
-
-import { getAppTypeLogDetailsData } from '../../utils/getAppTypeLogDetails'
 import PersonalRelationshipsService from '../../services/personalRelationshipsService'
+
+import { PERSONAL_RELATIONSHIPS_GROUP_CODES } from '../../constants/personalRelationshipsGroupCodes'
+import getApplicationDetails from '../../utils/getAppDetails'
+import { getAppTypeLogDetailsData } from '../../utils/getAppTypeLogDetails'
+import { handleApplicationDetails } from '../../utils/handleAppDetails'
+import getFormattedRelationshipDropdown from '../../utils/formatters/getFormattedRelationshipDropdown'
+import { getFormattedCountries } from '../../utils/data/countries'
 
 export default function appDetailsRouter({
   auditService,
@@ -36,12 +42,16 @@ export default function appDetailsRouter({
     const selectedAppType = selectedGroup.appTypes.find(type => type.id.toString() === applicationData.type?.value)
 
     if (!selectedAppType) {
-      return res.redirect(URLS.LOG_GROUP)
+      return res.redirect(URLS.LOG_TYPE)
     }
 
     const isGeneric = selectedAppType.genericType || selectedAppType.genericForm
 
     const logDetails = getAppTypeLogDetailsData(selectedAppType.id, applicationData?.additionalData || {}, isGeneric)
+
+    if (!logDetails) {
+      return res.redirect(URLS.LOG_TYPE)
+    }
 
     const templateFields = await getApplicationDetails(
       logDetails,
@@ -60,6 +70,42 @@ export default function appDetailsRouter({
       applicationType: applicationData?.type,
       title: 'Log details',
       isGeneric,
+      backLink: URLS.LOG_TYPE,
+    })
+  })
+
+  router.post(URLS.LOG_APPLICATION_DETAILS, async (req: Request, res: Response) => {
+    const { user } = res.locals
+    const { applicationData } = req.session
+
+    const applicationType = await getAppType(managingAppsService, user, applicationData?.type.value)
+
+    return handleApplicationDetails(req, res, {
+      getAppType: () => applicationType,
+      getTemplateData: async () => {
+        const groupCode =
+          applicationType.id === 1
+            ? PERSONAL_RELATIONSHIPS_GROUP_CODES.OFFICIAL_RELATIONSHIP
+            : PERSONAL_RELATIONSHIPS_GROUP_CODES.SOCIAL_RELATIONSHIP
+
+        const formattedRelationshipList = await getFormattedRelationshipDropdown(
+          personalRelationshipsService,
+          undefined,
+          groupCode,
+        )
+
+        const formattedCountryList = getFormattedCountries(countries, req.body.country)
+
+        return {
+          applicationType: applicationData.type,
+          formattedRelationshipList,
+          countries: formattedCountryList,
+          isGeneric: applicationType.genericType || applicationType.genericForm,
+        }
+      },
+      isUpdate: false,
+      renderPath: PATHS.LOG_APPLICATION.APPLICATION_DETAILS,
+      successRedirect: () => URLS.LOG_CONFIRM_DETAILS,
     })
   })
 
