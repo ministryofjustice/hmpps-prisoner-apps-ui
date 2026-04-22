@@ -5,6 +5,7 @@ import { URLS } from '../../constants/urls'
 
 import viewAppsRouter from './view'
 import selectGroupRouter from './selectGroup'
+import selectTypeRouter from './selectType'
 import appDetailsRouter from './appDetails'
 
 export default function applicationsRoutes({
@@ -21,5 +22,7 @@ export default function applicationsRoutes({
   router.use(viewAppsRouter({ auditService, managingAppsService }))
   router.use(appDetailsRouter({ auditService, managingAppsService, personalRelationshipsService }))
   router.use(selectGroupRouter({ auditService, managingAppsService }))
+  router.use(selectTypeRouter({ auditService, managingAppsService }))
+  router.use(appDetailsRouter({ auditService, personalRelationshipsService }))
   return router
 }
