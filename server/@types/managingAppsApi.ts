@@ -36,3 +36,18 @@ export interface AppRequestedBy {
   location: string
   iep: string
 }
+
+export interface ApplicationType {
+  id: number
+  name: string
+  genericType?: boolean
+  genericForm?: boolean
+  logDetailRequired?: boolean
+  count?: number
+}
+
+export interface Group {
+  id: number
+  name: string
+  appTypes: ApplicationType[]
+}
