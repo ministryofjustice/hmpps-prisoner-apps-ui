@@ -10,6 +10,12 @@ export declare module 'express-session' {
 
   interface ApplicationData {
     additionalData?: AdditionalApplicationData
+    date?: string
+    earlyDaysCentre?: string
+    prisonerAlertCount?: string
+    prisonerExists?: string
+    prisonerId?: string
+    prisonerName?: string
     group?: {
       name: string
       value: string

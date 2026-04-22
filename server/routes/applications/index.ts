@@ -19,7 +19,7 @@ export default function applicationsRoutes({
   })
 
   router.use(viewAppsRouter({ auditService, managingAppsService }))
-  router.use(appDetailsRouter({ auditService, personalRelationshipsService }))
+  router.use(appDetailsRouter({ auditService, managingAppsService, personalRelationshipsService }))
   router.use(selectGroupRouter({ auditService, managingAppsService }))
   return router
 }

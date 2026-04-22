@@ -1,10 +1,13 @@
 import { App } from '../@types/managingAppsApi'
-import PersonalRelationshipsService from '../services/personalRelationshipsService'
-import getFormattedRelationshipDropdown from './formatters/getFormattedRelationshipDropdown'
+import { countries } from '../constants/countries'
 import { PERSONAL_RELATIONSHIPS_GROUP_CODES } from '../constants/personalRelationshipsGroupCodes'
+import PersonalRelationshipsService from '../services/personalRelationshipsService'
+import { getCountryNameByCode, getFormattedCountries } from './data/countries'
+import getFormattedRelationshipDropdown from './formatters/getFormattedRelationshipDropdown'
 
 import { AppTypeData } from './getAppTypeLogDetails'
 
+type AddNewSocialContactRequest = Partial<Extract<AppTypeData, { type: 2 }>>
 type AddNewOfficialContactRequest = Partial<Extract<AppTypeData, { type: 1 }>>
 type RemoveContactRequest = Partial<Extract<AppTypeData, { type: 3 }>>
 
@@ -39,6 +42,27 @@ export default async function getApplicationDetails(
   }
 
   switch (applicationDetails.type) {
+    case 2: {
+      const request = (application?.requests?.[0] as AddNewSocialContactRequest) ?? {}
+
+      const prefilledDetails: AddNewSocialContactRequest = {
+        firstName: getFallbackValue('firstName', applicationDetails, request, ''),
+        lastName: getFallbackValue('lastName', applicationDetails, request, ''),
+        dateOfBirthOrAge: getFallbackValue('dateOfBirthOrAge', applicationDetails, request, undefined),
+        dob: getFallbackValue('dob', applicationDetails, request, undefined),
+        age: getFallbackValue('age', applicationDetails, request, ''),
+        relationship: getFallbackValue('relationship', applicationDetails, request, ''),
+        addressLine1: getFallbackValue('addressLine1', applicationDetails, request, ''),
+        addressLine2: getFallbackValue('addressLine2', applicationDetails, request, ''),
+        townOrCity: getFallbackValue('townOrCity', applicationDetails, request, ''),
+        postcode: getFallbackValue('postcode', applicationDetails, request, ''),
+        country: getFallbackValue('country', applicationDetails, request, ''),
+        telephone1: getFallbackValue('telephone1', applicationDetails, request, ''),
+        telephone2: getFallbackValue('telephone2', applicationDetails, request, ''),
+      }
+
+      return handleAddNewSocialContact(prefilledDetails, earlyDaysCentre, personalRelationshipsService)
+    }
     case 1: {
       const request = (application?.requests?.[0] as AddNewOfficialContactRequest) ?? {}
       const requestWithCompany = request as AddNewOfficialContactRequest & { company?: string }
@@ -89,6 +113,51 @@ export default async function getApplicationDetails(
 
     default:
       return {}
+  }
+}
+
+async function handleAddNewSocialContact(
+  details: AddNewSocialContactRequest,
+  earlyDaysCentre: string,
+  personalRelationshipsService: PersonalRelationshipsService,
+): Promise<Record<string, unknown>> {
+  const {
+    firstName,
+    lastName,
+    dateOfBirthOrAge,
+    dob,
+    age,
+    relationship,
+    addressLine1,
+    addressLine2,
+    townOrCity,
+    postcode,
+    country,
+    telephone1,
+    telephone2,
+  } = details
+
+  return {
+    firstName,
+    lastName,
+    dateOfBirthOrAge,
+    dob,
+    age,
+    relationship,
+    addressLine1,
+    addressLine2,
+    townOrCity,
+    postcode,
+    countries: getFormattedCountries(countries, country),
+    country: getCountryNameByCode(country),
+    telephone1,
+    telephone2,
+    formattedRelationshipList: await getFormattedRelationshipDropdown(
+      personalRelationshipsService,
+      relationship,
+      PERSONAL_RELATIONSHIPS_GROUP_CODES.SOCIAL_RELATIONSHIP,
+    ),
+    earlyDaysCentre,
   }
 }
 
