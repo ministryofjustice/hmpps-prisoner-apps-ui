@@ -46,6 +46,7 @@ generic-service:
       CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
       LAUNCHPAD_API_CLIENT_ID: "LAUNCHPAD_API_CLIENT_ID"
       LAUNCHPAD_API_CLIENT_SECRET: "LAUNCHPAD_API_CLIENT_SECRET"
+      OS_PLACES_API_KEY: 'OS_PLACES_API_KEY'
     hmpps-prisoner-apps-ui-session-secret:
       SESSION_SECRET: 'SESSION_SECRET'
     hmpps-prisoner-apps-ui-elasticache-redis:
