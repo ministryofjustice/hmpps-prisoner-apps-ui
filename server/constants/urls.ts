@@ -5,4 +5,5 @@ export const URLS = {
   LOG_TYPE: '/log/type',
   LOG_APPLICATION_DETAILS: '/log/application-details',
   LOG_CONFIRM_DETAILS: '/log/confirm',
+  LOG_CONFIRMATION: '/log/confirmation',
 }

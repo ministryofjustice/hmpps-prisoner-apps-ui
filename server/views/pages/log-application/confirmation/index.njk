@@ -1,0 +1,38 @@
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+
+{% extends "../../../partials/layout.njk" %}
+
+{% set pageTitle = applicationName + " - " + title %}
+{% set mainClasses = "app-container govuk-body applications-landing-page" %}
+
+{% block content %}
+  <div class="govuk-body govuk-width-container">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        {{ govukPanel({
+          titleText: "Application submitted",
+          text: title
+        }) }}
+      </div>
+    </div>
+
+    <p class="govuk-body-l">{{ groupName }} now has your application.</p>
+
+    <p class="govuk-body govuk-!-margin-bottom-2">You can now:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>
+        <a href="/log/group">log a new application</a>
+      </li>
+    </ul>
+
+    <p class="govuk-body govuk-!-margin-bottom-2">Or you can view:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>
+        <a href="/applications/{{ applicationId }}">this application</a>
+      </li>
+      <li>
+        <a href="/applications">all applications</a>
+      </li>
+    </ul>
+  </div>
+{% endblock %}
