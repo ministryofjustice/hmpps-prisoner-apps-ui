@@ -16,7 +16,7 @@ export default class PersonalRelationshipsApiClient extends RestClient {
         path: `/reference-codes/group/${groupCode}`,
       },
       asSystem(),
-    ).catch(error => {
+    ).catch((error: unknown): ReferenceCode[] => {
       logger.error(`Personal Relationships API unavailable for groupCode=${groupCode}`, error)
       return []
     })
