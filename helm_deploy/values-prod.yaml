@@ -12,6 +12,7 @@ generic-service:
     LAUNCHPAD_AUTH_URL: "https://launchpad-auth.hmpps.service.justice.gov.uk" 
     EXAMPLE_API_URL: 'https://template-kotlin.hmpps.service.justice.gov.uk'
     PERSONAL_RELATIONSHIPS_API_URL: 'https://personal-relationships-api.hmpps.service.justice.gov.uk'
+    OS_PLACES_API_URL: 'https://api.os.uk/search/places/v1'
     AUDIT_ENABLED: "false"
 
 generic-prometheus-alerts:

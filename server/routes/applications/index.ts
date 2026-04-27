@@ -13,6 +13,7 @@ export default function applicationsRoutes({
   auditService,
   managingAppsService,
   personalRelationshipsService,
+  osPlacesAddressService,
 }: Services): Router {
   const router = Router()
 
@@ -21,9 +22,33 @@ export default function applicationsRoutes({
   })
 
   router.use(viewAppsRouter({ auditService, managingAppsService }))
-  router.use(appDetailsRouter({ auditService, managingAppsService, personalRelationshipsService }))
+  router.use(
+    appDetailsRouter({
+      auditService,
+      managingAppsService,
+      personalRelationshipsService,
+      osPlacesAddressService,
+    }),
+  )
   router.use(selectGroupRouter({ auditService, managingAppsService }))
   router.use(selectTypeRouter({ auditService, managingAppsService }))
   router.use(confirmationRouter({ auditService }))
+  router.get('/api/addresses/find/:query', async (req: Request<{ query: string }>, res: Response) => {
+    try {
+      const { query } = req.params
+      if (!query) {
+        res.status(400).json({ status: 400, error: 'Query parameter is required' })
+        return
+      }
+
+      const results = await osPlacesAddressService.getAddressesMatchingQuery(query)
+
+      res.json({ status: 200, results })
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      res.status(500).json({ status: 500, error: errorMessage })
+    }
+  })
+
   return router
 }

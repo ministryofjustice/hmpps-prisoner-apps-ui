@@ -14,6 +14,16 @@ function get<T>(name: string, fallback: T, options = { requireInProduction: fals
 
 const requiredInProduction = { requireInProduction: true }
 
+export interface ExternalApiConfig {
+  url: string
+  apiKey: string
+  timeout: {
+    response: number
+    deadline: number
+  }
+  agent: AgentConfig
+}
+
 const auditConfig = () => {
   const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
   return {
@@ -124,6 +134,15 @@ export default {
       agent: new AgentConfig(Number(get('PERSONAL_RELATIONSHIPS_API_TIMEOUT_RESPONSE', 10000))),
       enabled: get('PERSONAL_RELATIONSHIPS_ENABLED', 'false') === 'true',
     },
+    osPlacesApi: {
+      url: get('OS_PLACES_API_URL', 'https://api.os.uk/search/places/v1', requiredInProduction),
+      apiKey: get('OS_PLACES_API_KEY', '', requiredInProduction),
+      timeout: {
+        response: Number(get('OS_PLACES_API_TIMEOUT_RESPONSE', 10000)),
+        deadline: Number(get('OS_PLACES_API_TIMEOUT_DEADLINE', 10000)),
+      },
+      agent: new AgentConfig(Number(get('OS_PLACES_API_TIMEOUT_RESPONSE', 10000))),
+    } as ExternalApiConfig,
   },
   sqs: {
     audit: auditConfig(),

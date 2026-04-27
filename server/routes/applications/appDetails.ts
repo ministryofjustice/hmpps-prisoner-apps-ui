@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express'
+import { OsPlacesAddressService } from '@ministryofjustice/hmpps-connect-dps-shared-items'
 
 import { countries } from '../../constants/countries'
 import { PATHS } from '../../constants/paths'
@@ -21,10 +22,12 @@ export default function appDetailsRouter({
   auditService,
   managingAppsService,
   personalRelationshipsService,
+  osPlacesAddressService,
 }: {
   auditService: AuditService
   managingAppsService: ManagingAppsService
   personalRelationshipsService: PersonalRelationshipsService
+  osPlacesAddressService?: OsPlacesAddressService
 }): Router {
   const router = Router()
 
@@ -106,6 +109,7 @@ export default function appDetailsRouter({
       isUpdate: false,
       renderPath: PATHS.LOG_APPLICATION.APPLICATION_DETAILS,
       successRedirect: () => URLS.LOG_CONFIRM_DETAILS,
+      osPlacesAddressService,
     })
   })
 
