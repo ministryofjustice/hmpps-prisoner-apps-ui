@@ -7,6 +7,7 @@ import viewAppsRouter from './view'
 import selectGroupRouter from './selectGroup'
 import selectTypeRouter from './selectType'
 import appDetailsRouter from './appDetails'
+import confirmationRouter from './confirmation'
 
 export default function applicationsRoutes({
   auditService,
@@ -23,5 +24,6 @@ export default function applicationsRoutes({
   router.use(appDetailsRouter({ auditService, managingAppsService, personalRelationshipsService }))
   router.use(selectGroupRouter({ auditService, managingAppsService }))
   router.use(selectTypeRouter({ auditService, managingAppsService }))
+  router.use(confirmationRouter({ auditService }))
   return router
 }
