@@ -7,6 +7,7 @@ import viewAppsRouter from './view'
 import selectGroupRouter from './selectGroup'
 import selectTypeRouter from './selectType'
 import appDetailsRouter from './appDetails'
+import confirmationRouter from './confirmation'
 
 export default function applicationsRoutes({
   auditService,
@@ -31,6 +32,7 @@ export default function applicationsRoutes({
   )
   router.use(selectGroupRouter({ auditService, managingAppsService }))
   router.use(selectTypeRouter({ auditService, managingAppsService }))
+  router.use(confirmationRouter({ auditService }))
   router.get('/api/addresses/find/:query', async (req: Request<{ query: string }>, res: Response) => {
     try {
       const { query } = req.params

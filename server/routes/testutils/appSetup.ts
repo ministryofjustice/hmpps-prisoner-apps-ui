@@ -25,7 +25,12 @@ export const user: HmppsUser = {
 
 export const flashProvider = jest.fn()
 
-function appSetup(services: Services, production: boolean, userSupplier: () => HmppsUser): Express {
+function appSetup(
+  services: Services,
+  production: boolean,
+  userSupplier: () => HmppsUser,
+  sessionData?: Record<string, unknown>,
+): Express {
   const app = express()
 
   app.set('view engine', 'njk')
@@ -37,6 +42,9 @@ function appSetup(services: Services, production: boolean, userSupplier: () => H
     req.flash = flashProvider
     res.locals = {
       user: { ...req.user } as HmppsUser,
+    }
+    if (sessionData) {
+      Object.assign(req.session, sessionData)
     }
     next()
   })
@@ -59,10 +67,12 @@ export function appWithAllRoutes({
     auditService: new AuditService(null) as jest.Mocked<AuditService>,
   },
   userSupplier = () => user,
+  sessionData,
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => HmppsUser
+  sessionData?: Record<string, unknown>
 }): Express {
-  return appSetup(services as Services, production, userSupplier)
+  return appSetup(services as Services, production, userSupplier, sessionData)
 }
