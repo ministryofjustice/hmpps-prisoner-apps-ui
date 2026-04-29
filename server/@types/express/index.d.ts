@@ -115,6 +115,15 @@ export declare global {
 
     interface Locals extends LaunchpadHeaderLocals, LaunchpadFooterLocals {
       user: HmppsUser
+      cspNonce: string
+      csrfToken: string
+      asset_path: string
+      applicationName: string
+      environmentName: string
+      environmentNameColour: string
+      appInsightsConnectionString?: string
+      appInsightsApplicationName?: string
+      buildNumber?: string
     }
   }
 }

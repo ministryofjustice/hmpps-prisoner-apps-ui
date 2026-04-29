@@ -8,8 +8,8 @@ export type AuthSource = 'nomis' | 'delius' | 'external' | 'azuread' | 'prisoner
 export interface BaseUser {
   authSource: AuthSource
   username: string
-  userId: string
-  name: string
+  userId: string | undefined
+  name: string | undefined
   displayName: string
   userRoles: string[]
   token: string
@@ -25,7 +25,7 @@ export interface BaseUser {
  */
 export interface PrisonUser extends BaseUser {
   authSource: 'nomis'
-  staffId: number
+  staffId: number | undefined
   activeCaseLoadId?: string
 }
 
