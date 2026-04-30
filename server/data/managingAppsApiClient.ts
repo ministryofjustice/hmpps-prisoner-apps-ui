@@ -1,11 +1,10 @@
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
-import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../logger'
 import type {
   ApplicationGroup,
   AppRequestPrisoner,
   AppResponsePrisoner,
-  AppSubmitRequest,
   PrisonerAppsPage,
 } from '../@types/managingAppsApi'
 import config from '../config'
