@@ -3,12 +3,13 @@ import request from 'supertest'
 import { appWithAllRoutes, user } from './testutils/appSetup'
 import { prisonerAppsPageResponse } from '../testData'
 import AuditService, { Page } from '../services/auditService'
+import HmppsAuditClient from '../data/hmppsAuditClient'
 import ManagingAppsService from '../services/managingAppsService'
 
 jest.mock('../services/auditService')
 jest.mock('../services/managingAppsService')
 
-const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const auditService = new AuditService({} as HmppsAuditClient) as jest.Mocked<AuditService>
 const managingAppsService = new ManagingAppsService(null) as jest.Mocked<ManagingAppsService>
 
 let app: Express
@@ -52,7 +53,7 @@ describe('GET /applications', () => {
   })
 
   it('service errors are handled', () => {
-    auditService.logPageView.mockResolvedValue(null)
+    auditService.logPageView.mockResolvedValue(undefined)
     managingAppsService.getPrisonerApps.mockRejectedValue(new Error('Some problem calling external api!'))
 
     return request(app)
