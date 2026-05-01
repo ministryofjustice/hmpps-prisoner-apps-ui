@@ -30,12 +30,12 @@
     "npm": "^11"
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1034.0",
+    "@aws-sdk/client-sqs": "^3.1037.0",
     "@ministryofjustice/frontend": "^9.0.0",
     "@ministryofjustice/hmpps-auth-clients": "^1.0.2",
     "@ministryofjustice/hmpps-connect-dps-shared-items": "3.7.4",
     "@ministryofjustice/hmpps-monitoring": "^1.0.2",
-    "@ministryofjustice/hmpps-prisoner-auth": "0.0.3",
+    "@ministryofjustice/hmpps-prisoner-auth": "0.0.6",
     "@ministryofjustice/hmpps-prisoner-facing-components": "0.0.9",
     "@ministryofjustice/hmpps-rest-client": "^1.2.0",
     "applicationinsights": "^2.9.8",
@@ -52,7 +52,7 @@
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",
     "jwt-decode": "^4.0.0",
-    "libphonenumber-js": "1.12.41",
+    "libphonenumber-js": "1.12.42",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
