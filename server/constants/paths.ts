@@ -8,6 +8,7 @@ export const PATHS = {
     SELECT_GROUP: 'pages/applications/select-group/index',
     SELECT_TYPE: 'pages/applications/select-type/index',
     APPLICATION_DETAILS: 'pages/log-application/application-details/index',
+    CHECK_DETAILS: 'pages/log-application/check-details/index',
     CONFIRMATION: 'pages/log-application/confirmation/index',
   },
 }

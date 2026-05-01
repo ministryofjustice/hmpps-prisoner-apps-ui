@@ -1,7 +1,12 @@
 import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients'
-import { RestClient, asSystem } from '@ministryofjustice/hmpps-rest-client'
+import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../logger'
-import type { ApplicationGroup, PrisonerAppsPage } from '../@types/managingAppsApi'
+import type {
+  ApplicationGroup,
+  AppRequestPrisoner,
+  AppResponsePrisoner,
+  PrisonerAppsPage,
+} from '../@types/managingAppsApi'
 import config from '../config'
 
 export default class ManagingAppsApiClient extends RestClient {
@@ -33,5 +38,15 @@ export default class ManagingAppsApiClient extends RestClient {
       logger.error(`Error fetching application groups and types.`, error)
       return null
     }
+  }
+
+  submitApp(userId: string, body: AppRequestPrisoner): Promise<AppResponsePrisoner> {
+    return this.post<AppResponsePrisoner>(
+      {
+        path: '/v1/prisoners/apps',
+        data: body,
+      },
+      asSystem(userId),
+    )
   }
 }

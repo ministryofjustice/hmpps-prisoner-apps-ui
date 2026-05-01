@@ -26,7 +26,7 @@ export default function confirmationRouter({ auditService }: { auditService: Aud
       return res.redirect(URLS.LOG_GROUP)
     }
 
-    const { group, type } = applicationData
+    const { group, type, applicationId } = applicationData
 
     await auditService.logPageView(Page.LOG_CONFIRMATION_PAGE, {
       who: user.username,
@@ -38,6 +38,7 @@ export default function confirmationRouter({ auditService }: { auditService: Aud
     return res.render(PATHS.LOG_APPLICATION.CONFIRMATION, {
       title: type.name,
       groupName: group.name,
+      applicationId,
     })
   })
 
