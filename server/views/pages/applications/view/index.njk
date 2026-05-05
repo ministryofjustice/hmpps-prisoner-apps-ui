@@ -1,0 +1,60 @@
+{%- from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs -%}
+{%- from "govuk/components/summary-list/macro.njk" import govukSummaryList -%}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% extends "../../../partials/layout.njk" %}
+{% set pageTitle = applicationName + " - " + title %}
+{% set mainClasses = "app-container govuk-body applications-landing-page" %}
+{% block beforeContent %}
+  <div class="govuk-body govuk-width-container">
+    {{ govukBreadcrumbs({
+      items: [
+        {
+          text: "Home",
+          href: dpsUrl
+        },
+        {
+          text: "Apps",
+          href: "/"
+        }
+      ]
+    }) }}
+  </div>
+{% endblock %}
+{% block content %}
+  <div class="govuk-width-container">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl govuk-!-margin-top-0">{{ title }}</h1>
+
+      {% if application.status == "PENDING" %}
+        <div class="govuk-inset-text govuk-!-margin-0 guidance-panel">
+          <p>This application has been received and will be processed soon.</p>
+        </div>
+      {% endif %}
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: { text: "Status" },
+            value: {
+              html: '<strong class="govuk-tag ' + statusClass + '">' + statusLabel + '</strong>'
+            }
+          }
+        ]
+      }) }}
+
+      {% include "./partials/application-details.njk" %}
+
+      {% if isGeneric %}
+        {% include "./partials/application-type-generic-details.njk" %}
+      {% else %}
+        {% include "./partials/" + applicationType + ".njk" %}
+      {% endif %}
+      
+      {{ govukButton({
+        text: "Back to apps home",
+        classes: "govuk-button--secondary",
+        href: "/"
+      }) }}
+    </div>
+  </div>
+{% endblock %}

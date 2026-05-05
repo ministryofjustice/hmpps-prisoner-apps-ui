@@ -14,7 +14,7 @@ export default class ManagingAppsApiClient extends RestClient {
     super('Managing Apps API', config.apis.managingAppsApi, logger, authenticationClient)
   }
 
-  getPrisonerApps(userId: string, pageNum: number, pageSize?: number) {
+  async getPrisonerApps(userId: string, pageNum: number, pageSize?: number) {
     const query = pageSize === undefined ? { pageNum } : { pageNum, pageSize }
 
     return this.get<PrisonerAppsPage>(
@@ -45,6 +45,15 @@ export default class ManagingAppsApiClient extends RestClient {
       {
         path: '/v1/prisoners/apps',
         data: body,
+      },
+      asSystem(userId),
+    )
+  }
+
+  getPrisonerAppById(userId: string, id: string): Promise<AppResponsePrisoner> {
+    return this.get<AppResponsePrisoner>(
+      {
+        path: `/v1/prisoners/apps/${encodeURIComponent(id)}`,
       },
       asSystem(userId),
     )

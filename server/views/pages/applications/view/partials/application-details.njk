@@ -1,0 +1,15 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+<h2 class="govuk-heading-m">Application details</h2>
+{{ govukSummaryList({
+  rows: [ 
+    {
+      key: { text: "Date" },
+      value: { text: application.createdDate }
+    },
+    {
+      key: { text: "Application Type" },
+      value: { text: title  }
+    }
+  ]
+}) }}

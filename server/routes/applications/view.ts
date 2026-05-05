@@ -1,9 +1,12 @@
+import { format } from 'date-fns'
+
 import { Request, Response, Router } from 'express'
 import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 
 import { URLS } from '../../constants/urls'
 import { PATHS } from '../../constants/paths'
+import { APPLICATION_STATUS_TAG_MAP } from '../../constants/applicationStatus'
 
 import { getPaginationData } from '../../utils/http/pagination'
 import { formatAppsToRows } from '../../utils/formatters/formatAppsToRows'
@@ -36,6 +39,30 @@ export default function viewAppsRouter({
       apps: rows,
       pagination,
       query: req.query,
+    })
+  })
+
+  router.get(`${URLS.APPLICATIONS}/:id`, async (req: Request<{ id: string }>, res: Response) => {
+    const { userId } = res.locals.user
+    const application = await managingAppsService.getPrisonerAppById(userId, req.params.id)
+
+    const { label: statusLabel, className: statusClass } =
+      APPLICATION_STATUS_TAG_MAP[application.status] ?? APPLICATION_STATUS_TAG_MAP.PENDING
+
+    res.render(PATHS.APPLICATIONS.VIEW, {
+      title: application.applicationType.name,
+      applicationType: application.applicationType.name
+        .replace(/[^\w\s]/g, '')
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, '-'),
+      application: {
+        ...application,
+        createdDate: format(new Date(application.createdDate), 'd MMMM yyyy'),
+      },
+      statusLabel,
+      statusClass,
+      isGeneric: application.genericForm,
     })
   })
 
