@@ -14,7 +14,7 @@ export default class ManagingAppsApiClient extends RestClient {
     super('Managing Apps API', config.apis.managingAppsApi, logger, authenticationClient)
   }
 
-  async getPrisonerApps(userId: string, pageNum: number, pageSize?: number) {
+  getPrisonerApps(userId: string, pageNum: number, pageSize?: number) {
     const query = pageSize === undefined ? { pageNum } : { pageNum, pageSize }
 
     return this.get<PrisonerAppsPage>(
