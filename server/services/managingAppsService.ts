@@ -20,4 +20,8 @@ export default class ManagingAppsService {
   submitApp(userId: string, body: AppRequestPrisoner): Promise<AppResponsePrisoner> {
     return this.managingAppsApiClient.submitApp(userId, body)
   }
+
+  getPrisonerAppById(userId: string, id: string): Promise<AppResponsePrisoner> {
+    return this.managingAppsApiClient.getPrisonerAppById(userId, id)
+  }
 }

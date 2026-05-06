@@ -1,17 +1,10 @@
 import { format, getTime } from 'date-fns'
 import type { ViewAppListDto } from '../../@types/managingAppsApi'
-
-const statusTagMap: Record<ViewAppListDto['status'], string> = {
-  PENDING: '<strong class="govuk-tag govuk-tag--yellow">Pending</strong>',
-  DECLINED: '<strong class="govuk-tag govuk-tag--red">Declined</strong>',
-  APPROVED: '<strong class="govuk-tag govuk-tag--green">Approved</strong>',
-}
-
-const getStatusTagHtml = (status: ViewAppListDto['status']) => statusTagMap[status]
+import { APPLICATION_STATUS_TAG_MAP } from '../../constants/applicationStatus'
 
 // eslint-disable-next-line import/prefer-default-export
 export const formatAppsToRows = (apps: ViewAppListDto[]) => {
-  return apps.map(({ applicationType, createdDate, status }) => {
+  return apps.map(({ id, applicationType, createdDate, status }) => {
     const date = new Date(createdDate)
 
     const formattedDate = format(date, 'dd/MM/yyyy')
@@ -24,9 +17,9 @@ export const formatAppsToRows = (apps: ViewAppListDto[]) => {
         classes: 'govuk-!-text-nowrap',
       },
       { text: applicationType },
-      { html: getStatusTagHtml(status) },
+      { html: APPLICATION_STATUS_TAG_MAP[status]?.html ?? status },
       {
-        html: `<a href="/applications/" class="govuk-link">View</a>`,
+        html: `<a href="/applications/${encodeURIComponent(id)}" class="govuk-link">View</a>`,
       },
     ]
   })

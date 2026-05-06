@@ -49,4 +49,13 @@ export default class ManagingAppsApiClient extends RestClient {
       asSystem(userId),
     )
   }
+
+  getPrisonerAppById(userId: string, id: string): Promise<AppResponsePrisoner> {
+    return this.get<AppResponsePrisoner>(
+      {
+        path: `/v1/prisoners/apps/${encodeURIComponent(id)}`,
+      },
+      asSystem(userId),
+    )
+  }
 }

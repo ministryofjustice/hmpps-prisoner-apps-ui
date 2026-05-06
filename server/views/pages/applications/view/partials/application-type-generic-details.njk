@@ -1,0 +1,11 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{{ govukSummaryList({
+  rows: [
+    {
+      key: { text: "Details" },
+      value: {
+        text: application.requests[0].details 
+      }
+    }
+  ]
+}) }}
