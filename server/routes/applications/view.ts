@@ -62,6 +62,7 @@ export default function viewAppsRouter({
       },
       statusLabel,
       statusClass,
+      isPending: application.status === 'PENDING',
       isGeneric: application.genericForm,
     })
   })
