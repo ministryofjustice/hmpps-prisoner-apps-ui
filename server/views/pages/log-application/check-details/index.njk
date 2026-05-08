@@ -40,10 +40,13 @@
 
         <form method="POST">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-          {{ govukButton({
-            text: "Submit application",
-            classes: "govuk-button--primary"
-          }) }}
+          <div class="govuk-button-group">
+            {{ govukButton({
+              text: "Continue"
+            }) }}
+
+            <a class="govuk-link" href="/log/cancel">Cancel</a>
+          </div>
         </form>
       </div>
     </div>

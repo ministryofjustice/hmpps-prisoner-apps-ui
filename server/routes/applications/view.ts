@@ -10,6 +10,7 @@ import { APPLICATION_STATUS_TAG_MAP } from '../../constants/applicationStatus'
 
 import { getPaginationData } from '../../utils/http/pagination'
 import { formatAppsToRows } from '../../utils/formatters/formatAppsToRows'
+import { formatGivenName, hasGivenName } from '../../utils/formatters/formatName'
 
 const ITEMS_PER_PAGE = 10
 
@@ -26,6 +27,9 @@ export default function viewAppsRouter({
     const { userId } = res.locals.user
     const page = Number(req.query.page) || 1
 
+    const givenName = hasGivenName(res.locals.user) ? res.locals.user.givenName : ''
+    const firstName = formatGivenName(givenName)
+
     await auditService.logPageView(Page.VIEW_APPLICATIONS_PAGE, {
       who: res.locals.user.username,
       correlationId: req.id,
@@ -38,6 +42,7 @@ export default function viewAppsRouter({
     res.render(PATHS.APPLICATIONS.LIST, {
       apps: rows,
       pagination,
+      firstName,
       query: req.query,
     })
   })

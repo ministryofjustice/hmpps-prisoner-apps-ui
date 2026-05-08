@@ -71,7 +71,7 @@ export default function appDetailsRouter({
     return res.render(PATHS.LOG_APPLICATION.APPLICATION_DETAILS, {
       ...templateFields,
       applicationType: applicationData?.type,
-      title: 'Log details',
+      title: 'Add details',
       isGeneric,
       backLink: URLS.LOG_TYPE,
     })

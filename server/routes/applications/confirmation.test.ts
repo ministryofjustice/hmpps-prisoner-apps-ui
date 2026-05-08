@@ -37,9 +37,9 @@ describe('GET /log/confirmation', () => {
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('Application submitted')
+        expect(res.text).toContain('You have sent your app')
         expect(res.text).toContain('Add emergency PIN phone credit')
-        expect(res.text).toContain('PIN Phone now has your application.')
+        expect(res.text).toContain('You have sent a new app to staff.')
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.LOG_CONFIRMATION_PAGE, {
           who: user.username,
           correlationId: expect.any(String),

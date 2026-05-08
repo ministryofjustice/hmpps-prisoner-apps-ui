@@ -9,6 +9,7 @@ import selectTypeRouter from './selectType'
 import appDetailsRouter from './appDetails'
 import checkDetailsRouter from './checkDetails'
 import confirmationRouter from './confirmation'
+import cancelAppRouter from './cancelApp'
 
 export default function applicationsRoutes({
   auditService,
@@ -35,6 +36,7 @@ export default function applicationsRoutes({
   router.use(selectTypeRouter({ auditService, managingAppsService }))
   router.use(checkDetailsRouter({ auditService, managingAppsService }))
   router.use(confirmationRouter({ auditService }))
+  router.use(cancelAppRouter({ auditService }))
   router.get('/api/addresses/find/:query', async (req: Request<{ query: string }>, res: Response) => {
     try {
       const { query } = req.params

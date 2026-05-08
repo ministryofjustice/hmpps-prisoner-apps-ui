@@ -3,13 +3,13 @@ import { Request, Response, Router } from 'express'
 import { PATHS } from '../../constants/paths'
 import { URLS } from '../../constants/urls'
 
-import { components } from '../../@types/managing-prisoner-apps-api'
 import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
+import { ApplicationGroup } from '../../@types/managingAppsApi'
 
-type ApplicationTypeResponse = components['schemas']['ApplicationTypeResponse']
+type AppTypeItem = { value: string; text: string; checked: boolean } | { divider: 'or' }
 
-const ERROR_MESSAGE = 'Choose one application type'
+const ERROR_MESSAGE = 'Choose an app type'
 
 export default function selectTypeRouter({
   auditService,
@@ -20,12 +20,35 @@ export default function selectTypeRouter({
 }): Router {
   const router = Router()
 
-  const buildTypes = (types: ApplicationTypeResponse[], selectedValue: string | null) =>
-    types.map(type => ({
-      value: type.id.toString(),
-      text: type.name,
-      checked: selectedValue === type.id.toString(),
-    }))
+  const buildAppTypes = (group: ApplicationGroup, selectedValue: string | null): AppTypeItem[] => {
+    const items: AppTypeItem[] = []
+    const appTypes = group.appTypes ?? []
+
+    const genericAppType = appTypes.find(appType => appType.genericType)
+    const nonGenericAppTypes = appTypes.filter(appType => !appType.genericType)
+
+    nonGenericAppTypes.forEach(appType => {
+      items.push({
+        value: appType.id.toString(),
+        text: appType.name,
+        checked: selectedValue === appType.id.toString(),
+      })
+    })
+
+    if (genericAppType) {
+      if (nonGenericAppTypes.length > 0) {
+        items.push({ divider: 'or' })
+      }
+
+      items.push({
+        value: genericAppType.id.toString(),
+        text: genericAppType.name,
+        checked: selectedValue === genericAppType.id.toString(),
+      })
+    }
+
+    return items
+  }
 
   router.get(URLS.LOG_TYPE, async (req: Request, res: Response) => {
     const { user } = res.locals
@@ -42,7 +65,6 @@ export default function selectTypeRouter({
       return res.redirect(URLS.LOG_GROUP)
     }
 
-    const types = selectedGroup.appTypes ?? []
     const selectedValue = req.session?.applicationData?.type?.value || null
 
     await auditService.logPageView(Page.LOG_TYPE_PAGE, {
@@ -51,8 +73,9 @@ export default function selectTypeRouter({
     })
 
     return res.render(PATHS.LOG_APPLICATION.SELECT_TYPE, {
-      title: 'Select application type',
-      types: buildTypes(types, selectedValue),
+      title: 'Select app type',
+      types: buildAppTypes(selectedGroup, selectedValue),
+      selectedGroupName: selectedGroup.name,
       errorMessage: null,
     })
   })
@@ -79,7 +102,8 @@ export default function selectTypeRouter({
     if (!selectedType) {
       return res.render(PATHS.LOG_APPLICATION.SELECT_TYPE, {
         title: 'Select application type',
-        types: buildTypes(types, null),
+        types: buildAppTypes(selectedGroup, null),
+        selectedGroupName: selectedGroup.name,
         errorMessage: ERROR_MESSAGE,
         errorSummary: [{ text: ERROR_MESSAGE, href: '#type' }],
       })

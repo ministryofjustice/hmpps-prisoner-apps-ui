@@ -26,7 +26,7 @@
         {{ renderErrorSummary(errors) }}
 
         <span class="govuk-caption-xl">{{ applicationType.name }}</span>
-        <h1 class="govuk-heading-xl govuk-!-margin-top-0">Log details</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-top-0">{{ title }}</h1>
 
         <form method="POST" id="log-details">
           <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
@@ -37,10 +37,13 @@
             {% include "./partials/" + applicationType.key + ".njk" %}
           {% endif %}
 
-          {{ govukButton({
-            text: "Continue",
-            classes: "govuk-button--primary"
-          }) }}
+         <div class="govuk-button-group">
+            {{ govukButton({
+              text: "Continue"
+            }) }}
+
+            <a class="govuk-link" href="/log/cancel">Cancel</a>
+          </div>
         </form>
       </div>
     </div>

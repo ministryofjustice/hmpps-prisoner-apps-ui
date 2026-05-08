@@ -9,7 +9,7 @@ import { components } from '../../@types/managing-prisoner-apps-api'
 
 type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
 
-const ERROR_MESSAGE = 'Choose one application group'
+const ERROR_MESSAGE = 'Choose an app group'
 
 export default function selectGroupRouter({
   auditService,
@@ -39,7 +39,7 @@ export default function selectGroupRouter({
     })
 
     return res.render(PATHS.LOG_APPLICATION.SELECT_GROUP, {
-      title: 'Select application group',
+      title: 'Select app group',
       groups: buildGroups(groups, selectedValue),
       errorMessage: null,
     })
@@ -54,7 +54,7 @@ export default function selectGroupRouter({
 
     if (!selectedGroup) {
       return res.render(PATHS.LOG_APPLICATION.SELECT_GROUP, {
-        title: 'Select application group',
+        title: 'Select app group',
         groups: buildGroups(groups, null),
         errorMessage: ERROR_MESSAGE,
         errorSummary: [{ text: ERROR_MESSAGE, href: '#group' }],
