@@ -12,6 +12,7 @@ generic-service:
     HMPPS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
     LAUNCHPAD_AUTH_URL: 'https://launchpad-auth-dev.hmpps.service.justice.gov.uk'
+    LAUNCHPAD_URL: 'https://launchpad-home-dev.hmpps.service.justice.gov.uk/'
     MANAGING_APPS_API_URL: 'https://managing-prisoner-apps-api-dev.hmpps.service.justice.gov.uk'
     PERSONAL_RELATIONSHIPS_API_URL: 'https://personal-relationships-api-dev.hmpps.service.justice.gov.uk'
     OS_PLACES_API_URL: 'https://api.os.uk/search/places/v1'

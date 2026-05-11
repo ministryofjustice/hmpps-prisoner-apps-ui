@@ -6,4 +6,5 @@ export const URLS = {
   LOG_APPLICATION_DETAILS: '/log/application-details',
   LOG_CONFIRM_DETAILS: '/log/confirm',
   LOG_CONFIRMATION: '/log/confirmation',
+  LOG_CANCEL_APPLICATION: '/log/cancel',
 }

@@ -10,28 +10,29 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         {{ govukPanel({
-          titleText: "Application submitted",
+          titleText: "You have sent your app",
           text: title
         }) }}
       </div>
     </div>
 
-    <p class="govuk-body-l">{{ groupName }} now has your application.</p>
+    <p class="govuk-body-m govuk-!-margin-bottom-1">You have sent a new app to staff.</p>
+    <p class="govuk-body-m">Staff will process it as soon as possible.</p>
 
     <p class="govuk-body govuk-!-margin-bottom-2">You can now:</p>
     <ul class="govuk-list govuk-list--bullet">
       <li>
-        <a href="/log/group">log a new application</a>
+        <a href="/log/group">send a new app</a>
       </li>
     </ul>
 
-    <p class="govuk-body govuk-!-margin-bottom-2">Or you can view:</p>
+    <p class="govuk-body govuk-!-margin-bottom-2">Or you can look at:</p>
     <ul class="govuk-list govuk-list--bullet">
       <li>
-        <a href="/applications/{{ applicationId }}">this application</a>
+        <a href="/applications/{{ applicationId }}">this app</a>
       </li>
       <li>
-        <a href="/applications">all applications</a>
+        <a href="/applications">all your apps</a>
       </li>
     </ul>
   </div>

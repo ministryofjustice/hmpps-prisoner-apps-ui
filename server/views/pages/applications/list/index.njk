@@ -1,25 +1,43 @@
+{%- from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs -%}
 {% extends "../../../partials/layout.njk" %}
+{% from "../../../partials/breadcrumb.njk" import breadcrumb %}
+
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = "Apps" %}
 {% set mainClasses = "govuk-body" %}
 
+{% block beforeContent %}
+  <div class="govuk-width-container govuk-!-margin-top-6">
+
+    {{ govukBreadcrumbs({
+      classes: "govuk-!-margin-bottom-2",
+      items: [
+        {
+          text: "Home",
+          href: launchpadHome
+        }
+      ]
+    }) }}
+  </div>
+{% endblock %}
 {% block content %}
-  <div class="govuk-width-container govuk-!-padding-top-5 govuk-!-padding-bottom-5">
-    <h1 class="govuk-heading-xl">Apps</h1>
+  <div class="govuk-width-container govuk-!-padding-bottom-5">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">{{ firstName }}'s apps</h1>
+    <p class="govuk-body">Send a new app and check on apps already sent.</p>
 
     {% if apps and apps.length %}
       {{ govukButton({
-        text: "New application",
+        text: "Send a new app",
         href: '/log/group'
       }) }}
-      <h2 class="govuk-heading-m">Your applications</h2>
+      <h2 class="govuk-heading-m">Apps you have already sent</h2>
       {% include "./partials/results.njk" %}
     {% else %}
-      <p class="govuk-body">You have not submitted any applications.</p>
+      <p class="govuk-body">You have not not sent any apps.</p>
 
       {{ govukButton({
-        text: "New application",
+        text: "Send a new app",
         href: '/log/group'
       }) }}
     {% endif %}

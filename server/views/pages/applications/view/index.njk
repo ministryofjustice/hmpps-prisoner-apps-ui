@@ -10,7 +10,7 @@
       items: [
         {
           text: "Home",
-          href: dpsUrl
+          href: launchpadHome
         },
         {
           text: "Apps",
@@ -22,39 +22,41 @@
 {% endblock %}
 {% block content %}
   <div class="govuk-width-container">
-    <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl govuk-!-margin-top-0">{{ title }}</h1>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-top-0">{{ title }}</h1>
 
-      {% if isPending %}
-        <div class="govuk-inset-text govuk-!-margin-0 guidance-panel">
-          <p>This application has been received and will be processed soon.</p>
-        </div>
-      {% endif %}
+        {% if isPending %}
+          <div class="govuk-inset-text govuk-!-margin-0 guidance-panel">
+            <p>This application has been received and will be processed soon.</p>
+          </div>
+        {% endif %}
 
-      {{ govukSummaryList({
-        rows: [
-          {
-            key: { text: "Status" },
-            value: {
-              html: '<strong class="govuk-tag ' + statusClass + '">' + statusLabel + '</strong>'
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: { text: "Status" },
+              value: {
+                html: '<strong class="govuk-tag ' + statusClass + '">' + statusLabel + '</strong>'
+              }
             }
-          }
-        ]
-      }) }}
+          ]
+        }) }}
 
-      {% include "./partials/application-details.njk" %}
+        {% include "./partials/application-details.njk" %}
 
-      {% if isGeneric %}
-        {% include "./partials/application-type-generic-details.njk" %}
-      {% else %}
-        {% include "./partials/" + applicationType + ".njk" %}
-      {% endif %}
+        {% if isGeneric %}
+          {% include "./partials/application-type-generic-details.njk" %}
+        {% else %}
+          {% include "./partials/" + applicationType + ".njk" %}
+        {% endif %}
 
-      {{ govukButton({
-        text: "Back to apps home",
-        classes: "govuk-button--secondary",
-        href: "/"
-      }) }}
+        {{ govukButton({
+          text: "Back to apps home",
+          classes: "govuk-button--secondary",
+          href: "/"
+        }) }}
+      </div>
     </div>
   </div>
 {% endblock %}
