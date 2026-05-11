@@ -68,7 +68,7 @@ describe(handleApplicationDetails.name, () => {
 
     it('validates and saves details for generic type applications', async () => {
       mockReq.body = { details: 'Test details' }
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({})
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({})
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -85,9 +85,9 @@ describe(handleApplicationDetails.name, () => {
 
     it('renders form with errors when validation fails', async () => {
       mockReq.body = { details: '' }
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({
-          Details: 'Details is required',
-        })
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({
+        Details: 'Details is required',
+      })
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -105,7 +105,7 @@ describe(handleApplicationDetails.name, () => {
         genericForm: true,
       })
       mockReq.body = { details: 'Generic form details' }
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({})
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({})
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -123,11 +123,11 @@ describe(handleApplicationDetails.name, () => {
 
     it('validates and saves amount and reason successfully', async () => {
       mockReq.body = { amount: '10.50', reason: 'Emergency call' }
-        ; (validateAmountField.validateAmountField as jest.Mock).mockReturnValue({
-          errors: {},
-          value: '10.50',
-        })
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({})
+      ;(validateAmountField.validateAmountField as jest.Mock).mockReturnValue({
+        errors: {},
+        value: '10.50',
+      })
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({})
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -145,11 +145,11 @@ describe(handleApplicationDetails.name, () => {
 
     it('renders form with amount errors', async () => {
       mockReq.body = { amount: 'invalid', reason: 'Emergency call' }
-        ; (validateAmountField.validateAmountField as jest.Mock).mockReturnValue({
-          errors: { Amount: 'Amount must be a valid number' },
-          value: null,
-        })
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({})
+      ;(validateAmountField.validateAmountField as jest.Mock).mockReturnValue({
+        errors: { Amount: 'Amount must be a valid number' },
+        value: null,
+      })
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({})
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -164,13 +164,13 @@ describe(handleApplicationDetails.name, () => {
 
     it('renders form with reason errors', async () => {
       mockReq.body = { amount: '10.50', reason: '' }
-        ; (validateAmountField.validateAmountField as jest.Mock).mockReturnValue({
-          errors: {},
-          value: '10.50',
-        })
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({
-          Reason: 'Reason is required',
-        })
+      ;(validateAmountField.validateAmountField as jest.Mock).mockReturnValue({
+        errors: {},
+        value: '10.50',
+      })
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({
+        Reason: 'Reason is required',
+      })
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -184,13 +184,13 @@ describe(handleApplicationDetails.name, () => {
 
     it('renders form with both amount and reason errors', async () => {
       mockReq.body = { amount: 'invalid', reason: '' }
-        ; (validateAmountField.validateAmountField as jest.Mock).mockReturnValue({
-          errors: { Amount: 'Amount must be a valid number' },
-          value: null,
-        })
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({
-          Reason: 'Reason is required',
-        })
+      ;(validateAmountField.validateAmountField as jest.Mock).mockReturnValue({
+        errors: { Amount: 'Amount must be a valid number' },
+        value: null,
+      })
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({
+        Reason: 'Reason is required',
+      })
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -227,7 +227,7 @@ describe(handleApplicationDetails.name, () => {
         telephone1: '01234567890',
         telephone2: '07890123456',
       }
-        ; (validateNewOfficialContact.validateAddNewOfficialContact as jest.Mock).mockReturnValue({})
+      ;(validateNewOfficialContact.validateAddNewOfficialContact as jest.Mock).mockReturnValue({})
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -252,9 +252,9 @@ describe(handleApplicationDetails.name, () => {
         relationship: 'Solicitor',
         telephone1: '01234567890',
       }
-        ; (validateNewOfficialContact.validateAddNewOfficialContact as jest.Mock).mockReturnValue({
-          firstName: 'First name is required',
-        })
+      ;(validateNewOfficialContact.validateAddNewOfficialContact as jest.Mock).mockReturnValue({
+        firstName: 'First name is required',
+      })
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -306,17 +306,15 @@ describe(handleApplicationDetails.name, () => {
         country: 'GB',
         telephone1: '01234567890',
       }
-        ; (validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({})
-        ; (countries.getCountryNameByCode as jest.Mock).mockReturnValue('United Kingdom')
+      ;(validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({})
+      ;(countries.getCountryNameByCode as jest.Mock).mockReturnValue('United Kingdom')
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
-      expect(validateNewSocialContact.validateAddNewSocialContact).toHaveBeenCalledWith(
-        {
-          ...mockReq.body,
-          dob: { day: '15', month: '06', year: '1990' },
-        },
-      )
+      expect(validateNewSocialContact.validateAddNewSocialContact).toHaveBeenCalledWith({
+        ...mockReq.body,
+        dob: { day: '15', month: '06', year: '1990' },
+      })
       expect(countries.getCountryNameByCode).toHaveBeenCalledWith('GB')
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
         additionalData: {
@@ -348,8 +346,8 @@ describe(handleApplicationDetails.name, () => {
         telephone1: '01234567890',
         country: 'GB',
       }
-        ; (validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({})
-        ; (countries.getCountryNameByCode as jest.Mock).mockReturnValue('United Kingdom')
+      ;(validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({})
+      ;(countries.getCountryNameByCode as jest.Mock).mockReturnValue('United Kingdom')
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -369,9 +367,9 @@ describe(handleApplicationDetails.name, () => {
         country: 'GB',
         telephone1: '01234567890',
       }
-        ; (validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({
-          firstName: 'First name is required',
-        })
+      ;(validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({
+        firstName: 'First name is required',
+      })
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -407,8 +405,8 @@ describe(handleApplicationDetails.name, () => {
         telephone1: '01234567890',
         country: 'GB',
       }
-        ; (validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({})
-        ; (countries.getCountryNameByCode as jest.Mock).mockReturnValue('United Kingdom')
+      ;(validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({})
+      ;(countries.getCountryNameByCode as jest.Mock).mockReturnValue('United Kingdom')
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -416,7 +414,6 @@ describe(handleApplicationDetails.name, () => {
         additionalData: expect.any(Object),
       })
     })
-
   })
 
   describe('application type 4 - Remove Contact', () => {
@@ -432,7 +429,7 @@ describe(handleApplicationDetails.name, () => {
         telephone2: '07890123456',
         relationship: 'Friend',
       }
-        ; (validateRemovePinPhoneContact.validateRemovePinPhoneContact as jest.Mock).mockReturnValue({})
+      ;(validateRemovePinPhoneContact.validateRemovePinPhoneContact as jest.Mock).mockReturnValue({})
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -455,9 +452,9 @@ describe(handleApplicationDetails.name, () => {
         lastName: 'Jones',
         telephone1: '01234567890',
       }
-        ; (validateRemovePinPhoneContact.validateRemovePinPhoneContact as jest.Mock).mockReturnValue({
-          firstName: 'First name is required',
-        })
+      ;(validateRemovePinPhoneContact.validateRemovePinPhoneContact as jest.Mock).mockReturnValue({
+        firstName: 'First name is required',
+      })
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -479,7 +476,7 @@ describe(handleApplicationDetails.name, () => {
     ])('validates and saves details for type %i (required: %s)', async (typeId, isRequired) => {
       mockGetAppType.mockReturnValue({ ...baseApplicationType, id: typeId })
       mockReq.body = { details: 'Test details' }
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({})
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({})
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -497,9 +494,9 @@ describe(handleApplicationDetails.name, () => {
     it('renders form with errors for type 7 when details missing', async () => {
       mockGetAppType.mockReturnValue({ ...baseApplicationType, id: 7 })
       mockReq.body = { details: '' }
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({
-          Details: 'Details is required',
-        })
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({
+        Details: 'Details is required',
+      })
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -531,9 +528,9 @@ describe(handleApplicationDetails.name, () => {
         anotherField: 123,
       })
       mockReq.body = { details: 'Test' }
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({
-          Details: 'Error',
-        })
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({
+        Details: 'Error',
+      })
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
@@ -549,7 +546,7 @@ describe(handleApplicationDetails.name, () => {
     it('calls getTemplateData with correct parameters', async () => {
       mockGetAppType.mockReturnValue({ ...baseApplicationType, genericType: true })
       mockReq.body = { details: 'Test' }
-        ; (validateTextField.validateTextField as jest.Mock).mockReturnValue({})
+      ;(validateTextField.validateTextField as jest.Mock).mockReturnValue({})
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
