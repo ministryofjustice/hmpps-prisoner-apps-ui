@@ -38,8 +38,6 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
   const errors: Record<string, string> = {}
   const additionalData: Record<string, unknown> = {}
 
-  let earlyDaysCentre: string | undefined
-
   const templateData: Record<string, unknown> = {
     ...(await options.getTemplateData(req, res, applicationType)),
     title: applicationType.name,
@@ -167,7 +165,7 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
             year: req.body['dob-year'] || '',
           },
         }
-        const formErrors = validateAddNewSocialContact(formData, options.isUpdate)
+        const formErrors = validateAddNewSocialContact(formData)
 
         const formFields = [
           'firstName',
@@ -186,8 +184,6 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
         ] as const
 
         if (Object.keys(formErrors).length === 0) {
-          earlyDaysCentre = formData.earlyDaysCentre
-
           for (const field of formFields) {
             if (field === 'country') {
               additionalData.country = getCountryNameByCode(formData.country)
@@ -300,7 +296,6 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
   }
 
   updateSessionData(req, {
-    earlyDaysCentre,
     additionalData,
   })
 

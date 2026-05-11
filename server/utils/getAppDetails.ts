@@ -15,7 +15,6 @@ export default async function getApplicationDetails(
   applicationDetails: AppTypeData,
   personalRelationshipsService: PersonalRelationshipsService,
   application?: App,
-  earlyDaysCentre?: string,
   isGeneric = false,
 ): Promise<Record<string, unknown>> {
   if (!applicationDetails || isGeneric || !('type' in applicationDetails)) {
@@ -61,7 +60,7 @@ export default async function getApplicationDetails(
         telephone2: getFallbackValue('telephone2', applicationDetails, request, ''),
       }
 
-      return handleAddNewSocialContact(prefilledDetails, earlyDaysCentre, personalRelationshipsService)
+      return handleAddNewSocialContact(prefilledDetails, personalRelationshipsService)
     }
     case 1: {
       const request = (application?.requests?.[0] as AddNewOfficialContactRequest) ?? {}
@@ -118,7 +117,6 @@ export default async function getApplicationDetails(
 
 async function handleAddNewSocialContact(
   details: AddNewSocialContactRequest,
-  earlyDaysCentre: string,
   personalRelationshipsService: PersonalRelationshipsService,
 ): Promise<Record<string, unknown>> {
   const {
@@ -157,7 +155,6 @@ async function handleAddNewSocialContact(
       relationship,
       PERSONAL_RELATIONSHIPS_GROUP_CODES.SOCIAL_RELATIONSHIP,
     ),
-    earlyDaysCentre,
   }
 }
 

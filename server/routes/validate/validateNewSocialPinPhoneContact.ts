@@ -1,7 +1,6 @@
 import { validateAndAssignError } from './validateTelephoneNumber'
 
 export type AddNewSocialPinPhoneContactForm = {
-  earlyDaysCentre: string
   firstName: string
   lastName: string
   dateOfBirthOrAge: 'dateofbirth' | 'age' | 'donotknow'
@@ -23,12 +22,8 @@ export type AddNewSocialPinPhoneContactForm = {
 const isValidNumber = (value: string): boolean => /^\d+$/.test(value)
 const isEmpty = (value?: string): boolean => !value || value.trim() === ''
 
-export const validateAddNewSocialContact = (form: AddNewSocialPinPhoneContactForm, isUpdate: boolean) => {
+export const validateAddNewSocialContact = (form: AddNewSocialPinPhoneContactForm) => {
   const errors: Record<string, { text: string }> = {}
-
-  if (!form.earlyDaysCentre && !isUpdate) {
-    errors.earlyDaysCentre = { text: 'Select yes if this person is in the first night or early days centre' }
-  }
 
   if (isEmpty(form.firstName)) {
     errors.firstName = { text: 'Enter the contact’s first name' }

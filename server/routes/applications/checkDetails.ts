@@ -25,7 +25,7 @@ export default function checkDetailsRouter({
       return res.redirect(URLS.LOG_GROUP)
     }
 
-    const { group, type, additionalData, earlyDaysCentre } = applicationData
+    const { group, type, additionalData } = applicationData
 
     const isGeneric = !!(type.genericType || type.genericForm)
     const typeId = parseInt(type.value, 10)
@@ -47,7 +47,6 @@ export default function checkDetailsRouter({
       applicationType: type,
       groupName: group.name,
       summaryRows,
-      earlyDaysCentre,
       backLink: URLS.LOG_APPLICATION_DETAILS,
     })
   })
