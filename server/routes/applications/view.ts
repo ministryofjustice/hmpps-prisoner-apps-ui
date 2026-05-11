@@ -54,6 +54,8 @@ export default function viewAppsRouter({
     const { label: statusLabel, className: statusClass } =
       APPLICATION_STATUS_TAG_MAP[application.status] ?? APPLICATION_STATUS_TAG_MAP.PENDING
 
+    const isDecisionMade = application.status === 'APPROVED' || application.status === 'DECLINED'
+
     res.render(PATHS.APPLICATIONS.VIEW, {
       title: application.applicationType.name,
       applicationType: application.applicationType.name
@@ -69,6 +71,8 @@ export default function viewAppsRouter({
       statusClass,
       isPending: application.status === 'PENDING',
       isGeneric: application.genericForm,
+      isDecisionMade,
+      reason: isDecisionMade ? application.reason : null,
     })
   })
 
