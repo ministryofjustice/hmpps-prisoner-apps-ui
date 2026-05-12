@@ -145,13 +145,13 @@ export interface paths {
     }
     /**
      * Get apps for  a prisoner
-     * @description This api endpoint to get prisoner apps. Requires role ROLE_MANAGING_PRISONER_APPS
+     * @description This api endpoint to get prisoner apps. Requires role ROLE_PRISONER_FACING_APPS
      */
     get: operations['getPrisonerApps']
     put?: never
     /**
      * Submit App request for a prisoner
-     * @description This api endpoint is for submitting app request by  a logged prisoner.  Requires role ROLE_MANAGING_PRISONER_APPS
+     * @description This api endpoint is for submitting app request by  a logged prisoner.  Requires role ROLE_PRISONER_FACING_APPS
      */
     post: operations['submitApp_1']
     delete?: never
@@ -329,9 +329,29 @@ export interface paths {
     }
     /**
      * Get app by app id for a logged prisoner
-     * @description This api endpoint to get prisoner app by app id . Requires role ROLE_MANAGING_PRISONER_APPS
+     * @description This api endpoint to get prisoner app by app id . Requires role ROLE_PRISONER_FACING_APPS
      */
     get: operations['getPrisonerAppByAppId']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/v1/prisoners/apps/{applicationType}/pending': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get app count in pending status by application type
+     * @description This api endpoint to app groups and app types for a logged prisoner. Requires role ROLE_PRISONER_FACING_APPS
+     */
+    get: operations['getPrisonerPendingAppCountByAppType']
     put?: never
     post?: never
     delete?: never
@@ -349,7 +369,7 @@ export interface paths {
     }
     /**
      * Get app groups and app types.
-     * @description This api endpoint to app groups and app types for a logged prisoner. Requires role ROLE_MANAGING_PRISONER_APPS
+     * @description This api endpoint to app groups and app types for a logged prisoner. Requires role ROLE_PRISONER_FACING_APPS
      */
     get: operations['getPrisonerAppTypes']
     put?: never
@@ -701,6 +721,7 @@ export interface components {
       /** @enum {string} */
       status: 'PENDING' | 'APPROVED' | 'DECLINED'
       establishmentId: string
+      reason?: string | null
     }
     AppsSearchQueryDto: {
       /** Format: int64 */
@@ -1606,6 +1627,46 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['AppResponsePrisonerObjectObject']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getPrisonerPendingAppCountByAppType: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        applicationType: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description App request created. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ApplicationTypeResponse']
         }
       }
       /** @description Unauthorized to access this endpoint */

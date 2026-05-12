@@ -32,17 +32,24 @@
           </div>
         {% endif %}
 
-        {{ govukSummaryList({
-          rows: [
-            {
-              key: { text: "Status" },
-              value: {
-                html: '<strong class="govuk-tag ' + statusClass + '">' + statusLabel + '</strong>'
-              }
+        {% set statusRows = [
+          {
+            key: { text: "Status" },
+            value: {
+              html: '<strong class="govuk-tag ' + statusClass + '">' + statusLabel + '</strong>'
             }
-          ]
-        }) }}
+          }
+        ] %}
 
+        {% if isDecisionMade and reason %}
+          {% set statusRows = (statusRows.push({
+            key: { text: "Reason" },
+            value: { text: reason }
+          }), statusRows) %}
+        {% endif %}
+
+        {{ govukSummaryList({ rows: statusRows }) }}
+      
         {% include "./partials/application-details.njk" %}
 
         {% if isGeneric %}
