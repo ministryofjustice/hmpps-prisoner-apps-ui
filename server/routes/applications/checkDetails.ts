@@ -6,7 +6,7 @@ import { URLS } from '../../constants/urls'
 import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 
-import buildCheckDetailsSummary from '../../utils/buildCheckDetailsSummary'
+import buildCheckDetailsSummary, { getPinPhoneSummaryListHeading } from '../../utils/buildCheckDetailsSummary'
 
 export default function checkDetailsRouter({
   auditService,
@@ -34,7 +34,6 @@ export default function checkDetailsRouter({
       typeId,
       additionalData as Record<string, unknown> | undefined,
       isGeneric,
-      type.name,
     )
 
     await auditService.logPageView(Page.LOG_CHECK_DETAILS_PAGE, {
@@ -47,6 +46,8 @@ export default function checkDetailsRouter({
       applicationType: type,
       groupName: group.name,
       summaryRows,
+      sectionHeading: getPinPhoneSummaryListHeading(typeId, isGeneric),
+      isGeneric,
       backLink: URLS.LOG_APPLICATION_DETAILS,
     })
   })

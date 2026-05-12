@@ -3,3 +3,19 @@
     background-color: #eaf4f9;
     margin: 1em 0 !important;
 }
+
+.app-type-summary-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: govuk-spacing(2);
+}
+
+.app-type-summary-list-header__title {
+  margin-bottom: 0;
+}
+
+.app-type-summary-list-header__link {
+  white-space: nowrap;
+  margin-bottom: 0;
+}

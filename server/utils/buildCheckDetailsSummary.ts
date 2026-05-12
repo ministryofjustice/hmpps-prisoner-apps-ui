@@ -18,7 +18,12 @@ function row(key: string, value: string | undefined): SummaryRow | null {
 }
 
 function buildDetailsRows(data: Record<string, unknown>): SummaryRow[] {
-  return [row('Details', data.details as string)].filter(Boolean) as SummaryRow[]
+  return [
+    {
+      key: 'Details',
+      value: (data.details as string) ?? '',
+    },
+  ] as SummaryRow[]
 }
 
 function buildEmergencyCreditRows(data: Record<string, unknown>): SummaryRow[] {
@@ -93,20 +98,32 @@ const ROW_BUILDERS: Record<number, (data: Record<string, unknown>) => SummaryRow
   7: buildDetailsRows,
 }
 
+const PIN_PHONE_SUMMARY_LIST_HEADERS: Record<number, string> = {
+  1: 'Emergency credit to add',
+  2: 'New official contact to add',
+  3: 'New social contact to add',
+  4: 'PIN phone contact to remove',
+  5: 'VOs to swap',
+  6: 'Supply contact list',
+}
+
+export function getPinPhoneSummaryListHeading(typeId: number | null, isGeneric: boolean): string | undefined {
+  if (isGeneric || typeId === null) return undefined
+
+  return PIN_PHONE_SUMMARY_LIST_HEADERS[typeId]
+}
+
 export default function buildCheckDetailsSummary(
   typeId: number | null,
   additionalData: Record<string, unknown> | undefined,
   isGeneric: boolean,
-  applicationTypeName?: string,
 ): SummaryRow[] {
   const data = additionalData ?? {}
 
-  const headerRows: SummaryRow[] = applicationTypeName ? [{ key: 'Application type', value: applicationTypeName }] : []
-
   if (isGeneric || typeId === null) {
-    return [...headerRows, ...buildDetailsRows(data)]
+    return buildDetailsRows(data)
   }
 
   const builder = ROW_BUILDERS[typeId] ?? buildDetailsRows
-  return [...headerRows, ...builder(data)]
+  return builder(data)
 }
