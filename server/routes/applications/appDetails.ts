@@ -56,12 +56,7 @@ export default function appDetailsRouter({
       return res.redirect(URLS.LOG_TYPE)
     }
 
-    const templateFields = await getApplicationDetails(
-      logDetails,
-      personalRelationshipsService,
-      undefined,
-      applicationData.earlyDaysCentre,
-    )
+    const templateFields = await getApplicationDetails(logDetails, personalRelationshipsService, undefined)
 
     await auditService.logPageView(Page.VIEW_APPLICATIONS_PAGE, {
       who: res.locals.user.username,

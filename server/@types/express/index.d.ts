@@ -12,7 +12,6 @@ export declare module 'express-session' {
     additionalData?: AdditionalApplicationData
     applicationId?: string
     date?: string
-    earlyDaysCentre?: string
     prisonerId?: string
     prisonerName?: string
     group?: {
@@ -60,7 +59,6 @@ export declare module 'express-session' {
   }
 
   interface AddNewSocialPinPhoneContactDetails {
-    earlyDaysCentre: string
     firstName: string
     lastName: string
     dateOfBirthOrAge: 'dateofbirth' | 'age' | 'donotknow'

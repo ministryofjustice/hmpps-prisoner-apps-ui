@@ -78,7 +78,6 @@ describe(handleApplicationDetails.name, () => {
         isRequired: true,
       })
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: undefined,
         additionalData: { details: 'Test details' },
       })
       expect(mockRes.redirect).toHaveBeenCalledWith('/success')
@@ -111,7 +110,6 @@ describe(handleApplicationDetails.name, () => {
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: undefined,
         additionalData: { details: 'Generic form details' },
       })
       expect(mockRes.redirect).toHaveBeenCalledWith('/success')
@@ -140,7 +138,6 @@ describe(handleApplicationDetails.name, () => {
         isRequired: true,
       })
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: undefined,
         additionalData: { amount: '10.50', reason: 'Emergency call' },
       })
       expect(mockRes.redirect).toHaveBeenCalledWith('/success')
@@ -236,7 +233,6 @@ describe(handleApplicationDetails.name, () => {
 
       expect(validateNewOfficialContact.validateAddNewOfficialContact).toHaveBeenCalledWith(mockReq.body)
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: undefined,
         additionalData: {
           firstName: 'John',
           lastName: 'Smith',
@@ -315,16 +311,12 @@ describe(handleApplicationDetails.name, () => {
 
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
-      expect(validateNewSocialContact.validateAddNewSocialContact).toHaveBeenCalledWith(
-        {
-          ...mockReq.body,
-          dob: { day: '15', month: '06', year: '1990' },
-        },
-        false,
-      )
+      expect(validateNewSocialContact.validateAddNewSocialContact).toHaveBeenCalledWith({
+        ...mockReq.body,
+        dob: { day: '15', month: '06', year: '1990' },
+      })
       expect(countries.getCountryNameByCode).toHaveBeenCalledWith('GB')
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: undefined,
         additionalData: {
           firstName: 'Jane',
           lastName: 'Doe',
@@ -360,7 +352,6 @@ describe(handleApplicationDetails.name, () => {
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: undefined,
         additionalData: expect.objectContaining({
           age: '35',
           dateOfBirthOrAge: 'age',
@@ -413,7 +404,6 @@ describe(handleApplicationDetails.name, () => {
         relationship: 'Mother',
         telephone1: '01234567890',
         country: 'GB',
-        earlyDaysCentre: 'yes',
       }
       ;(validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({})
       ;(countries.getCountryNameByCode as jest.Mock).mockReturnValue('United Kingdom')
@@ -421,19 +411,8 @@ describe(handleApplicationDetails.name, () => {
       await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions())
 
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: 'yes',
         additionalData: expect.any(Object),
       })
-    })
-
-    it('passes isUpdate flag to validator', async () => {
-      mockReq.body = { firstName: 'Jane', lastName: 'Doe', telephone1: '01234567890', country: 'GB' }
-      ;(validateNewSocialContact.validateAddNewSocialContact as jest.Mock).mockReturnValue({})
-      ;(countries.getCountryNameByCode as jest.Mock).mockReturnValue('United Kingdom')
-
-      await handleApplicationDetails(mockReq as Request, mockRes as Response, getOptions({ isUpdate: true }))
-
-      expect(validateNewSocialContact.validateAddNewSocialContact).toHaveBeenCalledWith(expect.any(Object), true)
     })
   })
 
@@ -456,7 +435,6 @@ describe(handleApplicationDetails.name, () => {
 
       expect(validateRemovePinPhoneContact.validateRemovePinPhoneContact).toHaveBeenCalledWith(mockReq.body)
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: undefined,
         additionalData: {
           firstName: 'Bob',
           lastName: 'Jones',
@@ -508,7 +486,6 @@ describe(handleApplicationDetails.name, () => {
         isRequired,
       })
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
-        earlyDaysCentre: undefined,
         additionalData: { details: 'Test details' },
       })
       expect(mockRes.redirect).toHaveBeenCalledWith('/success')

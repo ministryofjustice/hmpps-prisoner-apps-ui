@@ -3,10 +3,6 @@
 {% macro renderErrorSummary(errors) %}
   {% if errors %}
     {% set errorList = [] %}
-
-    {% if errors.earlyDaysCentre %}
-      {% set errorList = errorList.concat([{ text: errors.earlyDaysCentre.text, href: "#earlyDaysCentre" }]) %}
-    {% endif %}
     
     {% if errors.Details %}
       {% set errorList = errorList.concat([{ text: errors.Details.text, href: "#details" }]) %}
