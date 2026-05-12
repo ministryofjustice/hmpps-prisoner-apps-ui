@@ -1,6 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "./app-type-summary-list.njk" import appTypeSummaryListHeader %}
 
 {% extends "../../../partials/layout.njk" %}
 
@@ -19,21 +20,43 @@
         <span class="govuk-caption-xl">{{ applicationType.name }}</span>
         <h1 class="govuk-heading-xl govuk-!-margin-top-0">Check details</h1>
 
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: { text: "App type" },
+              value: { text: applicationType.name }
+            }
+          ]
+        }) }}
+
+        {% if sectionHeading and not isGeneric %}
+          {{ appTypeSummaryListHeader(sectionHeading, backLink) }}
+        {% endif %}
+
         {% set summaryListRows = [] %}
         {% for summaryRow in summaryRows %}
-          {% set summaryListRows = (summaryListRows.push({
+          {% set rowItem = {
             key: { text: summaryRow.key },
-            value: { text: summaryRow.value },
-            actions: {
-              items: [
-                {
-                  href: backLink,
-                  text: "Change",
-                  visuallyHiddenText: summaryRow.key
-                }
-              ]
-            }
-          }), summaryListRows) %}
+            value: { text: summaryRow.value }
+          } %}
+
+          {% if isGeneric %}
+            {% set rowItem = {
+              key: { text: summaryRow.key },
+              value: { text: summaryRow.value },
+              actions: {
+                items: [
+                  {
+                    href: backLink,
+                    text: "Change",
+                    visuallyHiddenText: summaryRow.key
+                  }
+                ]
+              }
+            } %}
+          {% endif %}
+
+          {% set summaryListRows = (summaryListRows.push(rowItem), summaryListRows) %}
         {% endfor %}
 
         {{ govukSummaryList({ rows: summaryListRows }) }}
