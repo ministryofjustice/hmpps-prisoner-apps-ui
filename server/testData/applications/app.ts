@@ -1,4 +1,4 @@
-import type { PrisonerAppsPage, ViewAppListDto } from '../../@types/managingAppsApi'
+import type { PrisonerAppsPage, ViewAppListDto, ApplicationGroup } from '../../@types/managingAppsApi'
 
 export const prisonerApp: ViewAppListDto = {
   id: '1',
@@ -16,4 +16,19 @@ export const prisonerAppsPageResponse: PrisonerAppsPage = {
   totalRecords: prisonerAppsResponse.length,
   exhausted: true,
   apps: prisonerAppsResponse,
+}
+
+export const applicationTypeResponse: ApplicationGroup = {
+  id: 1,
+  name: 'Add an official PIN phone contact',
+  appTypes: [
+    {
+      id: 1,
+      name: 'string',
+      genericType: true,
+      genericForm: true,
+      logDetailRequired: true,
+      count: 0,
+    },
+  ],
 }
