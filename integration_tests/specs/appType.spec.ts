@@ -24,7 +24,7 @@ test.describe('App type', () => {
     await selectPinPhoneAppGroup(page)
 
     await expect(page.getByRole('heading', { name: 'Select app type', level: 1 })).toBeVisible()
-    await expect(page.getByLabel('Add emergency phone credit')).toBeVisible()
+    await expect(page.getByLabel(groups[0].appTypes[0].name)).toBeVisible()
   })
 
   groups[0].appTypes.forEach(appType => {
