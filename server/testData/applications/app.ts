@@ -32,3 +32,19 @@ export const applicationTypeResponse: ApplicationGroup = {
     },
   ],
 }
+
+export const viewAppResponse = {
+  id: '1',
+  createdDate: '2024-01-10T10:30:00Z',
+  status: 'PENDING',
+  genericForm: true,
+  applicationType: {
+    id: 7,
+    name: 'Make a general PIN phone enquiry',
+  },
+  requests: [
+    {
+      details: 'Testing general PIN phone enquiry',
+    },
+  ],
+}
