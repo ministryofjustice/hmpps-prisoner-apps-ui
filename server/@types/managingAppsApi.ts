@@ -8,6 +8,7 @@ export type PrisonerAppsPage = components['schemas']['PrisonerAppsPage']
 export type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
 export type AppResponsePrisoner = components['schemas']['AppResponsePrisonerObjectObject']
 export type AppRequestPrisoner = components['schemas']['AppRequestPrisoner']
+export type ApplicationTypeResponse = components['schemas']['ApplicationTypeResponse']
 
 export interface App extends ApplicationDto {
   applicationType: {

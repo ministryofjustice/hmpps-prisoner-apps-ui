@@ -7,4 +7,5 @@ export const URLS = {
   LOG_CONFIRM_DETAILS: '/log/confirm',
   LOG_CONFIRMATION: '/log/confirmation',
   LOG_CANCEL_APPLICATION: '/log/cancel',
+  LOG_LIMIT_APP_SUBMISSION: '/log/limit-app-submission',
 }

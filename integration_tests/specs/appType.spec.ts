@@ -31,6 +31,7 @@ test.describe('App type', () => {
     test(`selecting "${appType.name}" goes to log details page`, async ({ page }) => {
       await managingAppsApi.stubGetPrisonerApps()
       await managingAppsApi.stubGetGroupsAndTypes()
+      await managingAppsApi.stubGetPendingAppType(appType.id, 0)
       await loginWithPrisonerAuth(page)
 
       await selectPinPhoneAppGroup(page)
@@ -41,5 +42,20 @@ test.describe('App type', () => {
       await expect(page.locator('.govuk-caption-xl')).toHaveText(appType.name)
       await expect(page.getByRole('heading', { name: 'Add details', level: 1 })).toBeVisible()
     })
+  })
+
+  test('shows app limit message when pending count is 1', async ({ page }) => {
+    const appType = groups[0].appTypes[0]
+
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetGroupsAndTypes()
+    await managingAppsApi.stubGetPendingAppType(appType.id, 1)
+    await loginWithPrisonerAuth(page)
+
+    await selectPinPhoneAppGroup(page)
+    await page.getByLabel(appType.name).check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByText('You already have one of those apps open.')).toBeVisible()
   })
 })

@@ -8,6 +8,9 @@ import { groups } from '../../server/testData/groups/groups'
 const stubDependencies = async () => {
   await managingAppsApi.stubGetPrisonerApps()
   await managingAppsApi.stubGetGroupsAndTypes()
+  await Promise.all(
+    groups.flatMap(group => group.appTypes).map(appType => managingAppsApi.stubGetPendingAppType(appType.id, 0)),
+  )
   await Promise.all(personalRelationshipsApi.stubGetRelationships())
 }
 

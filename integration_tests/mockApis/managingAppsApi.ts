@@ -1,6 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import { prisonerAppsPageResponse, viewAppResponse } from '../../server/testData'
+import { appTypePendingResponse, prisonerAppsPageResponse, viewAppResponse } from '../../server/testData'
 import { groups } from '../../server/testData/groups/groups'
 import { stubFor } from './wiremock'
 
@@ -72,6 +72,23 @@ export default {
         jsonBody: {
           ...viewAppResponse,
           id,
+        },
+      },
+    }),
+
+  stubGetPendingAppType: (appTypeId: number, count = 0, httpStatus = 200): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/managingPrisonerApps/v1/prisoners/apps/${appTypeId}/pending`,
+      },
+      response: {
+        status: httpStatus,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          ...appTypePendingResponse,
+          id: appTypeId,
+          count,
         },
       },
     }),

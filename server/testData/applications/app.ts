@@ -48,3 +48,12 @@ export const viewAppResponse = {
     },
   ],
 }
+
+export const appTypePendingResponse = {
+  id: 1,
+  name: 'Add emergency phone credit',
+  genericType: false,
+  genericForm: false,
+  logDetailRequired: true,
+  count: 0,
+}

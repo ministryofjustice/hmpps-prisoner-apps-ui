@@ -109,6 +109,13 @@ export default function selectTypeRouter({
       })
     }
 
+    const pendingAppType = await managingAppsService.getPendingAppTypeCount(user.userId, selectedType.id)
+    if (pendingAppType.count >= 1) {
+      return res.render(PATHS.LOG_APPLICATION.LIMIT_APP_SUBMISSION, {
+        appTypeName: pendingAppType.name,
+      })
+    }
+
     req.session.applicationData = {
       ...req.session.applicationData,
       type: {

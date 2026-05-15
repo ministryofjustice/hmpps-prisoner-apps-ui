@@ -11,6 +11,7 @@ test.describe('App submission', () => {
   test('submits one app type and shows confirmation page content', async ({ page }) => {
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes()
+    await managingAppsApi.stubGetPendingAppType(1, 0)
     await managingAppsApi.stubSubmitApp()
     await loginWithPrisonerAuth(page)
 
