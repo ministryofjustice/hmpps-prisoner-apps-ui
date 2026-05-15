@@ -3,6 +3,7 @@ import type {
   AppRequestPrisoner,
   AppResponsePrisoner,
   PrisonerAppsPage,
+  ApplicationTypeResponse,
 } from '../@types/managingAppsApi'
 import ManagingAppsApiClient from '../data/managingAppsApiClient'
 
@@ -23,5 +24,9 @@ export default class ManagingAppsService {
 
   getPrisonerAppById(userId: string, id: string): Promise<AppResponsePrisoner> {
     return this.managingAppsApiClient.getPrisonerAppById(userId, id)
+  }
+
+  getPendingAppTypeCount(userId: string, appTypeId: number): Promise<ApplicationTypeResponse> {
+    return this.managingAppsApiClient.getPendingAppTypeCount(userId, appTypeId)
   }
 }
