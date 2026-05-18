@@ -58,6 +58,8 @@
           {% include "./partials/" + applicationType + ".njk" %}
         {% endif %}
 
+        {% include "./partials/messages.njk" %}
+
         {{ govukButton({
           text: "Back to apps home",
           classes: "govuk-button--secondary",

@@ -1,0 +1,58 @@
+{%- from "moj/components/messages/macro.njk" import mojMessages -%}
+{%- from "govuk/components/character-count/macro.njk" import govukCharacterCount -%}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+
+<h2 class="govuk-heading-m govuk-!-margin-top-6">Messages</h2>
+{{ mojMessages({
+  items: [
+    {
+      text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      type: "sent",
+      timestamp: "2019-03-16T10:50:00.000Z",
+      sender: "Person A"
+    },
+    {
+      text: "Nullam vestibulum lorem vulputate velit euismod luctus.",
+      type: "received",
+      timestamp: "2019-03-17T10:51:00.000Z",
+      sender: "Person B"
+    },
+    {
+      text: "Fusce et vulputate justo. Integer suscipit felis non urna lobortis, vel finibus sem tristique.",
+      type: "sent",
+      timestamp: "2019-03-19T10:53:00.000Z",
+      sender: "Person A"
+    },
+    {
+      text: "Mauris tincidunt feugiat orci et convallis. Nam efficitur gravida justo non lobortis. Aliquam velit ante, lobortis eu venenatis sit amet, semper sit amet justo.",
+      type: "sent",
+      timestamp: "2019-03-19T10:55:00.000Z",
+      sender: "Person A"
+    },
+    {
+      text: "Proin dapibus, nisl id ultricies ultricies, erat magna pulvinar risus, sit amet commodo nunc purus eu nulla. Aliquam erat volutpat. Vestibulum in ante interdum, elementum arcu vel, viverra nibh. Etiam ultrices urna at suscipit sollicitudin. Nulla non lectus magna. Curabitur vel vestibulum lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.",
+      type: "received",
+      timestamp: "2019-03-21T11:56:00.000Z",
+      sender: "Person B"
+    }
+  ]
+}) }}
+
+{% if not isDecisionMade %}
+  <h2 class="govuk-heading-m govuk-!-margin-top-6">Send a reply</h2>
+  <form method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {{ govukCharacterCount({
+      name: "reply",
+      id: "reply",
+      maxlength: 500,
+      threshold: 75,
+      errorMessage: errors.reply
+    }) }}
+
+    {{ govukButton({
+      text: "Send"
+    }) }}
+  </form>
+{% endif %}
