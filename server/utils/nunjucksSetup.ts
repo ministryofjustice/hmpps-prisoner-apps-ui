@@ -7,7 +7,7 @@ import { initialiseName } from './utils'
 import config from '../config'
 import logger from '../../logger'
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mojFilters = require('@ministryofjustice/frontend/moj/filters/all.js')()
 
 export default function nunjucksSetup(app: express.Express): void {
