@@ -1,5 +1,5 @@
 {%- from "moj/components/messages/macro.njk" import mojMessages -%}
-{%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
+{%- from "govuk/components/character-count/macro.njk" import govukCharacterCount -%}
 {%- from "govuk/components/button/macro.njk" import govukButton -%}
 
 <h2 class="govuk-heading-m govuk-!-margin-top-6">Messages</h2>
@@ -38,15 +38,21 @@
   ]
 }) }}
 
-<h2 class="govuk-heading-m govuk-!-margin-top-6">Send a reply</h2>
-<form method="post" novalidate>
-  <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-  {{ govukTextarea({
-    name: "reply",
-    id: "reply",
-    rows: 5
-  }) }}
-  {{ govukButton({
-    text: "Send"
-  }) }}
-</form>
+{% if not isDecisionMade %}
+  <h2 class="govuk-heading-m govuk-!-margin-top-6">Send a reply</h2>
+  <form method="post" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+
+    {{ govukCharacterCount({
+      name: "reply",
+      id: "reply",
+      maxlength: 500,
+      threshold: 75,
+      errorMessage: errors.reply
+    }) }}
+
+    {{ govukButton({
+      text: "Send"
+    }) }}
+  </form>
+{% endif %}
