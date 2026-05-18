@@ -2,6 +2,7 @@
 {%- from "govuk/components/textarea/macro.njk" import govukTextarea -%}
 {%- from "govuk/components/button/macro.njk" import govukButton -%}
 
+<h2 class="govuk-heading-m govuk-!-margin-top-6">Messages</h2>
 {{ mojMessages({
   items: [
     {
@@ -43,10 +44,6 @@
   {{ govukTextarea({
     name: "reply",
     id: "reply",
-    label: {
-      text: "Message",
-      classes: "govuk-label--s"
-    },
     rows: 5
   }) }}
   {{ govukButton({
