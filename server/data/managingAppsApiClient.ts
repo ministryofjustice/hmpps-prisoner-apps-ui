@@ -4,6 +4,8 @@ import logger from '../../logger'
 import type {
   ApplicationGroup,
   ApplicationTypeResponse,
+  AppMessages,
+  AppPrisonerMessage,
   AppRequestPrisoner,
   AppResponsePrisoner,
   PrisonerAppsPage,
@@ -64,6 +66,26 @@ export default class ManagingAppsApiClient extends RestClient {
     return this.get<ApplicationTypeResponse>(
       {
         path: `/v1/prisoners/apps/${encodeURIComponent(appTypeId)}/pending`,
+      },
+      asSystem(userId),
+    )
+  }
+
+  getAppMessages(userId: string, appId: string, page: number, size: number): Promise<AppMessages> {
+    return this.get<AppMessages>(
+      {
+        path: `/v1/prisoners/apps/${encodeURIComponent(appId)}/comments`,
+        query: { page, size },
+      },
+      asSystem(userId),
+    )
+  }
+
+  addAppMessage(userId: string, appId: string, message: string, visibility: string): Promise<AppPrisonerMessage> {
+    return this.post<AppPrisonerMessage>(
+      {
+        path: `/v1/prisoners/apps/${encodeURIComponent(appId)}/comments`,
+        data: { message, visibility },
       },
       asSystem(userId),
     )
