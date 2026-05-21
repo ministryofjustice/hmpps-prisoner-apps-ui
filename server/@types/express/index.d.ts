@@ -6,6 +6,7 @@ export declare module 'express-session' {
   interface SessionData {
     returnTo: string
     applicationData?: ApplicationData
+    pendingMessageAppId?: string
   }
 
   interface ApplicationData {

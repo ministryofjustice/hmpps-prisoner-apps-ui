@@ -11,6 +11,7 @@ test.describe('App view', () => {
   test('clicking View from app list opens submitted app page', async ({ page }) => {
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1')
+    await managingAppsApi.stubGetAppMessages('1')
     await loginWithPrisonerAuth(page)
 
     await page.goto('/applications')
