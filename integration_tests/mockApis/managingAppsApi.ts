@@ -76,6 +76,24 @@ export default {
       },
     }),
 
+  stubGetAppMessages: (appId = '1', httpStatus = 200): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: `/managingPrisonerApps/v1/prisoners/apps/${appId}/comments`,
+      },
+      response: {
+        status: httpStatus,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          page: 1,
+          totalElements: 0,
+          exhausted: true,
+          contents: [],
+        },
+      },
+    }),
+
   stubGetPendingAppType: (appTypeId: number, count = 0, httpStatus = 200): SuperAgentRequest =>
     stubFor({
       request: {
