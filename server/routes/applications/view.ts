@@ -22,7 +22,7 @@ const MESSAGE_VISIBILITY_PRISONER = 'STAFF_AND_PRISONER'
 function getStaffDisplayName(res: Response): string | undefined {
   const { user } = res.locals
   if (user.authSource === 'prisoner-auth') {
-    return user.establishment.display_name || user.establishment.name
+    return user.establishment?.display_name || user.establishment?.name
   }
 
   return undefined
