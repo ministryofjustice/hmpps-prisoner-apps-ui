@@ -18,8 +18,8 @@ export const validateTextField = ({ fieldValue, fieldName, isRequired = false }:
     errors[fieldName] = { text: errorMessages[fieldName] }
   }
 
-  if (fieldValue && fieldValue.length > 1000) {
-    errors[fieldName] = { text: `${fieldName} must be 1000 characters or less` }
+  if (fieldValue && fieldValue.length > 500) {
+    errors[fieldName] = { text: `${fieldName} must be 500 characters or less` }
   }
 
   return errors
