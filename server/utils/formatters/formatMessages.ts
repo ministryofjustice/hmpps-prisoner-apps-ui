@@ -1,5 +1,4 @@
 import type { AppMessages } from '../../@types/managingAppsApi'
-import { toLocalTimestamp } from '../dates'
 
 export type MessageItem = {
   text: string
@@ -81,7 +80,7 @@ export function formatMessages(
       return {
         text: comment.message,
         type: isSentByPrisoner ? 'sent' : 'received',
-        timestamp: toLocalTimestamp(comment.createdDate),
+        timestamp: comment.createdDate,
         sender,
       }
     })
