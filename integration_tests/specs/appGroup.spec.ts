@@ -43,6 +43,18 @@ test.describe('App group', () => {
     await expect(page).toHaveURL('/log/type')
   })
 
+  test('cancel link returns user to applications page', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetGroupsAndTypes()
+    await loginWithPrisonerAuth(page)
+
+    await page.goto('/log/group')
+    await page.getByRole('link', { name: 'Cancel' }).click()
+
+    await expect(page).toHaveURL('/applications')
+    await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
+  })
+
   test('shows error page when groups API fails', async ({ page }) => {
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes(500)

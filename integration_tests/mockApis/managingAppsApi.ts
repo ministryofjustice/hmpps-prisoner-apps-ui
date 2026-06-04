@@ -60,7 +60,7 @@ export default {
       },
     }),
 
-  stubGetPrisonerAppById: (id = '1', httpStatus = 200): SuperAgentRequest =>
+  stubGetPrisonerAppById: (id = '1', httpStatus = 200, appOverrides: Record<string, unknown> = {}): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -71,12 +71,24 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           ...viewAppResponse,
+          ...appOverrides,
           id,
         },
       },
     }),
 
-  stubGetAppMessages: (appId = '1', httpStatus = 200): SuperAgentRequest =>
+  stubGetAppMessages: (
+    appId = '1',
+    httpStatus = 200,
+    contents: Array<{
+      id: string
+      appId: string
+      message: string
+      prisonerNumber: string
+      createdDate: string
+      createdBy: unknown
+    }> = [],
+  ): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -87,9 +99,24 @@ export default {
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
         jsonBody: {
           page: 1,
-          totalElements: 0,
+          totalElements: contents.length,
           exhausted: true,
-          contents: [],
+          contents,
+        },
+      },
+    }),
+
+  stubAddAppMessage: (appId = '1', httpStatus = 200): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'POST',
+        urlPath: `/managingPrisonerApps/v1/prisoners/apps/${appId}/comments`,
+      },
+      response: {
+        status: httpStatus,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: {
+          message: 'ok',
         },
       },
     }),

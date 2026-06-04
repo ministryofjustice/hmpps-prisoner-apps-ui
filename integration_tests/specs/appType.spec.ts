@@ -27,6 +27,30 @@ test.describe('App type', () => {
     await expect(page.getByLabel(groups[0].appTypes[0].name)).toBeVisible()
   })
 
+  test('shows validation error when no type is selected', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetGroupsAndTypes()
+    await loginWithPrisonerAuth(page)
+
+    await selectPinPhoneAppGroup(page)
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    await expect(page.getByRole('link', { name: 'Choose an app type' })).toBeVisible()
+    await expect(page.locator('#type-error')).toContainText('Choose an app type')
+  })
+
+  test('cancel link returns user to applications page', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetGroupsAndTypes()
+    await loginWithPrisonerAuth(page)
+
+    await page.goto('/log/group')
+    await page.getByRole('link', { name: 'Cancel' }).click()
+
+    await expect(page).toHaveURL('/applications')
+    await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
+  })
+
   groups[0].appTypes.forEach(appType => {
     test(`selecting "${appType.name}" goes to log details page`, async ({ page }) => {
       await managingAppsApi.stubGetPrisonerApps()

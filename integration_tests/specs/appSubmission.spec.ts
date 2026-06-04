@@ -41,4 +41,41 @@ test.describe('App submission', () => {
     await expect(page.getByRole('link', { name: 'this app' })).toHaveAttribute('href', '/applications/app-123')
     await expect(page.getByRole('link', { name: 'all your apps' })).toHaveAttribute('href', '/applications')
   })
+
+  test('allows changing details from check details page before submit', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetGroupsAndTypes()
+    await managingAppsApi.stubGetPendingAppType(7, 0)
+    await managingAppsApi.stubSubmitApp()
+    await loginWithPrisonerAuth(page)
+
+    await page.goto('/log/group')
+    await page.getByLabel('Pin Phone Contact Apps').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page).toHaveURL('/log/type')
+
+    await page.getByLabel('Make a general PIN phone enquiry').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page).toHaveURL('/log/application-details')
+
+    await page.fill('textarea[name="details"]', 'Initial enquiry details')
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page).toHaveURL('/log/confirm')
+    await expect(page.getByText('Initial enquiry details')).toBeVisible()
+
+    await page
+      .getByRole('link', { name: /Change/ })
+      .first()
+      .click()
+    await expect(page).toHaveURL('/log/application-details')
+
+    await page.fill('textarea[name="details"]', 'Updated enquiry details after change')
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page).toHaveURL('/log/confirm')
+    await expect(page.getByText('Updated enquiry details after change')).toBeVisible()
+
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page).toHaveURL('/log/confirmation')
+    await expect(page.getByText('You have sent your app')).toBeVisible()
+  })
 })

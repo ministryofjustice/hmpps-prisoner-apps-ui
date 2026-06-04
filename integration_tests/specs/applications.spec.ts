@@ -32,7 +32,22 @@ test.describe('Applications', () => {
     await page.goto('/applications')
 
     await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Apps you have already sent', level: 2 })).toBeVisible()
 
-    await expect(page.locator('[data-qa="app-results-table"]')).toBeVisible()
+    const resultsTable = page.locator('[data-qa="app-results-table"]')
+    await expect(resultsTable).toBeVisible()
+
+    await expect(resultsTable.getByRole('columnheader', { name: 'Date sent' })).toBeVisible()
+    await expect(resultsTable.getByRole('columnheader', { name: 'Request' })).toBeVisible()
+    await expect(resultsTable.getByRole('columnheader', { name: 'Status' })).toBeVisible()
+
+    const firstRow = resultsTable.locator('tbody tr').first()
+    await expect(firstRow).toContainText('10/01/2024')
+    await expect(firstRow).toContainText('Add an official PIN phone contact')
+    await expect(firstRow).toContainText('Pending')
+
+    const firstViewLink = resultsTable.getByRole('link', { name: 'View' }).first()
+    await expect(firstViewLink).toBeVisible()
+    await expect(firstViewLink).toHaveAttribute('href', /\/applications\/.+/)
   })
 })
