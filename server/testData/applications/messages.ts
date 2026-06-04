@@ -1,4 +1,6 @@
-export const prisonerSentMessage = {
+import type { AppMessage } from '../../@types/managingAppsApi'
+
+export const prisonerSentMessage: AppMessage = {
   id: 'comment-1',
   appId: '1',
   message: 'Prisoner sent a message to staff',
@@ -7,7 +9,7 @@ export const prisonerSentMessage = {
   createdBy: 'prisoner',
 }
 
-export const staffReplyMessage = {
+export const staffReplyMessage: AppMessage = {
   id: 'comment-2',
   appId: '1',
   message: 'Staff reply to prisoner message',

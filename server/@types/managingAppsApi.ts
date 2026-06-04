@@ -9,6 +9,7 @@ export type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
 export type AppResponsePrisoner = components['schemas']['AppResponsePrisonerObjectObject']
 export type AppRequestPrisoner = components['schemas']['AppRequestPrisoner']
 export type ApplicationTypeResponse = components['schemas']['ApplicationTypeResponse']
+export type AppMessage = components['schemas']['CommentResponseDtoObject']
 export type AppMessages = components['schemas']['PageResultComments']
 export type AppPrisonerMessage = components['schemas']['CommentRequestDto']
 
