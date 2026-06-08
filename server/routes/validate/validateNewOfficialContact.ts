@@ -6,11 +6,11 @@ export const validateAddNewOfficialContact = (form: AddNewOfficialPinPhoneContac
   const errors: Record<string, { text: string }> = {}
 
   if (!form.firstName || form.firstName.trim() === '') {
-    errors.firstName = { text: 'Enter the contact’s first name' }
+    errors.firstName = { text: "Enter the contact's first name" }
   }
 
   if (!form.lastName || form.lastName.trim() === '') {
-    errors.lastName = { text: 'Enter the contact’s last name' }
+    errors.lastName = { text: "Enter the contact's last name" }
   }
 
   if (!form.relationship || form.relationship === '') {
