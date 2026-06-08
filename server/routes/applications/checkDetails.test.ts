@@ -1,9 +1,10 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { appWithAllRoutes, user } from '../testutils/appSetup'
+import { AppResponsePrisoner } from '../../@types/managingAppsApi'
+import { URLS } from '../../constants/urls'
 import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
-import { URLS } from '../../constants/urls'
+import { appWithAllRoutes, user } from '../testutils/appSetup'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/managingAppsService')
@@ -15,7 +16,7 @@ let app: Express
 
 beforeEach(() => {
   auditService.logPageView.mockResolvedValue(null)
-  managingAppsService.submitApp.mockResolvedValue({ id: 'app-123' })
+  managingAppsService.submitApp.mockResolvedValue({ id: 'app-123' } as AppResponsePrisoner)
 })
 
 afterEach(() => {
