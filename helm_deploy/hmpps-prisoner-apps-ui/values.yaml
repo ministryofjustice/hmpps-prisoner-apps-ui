@@ -1,6 +1,6 @@
 generic-service:
   nameOverride: hmpps-prisoner-apps-ui
-  productId: 'DPS097' # productId for the product that this belongs too, i.e. DPS001, see README.md for details
+  productId: "DPS097" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
   # the IRSA service account name for accessing AWS resources
   # serviceAccountName: "hmpps-prisoner-apps-ui"
@@ -13,6 +13,9 @@ generic-service:
     port: 3000
 
   ingress:
+    annotations:
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        more_set_headers "Strict-Transport-Security: max-age=31536000; includeSubDomains; preload";
     enabled: true
     host: app-hostname.local # override per environment
     tlsSecretName: hmpps-prisoner-apps-ui-cert
@@ -27,12 +30,12 @@ generic-service:
 
   # Environment variables to load into the deployment
   env:
-    NODE_ENV: 'production'
-    REDIS_ENABLED: 'true'
-    REDIS_TLS_ENABLED: 'true'
-    TOKEN_VERIFICATION_ENABLED: 'true'
-    AUDIT_SQS_REGION: 'eu-west-2'
-    AUDIT_SERVICE_NAME: 'hmpps-prisoner-apps' # Your audit service name
+    NODE_ENV: "production"
+    REDIS_ENABLED: "true"
+    REDIS_TLS_ENABLED: "true"
+    TOKEN_VERIFICATION_ENABLED: "true"
+    AUDIT_SQS_REGION: "eu-west-2"
+    AUDIT_SERVICE_NAME: "hmpps-prisoner-apps" # Your audit service name
 
   # Pre-existing kubernetes secrets to load as environment variables in the deployment.
   # namespace_secrets:
@@ -42,16 +45,16 @@ generic-service:
   namespace_secrets:
     # These secrets are created by terraform.
     hmpps-prisoner-apps-ui-client-creds:
-      CLIENT_CREDS_CLIENT_ID: 'CLIENT_CREDS_CLIENT_ID'
-      CLIENT_CREDS_CLIENT_SECRET: 'CLIENT_CREDS_CLIENT_SECRET'
+      CLIENT_CREDS_CLIENT_ID: "CLIENT_CREDS_CLIENT_ID"
+      CLIENT_CREDS_CLIENT_SECRET: "CLIENT_CREDS_CLIENT_SECRET"
       LAUNCHPAD_API_CLIENT_ID: "LAUNCHPAD_API_CLIENT_ID"
       LAUNCHPAD_API_CLIENT_SECRET: "LAUNCHPAD_API_CLIENT_SECRET"
-      OS_PLACES_API_KEY: 'OS_PLACES_API_KEY'
+      OS_PLACES_API_KEY: "OS_PLACES_API_KEY"
     hmpps-prisoner-apps-ui-session-secret:
-      SESSION_SECRET: 'SESSION_SECRET'
+      SESSION_SECRET: "SESSION_SECRET"
     hmpps-prisoner-apps-ui-elasticache-redis:
-      REDIS_HOST: 'primary_endpoint_address'
-      REDIS_AUTH_TOKEN: 'auth_token'
+      REDIS_HOST: "primary_endpoint_address"
+      REDIS_AUTH_TOKEN: "auth_token"
     hmpps-prisoner-apps-ui-application-insights:
       APPLICATIONINSIGHTS_CONNECTION_STRING: "APPLICATIONINSIGHTS_CONNECTION_STRING"
     # This secret will need to be created in your namespace (note it isn't in hmpps-templates-dev)
