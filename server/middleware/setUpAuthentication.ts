@@ -4,6 +4,7 @@ import { Router } from 'express'
 import { LaunchpadUser, PrisonerAuth, minutes } from '@ministryofjustice/hmpps-prisoner-auth'
 import config from '../config'
 import { HmppsUser } from '../interfaces/hmppsUser'
+import setUpAllowedPrisonerMiddleware from './setUpAllowedPrisonerMiddleware'
 
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
@@ -74,6 +75,9 @@ export default function setupAuthentication() {
     res.locals.user = req.user as HmppsUser
     next()
   })
+
+  // Temporary - Middleware to only allow access to certain prisoners in the allowlist.
+  router.use(setUpAllowedPrisonerMiddleware)
 
   return router
 }
