@@ -50,6 +50,7 @@ generic-service:
       LAUNCHPAD_API_CLIENT_ID: "LAUNCHPAD_API_CLIENT_ID"
       LAUNCHPAD_API_CLIENT_SECRET: "LAUNCHPAD_API_CLIENT_SECRET"
       OS_PLACES_API_KEY: "OS_PLACES_API_KEY"
+      RANBY_ALLOWED_PRISONER_IDS: "RANBY_ALLOWED_PRISONER_IDS"
     hmpps-prisoner-apps-ui-session-secret:
       SESSION_SECRET: "SESSION_SECRET"
     hmpps-prisoner-apps-ui-elasticache-redis:

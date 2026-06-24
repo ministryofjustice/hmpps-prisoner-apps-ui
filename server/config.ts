@@ -150,4 +150,7 @@ export default {
   },
   ingressUrl: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
+  allowedPrisonerList: process.env.RANBY_ALLOWED_PRISONER_IDS
+    ? process.env.RANBY_ALLOWED_PRISONER_IDS.split(',').map(id => id.trim().toUpperCase())
+    : [],
 }
