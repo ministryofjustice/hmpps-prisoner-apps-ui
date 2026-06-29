@@ -40,7 +40,7 @@ export const loginWithPrisonerAuth = async (
   page: Page,
   {
     name = 'A TestUser',
-    establishmentCode = 'BNI',
+    establishmentCode = 'CKI',
     tokenExpiresInSeconds = 9999,
     active = true,
     roles = DEFAULT_ROLES,
