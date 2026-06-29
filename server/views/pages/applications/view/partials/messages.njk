@@ -10,9 +10,7 @@
 {% endif %}
 
 {% if showAwaitingReplyMessage %}
-  {{ govukInsetText({
-    text: "You can’t send another message until staff reply to this one."
-  }) }}
+  <p class="govuk-body-l">You can’t send another message until staff reply to this one.</p>
 {% endif %}
 
 {% if canSendReply %}
