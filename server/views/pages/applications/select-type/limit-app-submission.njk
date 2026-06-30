@@ -1,6 +1,5 @@
 {%- from "moj/components/interruption-card/macro.njk" import interruptionCard -%}
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
-
 {% extends "../../../partials/layout.njk" %}
 {% set pageTitle = applicationName + " - " + appTypeName + " - " + " pending" %}
 {% set mainClasses = "app-container govuk-body" %}
@@ -8,13 +7,11 @@
   <div class="govuk-width-container">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-
         {{ govukBackLink({
           text: "Back",
           href: "/log/type",
           classes: "govuk-!-margin-bottom-6"
         }) }}
-
         {% call interruptionCard({
           heading: appTypeName,
           primaryAction: {
@@ -24,7 +21,7 @@
         }) %}
         <p>You already have one of those apps open.</p>
         <br>
-        <p>You sent it on 14/05/2026 and can't send another until it is closed.</p>
+        <p>You sent it on {{ submittedDate }} and can't send another until it is closed.</p>
         {% endcall %}
       </div>
     </div>

@@ -6,12 +6,13 @@ export type AssignedGroup = components['schemas']['AssignedGroupDto']
 export type ViewAppListDto = components['schemas']['AppListPrisonerFacing']
 export type PrisonerAppsPage = components['schemas']['PrisonerAppsPage']
 export type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
-export type AppResponsePrisoner = components['schemas']['AppResponsePrisonerObjectObject']
+export type AppResponsePrisoner = components['schemas']['AppResponsePrisonerDtoObjectObject']
 export type AppRequestPrisoner = components['schemas']['AppRequestPrisoner']
 export type ApplicationTypeResponse = components['schemas']['ApplicationTypeResponse']
 export type AppMessage = components['schemas']['CommentResponseDtoObject']
 export type AppMessages = components['schemas']['PageResultComments']
 export type AppPrisonerMessage = components['schemas']['CommentRequestDto']
+export type PendingAppTypeCount = components['schemas']['PrisonerApplicationTypeCount']
 
 export interface App extends ApplicationDto {
   applicationType: {

@@ -53,7 +53,15 @@ let app: Express
 beforeEach(() => {
   auditService.logPageView.mockResolvedValue(null)
   managingAppsService.getGroupsAndTypes.mockResolvedValue([groupWithTypes, groupWithGenericType])
-  managingAppsService.getPendingAppTypeCount.mockResolvedValue({ id: 1, count: 0, name: 'Emergency Credit' })
+  managingAppsService.getPendingAppTypeCount.mockResolvedValue({
+    id: 1,
+    name: 'Emergency Credit',
+    genericType: false,
+    genericForm: false,
+    logDetailRequired: false,
+    totalAppsInPending: 0,
+    submittedBy: 'PRISONER',
+  })
 })
 
 afterEach(() => {
@@ -248,5 +256,33 @@ describe('POST /log/type', () => {
     await request(app).post('/log/type').send({ type: '1' })
 
     expect(managingAppsService.getGroupsAndTypes).toHaveBeenCalledWith(user.userId)
+  })
+
+  it('should render limit app submission with formatted submitted date', async () => {
+    managingAppsService.getPendingAppTypeCount.mockResolvedValue({
+      id: 1,
+      name: 'Emergency Credit',
+      genericType: false,
+      genericForm: false,
+      logDetailRequired: false,
+      totalAppsInPending: 1,
+      latestAppSubmittedDate: '2026-06-25T14:59:15Z',
+      submittedBy: 'PRISONER',
+    })
+
+    app = appWithAllRoutes({
+      services: { auditService, managingAppsService },
+      userSupplier: () => user,
+      sessionData: {
+        applicationData: {
+          group: { name: 'PIN Phone', value: '1' },
+        },
+      },
+    })
+
+    const res = await request(app).post('/log/type').send({ type: '1' })
+
+    expect(res.status).toBe(200)
+    expect(res.text).toContain('You sent it on 25/06/2026')
   })
 })

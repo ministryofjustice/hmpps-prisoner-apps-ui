@@ -3,12 +3,12 @@ import { asSystem, RestClient } from '@ministryofjustice/hmpps-rest-client'
 import logger from '../../logger'
 import type {
   ApplicationGroup,
-  ApplicationTypeResponse,
   AppMessages,
   AppPrisonerMessage,
   AppRequestPrisoner,
   AppResponsePrisoner,
   PrisonerAppsPage,
+  PendingAppTypeCount,
 } from '../@types/managingAppsApi'
 import config from '../config'
 
@@ -62,8 +62,8 @@ export default class ManagingAppsApiClient extends RestClient {
     )
   }
 
-  getPendingAppTypeCount(userId: string, appTypeId: number): Promise<ApplicationTypeResponse> {
-    return this.get<ApplicationTypeResponse>(
+  getPendingAppTypeCount(userId: string, appTypeId: number): Promise<PendingAppTypeCount> {
+    return this.get<PendingAppTypeCount>(
       {
         path: `/v1/prisoners/apps/${encodeURIComponent(appTypeId)}/pending`,
       },
