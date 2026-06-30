@@ -7,6 +7,8 @@ export const prisonerSentMessage: AppMessage = {
   prisonerNumber: 'A1234BC',
   createdDate: '2024-01-10T10:30:00Z',
   createdBy: 'prisoner',
+  visibility: 'STAFF_AND_PRISONER',
+  createdByType: 'PRISONER',
 }
 
 export const staffReplyMessage: AppMessage = {
@@ -16,4 +18,6 @@ export const staffReplyMessage: AppMessage = {
   prisonerNumber: 'A1234BC',
   createdDate: '2024-01-10T11:30:00Z',
   createdBy: 'staff-user',
+  visibility: 'STAFF_AND_PRISONER',
+  createdByType: 'STAFF',
 }

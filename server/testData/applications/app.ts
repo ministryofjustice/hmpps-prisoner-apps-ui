@@ -55,5 +55,7 @@ export const appTypePendingResponse = {
   genericType: false,
   genericForm: false,
   logDetailRequired: true,
-  count: 0,
+  totalAppsInPending: 0,
+  latestAppSubmittedDate: '2026-06-25T14:59:15Z',
+  submittedBy: 'PRISONER',
 }

@@ -160,6 +160,30 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/v1/prisoners/apps/{appId}/comments': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get all comments for a give app by app id
+     * @description This api endpoint is for getting list of comments by app Id. Requires role ROLE_PRISONER_FACING_APPS
+     */
+    get: operations['getCommentsByAppId_1']
+    put?: never
+    /**
+     * Add a comment to an App request of a prisoner.
+     * @description This api endpoint is for adding comment to an app request of a prisoner. The logged staff and prisoner  for whom app request created should belongs to same establishment for adding comment. Requires role ROLE_MANAGING_PRISONER_APPS
+     */
+    post: operations['addComment_1']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/v1/prisoners/apps/search': {
     parameters: {
       query?: never
@@ -352,6 +376,26 @@ export interface paths {
      * @description This api endpoint to app groups and app types for a logged prisoner. Requires role ROLE_PRISONER_FACING_APPS
      */
     get: operations['getPrisonerPendingAppCountByAppType']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/v1/prisoners/apps/{appId}/comments/{commentId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get a comment by comment id
+     * @description This api endpoint is for getting comment details. The logged staff and prisoner should belongs to same establishment. Requires role ROLE_PRISONER_FACING_APPS
+     */
+    get: operations['getCommentById_1']
     put?: never
     post?: never
     delete?: never
@@ -675,6 +719,8 @@ export interface components {
     }
     CommentRequestDto: {
       message: string
+      /** @enum {string} */
+      visibility: 'STAFF_AND_PRISONER' | 'STAFF_ONLY'
     }
     CommentResponseDtoObject: {
       /** Format: uuid */
@@ -686,6 +732,10 @@ export interface components {
       /** Format: date-time */
       createdDate: string
       createdBy: unknown
+      /** @enum {string} */
+      visibility: 'STAFF_AND_PRISONER' | 'STAFF_ONLY'
+      /** @enum {string} */
+      createdByType: 'PRISONER' | 'STAFF'
     }
     AppRequestPrisoner: {
       reference?: string | null
@@ -696,7 +746,7 @@ export interface components {
         [key: string]: unknown
       }[]
     }
-    AppResponsePrisonerObjectObject: {
+    AppResponsePrisonerDtoObjectObject: {
       /** Format: uuid */
       id?: string | null
       reference?: string | null
@@ -748,7 +798,7 @@ export interface components {
       /** Format: date-time */
       createdDate: string
       assignedGroup: unknown
-      /** Format: int32 */
+      /** Format: int64 */
       comments: number
     }
     AppResponseListDto: {
@@ -822,6 +872,20 @@ export interface components {
       exhausted: boolean
       apps: components['schemas']['AppListPrisonerFacing'][]
     }
+    PrisonerApplicationTypeCount: {
+      /** Format: int64 */
+      id: number
+      name: string
+      genericType?: boolean | null
+      genericForm?: boolean | null
+      logDetailRequired?: boolean | null
+      /** Format: int64 */
+      totalAppsInPending?: number | null
+      /** Format: date-time */
+      latestAppSubmittedDate?: string | null
+      /** @enum {string} */
+      submittedBy: 'PRISONER' | 'STAFF'
+    }
     AssignedGroupDto: {
       /** Format: uuid */
       id: string
@@ -868,9 +932,17 @@ export interface components {
        * Format: int32
        * @description The size of the attachment file in bytes
        */
-      filesize: number
+      filesize?: number | null
       /** @description The filename of attachment file */
       filename: string
+      /** @description The additional headers to use when calling the url for fetching this attachment */
+      headers?: components['schemas']['AttachmentHeader'][] | null
+    }
+    AttachmentHeader: {
+      /** @description The name of the header */
+      name: string
+      /** @description The value of the header */
+      value: string
     }
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
@@ -1248,7 +1320,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          'application/json': components['schemas']['AppResponsePrisonerObjectObject']
+          'application/json': components['schemas']['AppResponsePrisonerDtoObjectObject']
         }
       }
       /** @description Unauthorized to access this endpoint */
@@ -1261,6 +1333,94 @@ export interface operations {
         }
       }
       /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCommentsByAppId_1: {
+    parameters: {
+      query: {
+        page: number
+        size: number
+        createdBy?: boolean
+      }
+      header?: never
+      path: {
+        appId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description List fo comments returned successfully. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PageResultComments']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  addComment_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        appId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CommentRequestDto']
+      }
+    }
+    responses: {
+      /** @description Comment added successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CommentResponseDtoObject']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint. The issue can be logged staff and prisoner have different establishment. */
       403: {
         headers: {
           [name: string]: unknown
@@ -1626,7 +1786,7 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['AppResponsePrisonerObjectObject']
+          '*/*': components['schemas']['AppResponsePrisonerDtoObjectObject']
         }
       }
       /** @description Unauthorized to access this endpoint */
@@ -1666,7 +1826,50 @@ export interface operations {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['ApplicationTypeResponse']
+          '*/*': components['schemas']['PrisonerApplicationTypeCount']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getCommentById_1: {
+    parameters: {
+      query?: {
+        createdBy?: boolean
+      }
+      header?: never
+      path: {
+        appId: string
+        commentId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Comment data returned in response successfully. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CommentResponseDtoObject']
         }
       }
       /** @description Unauthorized to access this endpoint */

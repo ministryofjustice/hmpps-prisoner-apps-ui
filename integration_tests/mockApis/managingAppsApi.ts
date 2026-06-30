@@ -133,7 +133,7 @@ export default {
         jsonBody: {
           ...appTypePendingResponse,
           id: appTypeId,
-          count,
+          totalAppsInPending: count,
         },
       },
     }),

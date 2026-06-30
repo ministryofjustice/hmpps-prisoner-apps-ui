@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express'
+import { format } from 'date-fns'
 
 import { PATHS } from '../../constants/paths'
 import { URLS } from '../../constants/urls'
@@ -109,10 +110,13 @@ export default function selectTypeRouter({
       })
     }
 
-    const pendingAppType = await managingAppsService.getPendingAppTypeCount(user.userId, selectedType.id)
-    if (pendingAppType.count >= 1) {
+    const pendingAppTypeCount = await managingAppsService.getPendingAppTypeCount(user.userId, selectedType.id)
+    const totalAppsInPending = pendingAppTypeCount.totalAppsInPending ?? 0
+
+    if (totalAppsInPending >= 1) {
       return res.render(PATHS.LOG_APPLICATION.LIMIT_APP_SUBMISSION, {
-        appTypeName: pendingAppType.name,
+        appTypeName: pendingAppTypeCount.name,
+        submittedDate: format(pendingAppTypeCount.latestAppSubmittedDate, 'dd/MM/yyyy'),
       })
     }
 
