@@ -1,2 +1,4 @@
+const isProd = process.env.ENVIRONMENT_NAME === 'PROD'
+
 // eslint-disable-next-line import/prefer-default-export
-export const ACTIVE_AGENCIES = ['RNI'] as const
+export const ACTIVE_AGENCIES: readonly string[] = isProd ? ['RNI'] : ['CKI', 'WLI']

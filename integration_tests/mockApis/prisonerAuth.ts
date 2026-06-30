@@ -7,6 +7,12 @@ export interface LaunchpadUserToken {
   expiresInSeconds: number
 }
 
+const ESTABLISHMENT_NAMES: Record<string, { name: string; displayName: string }> = {
+  CKI: { name: 'cookhamwood', displayName: 'HMP Cookham Wood' },
+  WLI: { name: 'wayland', displayName: 'HMP Wayland' },
+  RNI: { name: 'ranby', displayName: 'HMP Ranby' },
+}
+
 function createRefreshOrAccessToken(userToken: LaunchpadUserToken) {
   const payload = {
     name: userToken.name,
@@ -20,6 +26,10 @@ function createRefreshOrAccessToken(userToken: LaunchpadUserToken) {
 }
 
 function createIdToken(userToken: LaunchpadUserToken) {
+  const establishment = ESTABLISHMENT_NAMES[userToken.establishmentCode] || {
+    name: userToken.establishmentCode.toLowerCase(),
+    displayName: userToken.establishmentCode,
+  }
   const payload = {
     name: userToken.name,
     given_name: 'A',
@@ -30,6 +40,12 @@ function createIdToken(userToken: LaunchpadUserToken) {
     exp: Date.now() / 1000 + userToken.expiresInSeconds,
     booking: {
       id: 'A-BOOKING-ID',
+    },
+    establishment: {
+      agency_id: userToken.establishmentCode,
+      name: establishment.name,
+      display_name: establishment.displayName,
+      youth: false,
     },
     iss: 'http://localhost:9091/launchpadauth',
   }

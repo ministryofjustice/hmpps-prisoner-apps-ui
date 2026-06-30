@@ -15,6 +15,7 @@ import setUpStaticResources from './middleware/setUpStaticResources'
 import setUpWebRequestParsing from './middleware/setupRequestParsing'
 import setUpWebSecurity from './middleware/setUpWebSecurity'
 import setUpWebSession from './middleware/setUpWebSession'
+import checkActiveAgencyAccess from './middleware/checkActiveAgencyAccess'
 
 import routes from './routes/applications'
 import type { Services } from './services'
@@ -37,6 +38,7 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpStaticResources())
   nunjucksSetup(app)
   app.use(setUpAuthentication())
+  app.use(checkActiveAgencyAccess())
   app.use(setUpLaunchpadHeader)
   app.use(setUpLaunchpadFooter)
   app.use(setUpCsrf())
