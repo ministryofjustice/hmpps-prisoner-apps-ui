@@ -5,7 +5,7 @@ generic-service:
   replicaCount: 2
 
   ingress:
-    host: prisoner-apps-staging.hmpps.service.justice.gov.uk
+    host: prisoner-apps-dev.hmpps.service.justice.gov.uk
 
   allowlist:
     groups:
