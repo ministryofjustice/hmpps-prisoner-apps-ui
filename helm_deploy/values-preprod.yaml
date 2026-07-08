@@ -12,11 +12,11 @@ generic-service:
     HMPPS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
     TOKEN_VERIFICATION_API_URL: "https://token-verification-api-preprod.prison.service.justice.gov.uk"
     LAUNCHPAD_AUTH_URL: "https://launchpad-auth-preprod.hmpps.service.justice.gov.uk"
-    LAUNCHPAD_URL: 'https://launchpad-home-preprod.hmpps.service.justice.gov.uk'
-    EXAMPLE_API_URL: 'https://template-kotlin-preprod.hmpps.service.justice.gov.uk'
-    PERSONAL_RELATIONSHIPS_API_URL: 'https://personal-relationships-api-preprod.hmpps.service.justice.gov.uk'
-    OS_PLACES_API_URL: 'https://api.os.uk/search/places/v1'
-    ENVIRONMENT_NAME: PRE-PRODUCTION
+    LAUNCHPAD_URL: "https://launchpad-home-preprod.hmpps.service.justice.gov.uk"
+    MANAGING_APPS_API_URL: "https://managing-prisoner-apps-api-preprod.hmpps.service.justice.gov.uk"
+    PERSONAL_RELATIONSHIPS_API_URL: "https://personal-relationships-api-preprod.hmpps.service.justice.gov.uk"
+    OS_PLACES_API_URL: "https://api.os.uk/search/places/v1"
+    ENVIRONMENT_NAME: PREPROD
     AUDIT_ENABLED: "false"
 
 generic-prometheus-alerts:

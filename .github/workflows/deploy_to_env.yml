@@ -9,13 +9,14 @@ on:
         required: true
         options:
           - dev
+          - staging
           - preprod
           - prod
-        default: 'dev'
+        default: "dev"
       version:
         description: version to be deployed to the environment - must already exist.
         required: true
-        default: ''
+        default: ""
         type: string
 
 permissions:
@@ -37,4 +38,4 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
       app_version: ${{ inputs.version }}
-      slack_notification: 'false' # if 'true', it needs a valid (NON)PROD_RELEASES_SLACK_CHANNEL variable to be set
+      slack_notification: "false" # if 'true', it needs a valid (NON)PROD_RELEASES_SLACK_CHANNEL variable to be set
