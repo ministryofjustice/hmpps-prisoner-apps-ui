@@ -38,7 +38,7 @@ test.describe('Applications', () => {
     await expect(resultsTable).toBeVisible()
 
     await expect(resultsTable.getByRole('columnheader', { name: 'Date sent' })).toBeVisible()
-    await expect(resultsTable.getByRole('columnheader', { name: 'Request' })).toBeVisible()
+    await expect(resultsTable.getByRole('columnheader', { name: 'App' })).toBeVisible()
     await expect(resultsTable.getByRole('columnheader', { name: 'Status' })).toBeVisible()
 
     const firstRow = resultsTable.locator('tbody tr').first()
