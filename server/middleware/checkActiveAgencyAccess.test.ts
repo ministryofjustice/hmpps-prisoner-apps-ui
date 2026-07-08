@@ -1,6 +1,10 @@
 import { Request, Response } from 'express'
 import checkActiveAgencyAccess from './checkActiveAgencyAccess'
 
+jest.mock('../constants/activeAgencies', () => ({
+  ACTIVE_AGENCIES: ['WLI', 'CKI'],
+}))
+
 const mockNext = jest.fn()
 
 function mockRes() {
