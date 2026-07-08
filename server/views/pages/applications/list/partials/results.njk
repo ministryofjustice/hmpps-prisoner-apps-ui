@@ -5,18 +5,15 @@
   {{ govukTable({
     head: [
       {
-        text: "Date sent",
-        attributes: {
-          "aria-sort": "ascending"
-        }
+        text: "Date sent"
       },
-      { text: "Request" },
+      { text: "App" },
       { text: "Status" },
       { text: "" }
     ],
       rows: apps,
       classes: "govuk-table",
-      attributes: { "data-qa": "app-results-table", "data-module": "moj-sortable-table" }
+      attributes: { "data-qa": "app-results-table" }
     }) }}
 
   {{ paginationMacro(pagination, query) }}
