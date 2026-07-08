@@ -23,7 +23,7 @@ test.describe('App view', () => {
 
     await expect(page).toHaveURL('/applications/1')
     await expect(page.getByRole('heading', { name: 'Make a general PIN phone enquiry', level: 1 })).toBeVisible()
-    await expect(page.getByText('This application has been received and will be processed soon.')).toBeVisible()
+    await expect(page.getByText('You have sent this app and staff will process it as soon as possible.')).toBeVisible()
     await expect(page.getByText('Testing general PIN phone enquiry')).toBeVisible()
     await expect(page.getByRole('button', { name: 'Back to apps home' })).toBeVisible()
   })
