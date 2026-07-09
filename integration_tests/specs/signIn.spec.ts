@@ -33,7 +33,6 @@ test.describe('SignIn', () => {
     await loginWithPrisonerAuth(page, { name: 'A TestUser' })
 
     await expect(page.getByTestId('launchpad-home-header-user-name')).toHaveText('A TestUser')
-
   })
 
   test('Token verification failure takes user to sign in page', async ({ page }) => {
