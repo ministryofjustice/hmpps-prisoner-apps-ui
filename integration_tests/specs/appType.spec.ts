@@ -39,7 +39,7 @@ test.describe('App type', () => {
     await expect(page.locator('#type-error')).toContainText('Choose an app type')
   })
 
-  test('cancel link returns user to applications page', async ({ page }) => {
+  test('cancel link returns user to landing page', async ({ page }) => {
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes()
     await loginWithPrisonerAuth(page)
@@ -47,7 +47,7 @@ test.describe('App type', () => {
     await page.goto('/log/group')
     await page.getByRole('link', { name: 'Cancel' }).click()
 
-    await expect(page).toHaveURL('/applications')
+    await expect(page).toHaveURL('/')
     await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
   })
 

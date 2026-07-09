@@ -9,7 +9,7 @@ export default class ApplicationListPage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.usersName = page.getByTestId('launchpad-home-header-user-name')
-    this.header = page.getByRole('heading', { name: 'Apps', level: 1 })
+    this.header = page.getByRole('heading', { name: "A's apps", level: 1 })
   }
 
   static async verifyOnPage(page: Page): Promise<ApplicationListPage> {

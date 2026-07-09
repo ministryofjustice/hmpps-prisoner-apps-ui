@@ -16,6 +16,10 @@
         {
           text: "Home",
           href: launchpadHome
+        },
+        {
+          text: "Apps",
+          href: "/"
         }
       ]
     }) }}
@@ -24,14 +28,9 @@
 {% block content %}
   <div class="govuk-width-container govuk-!-padding-bottom-5">
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">{{ firstName }}'s apps</h1>
-    <p class="govuk-body-l">Send a new app and check on apps already sent.</p>
 
     {% if apps and apps.length %}
-      {{ govukButton({
-        text: "Send a new app",
-        href: '/log/group'
-      }) }}
-      <h2 class="govuk-heading-m">Apps you have already sent</h2>
+      <p class="govuk-body-l">Check on apps already sent.</p>
       {% include "./partials/results.njk" %}
     {% else %}
       <p class="govuk-body">You have not not sent any apps.</p>

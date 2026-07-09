@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/prefer-default-export
 export const URLS = {
   APPLICATIONS: '/applications',
+  LANDING: '/',
   LOG_GROUP: '/log/group',
   LOG_TYPE: '/log/type',
   LOG_APPLICATION_DETAILS: '/log/application-details',

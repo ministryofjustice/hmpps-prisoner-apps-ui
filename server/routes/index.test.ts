@@ -29,8 +29,16 @@ afterEach(() => {
 })
 
 describe('GET /', () => {
-  it('should redirect to applications page', () => {
-    return request(app).get('/').expect(302).expect('Location', '/applications')
+  it('should render landing page', () => {
+    return request(app)
+      .get('/')
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Apps')
+        expect(res.text).toContain('/log/group')
+        expect(res.text).toContain('/applications')
+      })
   })
 })
 

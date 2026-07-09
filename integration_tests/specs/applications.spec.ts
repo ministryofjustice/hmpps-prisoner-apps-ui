@@ -9,10 +9,20 @@ test.describe('Applications', () => {
     await resetStubs()
   })
 
-  test('Applications page is visible after login', async ({ page }) => {
+  test('landing page is visible after login', async ({ page }) => {
     await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page)
 
+    await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Send an app' })).toHaveAttribute('href', '/log/group')
+    await expect(page.getByRole('link', { name: 'Your apps' })).toHaveAttribute('href', '/applications')
+  })
+
+  test('applications page is visible from landing page', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+    await loginWithPrisonerAuth(page)
+
+    await page.getByRole('link', { name: 'Your apps' }).click()
     await ApplicationListPage.verifyOnPage(page)
   })
 
@@ -31,8 +41,8 @@ test.describe('Applications', () => {
     await loginWithPrisonerAuth(page)
     await page.goto('/applications')
 
-    await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Apps you have already sent', level: 2 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: "A's apps", level: 1 })).toBeVisible()
+    await expect(page.getByText('Check on apps already sent.')).toBeVisible()
 
     const resultsTable = page.locator('[data-qa="app-results-table"]')
     await expect(resultsTable).toBeVisible()
