@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express'
 
 import type { Services } from '../../services'
-import { URLS } from '../../constants/urls'
+import { PATHS } from '../../constants/paths'
 
 import viewAppsRouter from './view'
 import selectGroupRouter from './selectGroup'
@@ -20,7 +20,7 @@ export default function applicationsRoutes({
   const router = Router()
 
   router.get('/', (req: Request, res: Response) => {
-    return res.redirect(URLS.APPLICATIONS)
+    return res.render(PATHS.LANDING)
   })
 
   router.use(viewAppsRouter({ auditService, managingAppsService }))

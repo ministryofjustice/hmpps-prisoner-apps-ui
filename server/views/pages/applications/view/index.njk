@@ -6,8 +6,9 @@
 {% set pageTitle = applicationName + " - " + title %}
 {% set mainClasses = "app-container govuk-body applications-landing-page" %}
 {% block beforeContent %}
-  <div class="govuk-body govuk-width-container">
+  <div class="govuk-width-container govuk-!-margin-top-6">
     {{ govukBreadcrumbs({
+    classes: "govuk-!-margin-bottom-2",
       items: [
         {
           text: "Home",
@@ -16,6 +17,10 @@
         {
           text: "Apps",
           href: "/"
+        },
+        {
+          text: firstName + "'s apps",
+          href: "/applications"
         }
       ]
     }) }}

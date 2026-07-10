@@ -2,7 +2,6 @@ import { expect, test } from '@playwright/test'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import prisonerAuth from '../mockApis/prisonerAuth'
 
-import ApplicationListPage from '../pages/applicationListPage'
 import managingAppsApi from '../mockApis/managingAppsApi'
 
 test.describe('SignIn', () => {
@@ -33,9 +32,7 @@ test.describe('SignIn', () => {
     await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page, { name: 'A TestUser' })
 
-    const applicationListPage = await ApplicationListPage.verifyOnPage(page)
-
-    await expect(applicationListPage.usersName).toHaveText('A TestUser')
+    await expect(page.getByTestId('launchpad-home-header-user-name')).toHaveText('A TestUser')
   })
 
   test('Token verification failure takes user to sign in page', async ({ page }) => {
@@ -52,7 +49,6 @@ test.describe('SignIn', () => {
     await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page, { name: 'Some OtherTestUser', active: true })
 
-    const applicationListPage = await ApplicationListPage.verifyOnPage(page)
-    await expect(applicationListPage.usersName).toHaveText('Some OtherTestUser')
+    await expect(page.getByTestId('launchpad-home-header-user-name')).toHaveText('Some OtherTestUser')
   })
 })

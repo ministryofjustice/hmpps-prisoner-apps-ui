@@ -109,6 +109,8 @@ export default function viewAppsRouter({
     options: { errors?: Record<string, { text: string }>; replyValue?: string } = {},
   ) => {
     const { userId, username } = res.locals.user
+    const givenName = hasGivenName(res.locals.user) ? res.locals.user.givenName : ''
+    const firstName = formatGivenName(givenName)
     const prisonerDisplayName = getPrisonerDisplayName(res, username)
     const staffDisplayName = getStaffDisplayName(res)
 
@@ -138,6 +140,7 @@ export default function viewAppsRouter({
 
     res.render(PATHS.APPLICATIONS.VIEW, {
       title: application.applicationType.name,
+      firstName,
       applicationType: application.applicationType.name
         .replace(/[^\w\s]/g, '')
         .trim()

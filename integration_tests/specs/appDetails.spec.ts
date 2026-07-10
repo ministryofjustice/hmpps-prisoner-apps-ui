@@ -94,7 +94,7 @@ test.describe('App details', () => {
     await expect(page).toHaveURL('/log/type')
   })
 
-  test('cancel link redirects to application list page', async ({ page }) => {
+  test('cancel link redirects to landing page', async ({ page }) => {
     await stubDependencies()
     await loginWithPrisonerAuth(page)
 
@@ -103,7 +103,7 @@ test.describe('App details', () => {
     await navigateToAppDetails(page, appType.name)
     await page.getByRole('link', { name: 'Cancel' }).click()
 
-    await expect(page).toHaveURL('/applications')
+    await expect(page).toHaveURL('/')
   })
 
   groups[0].appTypes.forEach(appType => {

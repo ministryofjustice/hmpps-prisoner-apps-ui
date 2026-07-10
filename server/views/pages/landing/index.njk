@@ -1,0 +1,57 @@
+{%- from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs -%}
+
+{% extends "../../partials/layout.njk" %}
+{% from "../../partials/breadcrumb.njk" import breadcrumb %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+
+{% set pageTitle = "Apps" %}
+{% set mainClasses = "govuk-body" %}
+
+{% block beforeContent %}
+  <div class="govuk-width-container govuk-!-margin-top-6">
+
+    {{ govukBreadcrumbs({
+      classes: "govuk-!-margin-bottom-2",
+      items: [
+        {
+          text: "Home",
+          href: launchpadHome
+        }
+      ]
+    }) }}
+  </div>
+{% endblock %}
+
+{% block content %}
+   <h1 class="govuk-heading-xl">Apps</h1>
+
+    <div class="tiles-panel govuk-!-margin-bottom-6 govuk-!-margin-top-0 govuk-!-padding-top-0">
+      <div id="tiles">
+        <div class="link-tile">
+          <a href="/log/group">
+                <img src="/assets/images/send_an_app.png"
+                alt=""
+                loading="lazy" />
+            <footer class="govuk-!-padding-4 govuk-grid-column-full">
+              <h3 class="govuk-heading-m">Send an app</h3>
+              <p class="govuk-body">Find the app you want to send.</p>
+            </footer>
+          </a>
+        </div>
+        <div class="link-tile">
+          <a href="/applications">
+                <img src="/assets/images/your_apps.png"
+                alt=""
+                loading="lazy" />
+            <footer class="govuk-!-padding-4 govuk-grid-column-full">
+              <h3 class="govuk-heading-m">Your apps</h3>
+              <p class="govuk-body">Check on apps already sent.</p>
+            </footer>
+          </a>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+
