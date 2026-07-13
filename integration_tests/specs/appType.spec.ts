@@ -48,7 +48,7 @@ test.describe('App type', () => {
     await page.getByRole('link', { name: 'Cancel' }).click()
 
     await expect(page).toHaveURL('/')
-    await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Manage apps', level: 1 })).toBeVisible()
   })
 
   groups[0].appTypes.forEach(appType => {

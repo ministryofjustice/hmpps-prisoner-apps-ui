@@ -52,7 +52,7 @@ test.describe('App group', () => {
     await page.getByRole('link', { name: 'Cancel' }).click()
 
     await expect(page).toHaveURL('/')
-    await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Manage apps', level: 1 })).toBeVisible()
   })
 
   test('shows error page when groups API fails', async ({ page }) => {
