@@ -35,7 +35,7 @@ describe('GET /', () => {
       .expect('Content-Type', /html/)
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('Apps')
+        expect(res.text).toContain('Manage apps')
         expect(res.text).toContain('/log/group')
         expect(res.text).toContain('/applications')
       })

@@ -13,7 +13,7 @@ test.describe('Applications', () => {
     await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page)
 
-    await expect(page.getByRole('heading', { name: 'Apps', level: 1 })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Manage apps', level: 1 })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Send an app' })).toHaveAttribute('href', '/log/group')
     await expect(page.getByRole('link', { name: 'Your apps' })).toHaveAttribute('href', '/applications')
   })
