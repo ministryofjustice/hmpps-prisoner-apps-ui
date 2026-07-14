@@ -174,10 +174,10 @@ export default function viewAppsRouter({
     const { id: appId } = req.params
     const reply = (req.body?.reply ?? '').toString().trim()
 
-    const errors = validateTextField({ fieldValue: reply, fieldName: 'Comments', isRequired: true })
+    const errors = validateTextField({ fieldValue: reply, fieldName: 'Messages', isRequired: true })
 
     if (Object.keys(errors).length > 0) {
-      await renderAppView(req, res, { errors: { reply: errors.Comments }, replyValue: reply })
+      await renderAppView(req, res, { errors: { reply: errors.Messages }, replyValue: reply })
       return
     }
 
