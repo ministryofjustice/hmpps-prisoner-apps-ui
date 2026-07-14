@@ -90,7 +90,7 @@ test.describe('App view', () => {
 
     await expect(page).toHaveURL('/applications/1')
     await expect(page.getByText('There is a problem')).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Add a comment' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Add a message' })).toBeVisible()
   })
 
   test('shows validation error when message is longer than 500 characters', async ({ page }) => {
@@ -106,7 +106,7 @@ test.describe('App view', () => {
     await page.getByRole('button', { name: 'Send' }).click()
 
     await expect(page).toHaveURL('/applications/1')
-    await expect(page.getByRole('link', { name: 'Comments must be 500 characters or less' })).toBeVisible()
-    await expect(page.locator('#reply-error')).toContainText('Comments must be 500 characters or less')
+    await expect(page.getByRole('link', { name: 'Messages must be 500 characters or less' })).toBeVisible()
+    await expect(page.locator('#reply-error')).toContainText('Messages must be 500 characters or less')
   })
 })
