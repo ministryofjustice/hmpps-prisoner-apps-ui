@@ -30,6 +30,7 @@
     flex-wrap: wrap;
     column-gap: 1.05%;
     row-gap: 0.5em;
+    box-sizing: border-box;
 }
 
 .link-tile:hover, .link-tile:focus-within {
@@ -67,10 +68,6 @@
     border: solid 2px #1d70b8;
 }
 
-// Group selection tiles reuse the "Send an app" tile styles above. The tile's
-// clickable element is a form-submit button, so it shares the base tile
-// appearance while resetting default button chrome and filling the tile
-// height so tiles in a row are equal height.
 .link-tile .app-group-tile__button {
     text-decoration: none;
     background-color: #ffffff;
