@@ -37,7 +37,6 @@ export default function selectGroupRouter({
     const { user } = res.locals
 
     const groups = await managingAppsService.getGroupsAndTypes(user.userId)
-    console.log({ groups })
     const selectedValue = req.session?.applicationData?.group?.value || null
 
     await auditService.logPageView(Page.LOG_GROUP_PAGE, {
