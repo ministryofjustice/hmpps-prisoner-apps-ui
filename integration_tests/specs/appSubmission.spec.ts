@@ -16,8 +16,7 @@ test.describe('App submission', () => {
     await loginWithPrisonerAuth(page)
 
     await page.goto('/log/group')
-    await page.getByLabel('Pin Phone Contact Apps').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Pin Phone Contact Apps', exact: false }).click()
     await expect(page).toHaveURL('/log/type')
 
     await page.getByLabel('Add emergency phone credit').check()
@@ -50,8 +49,7 @@ test.describe('App submission', () => {
     await loginWithPrisonerAuth(page)
 
     await page.goto('/log/group')
-    await page.getByLabel('Pin Phone Contact Apps').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Pin Phone Contact Apps', exact: false }).click()
     await expect(page).toHaveURL('/log/type')
 
     await page.getByLabel('Make a general PIN phone enquiry').check()

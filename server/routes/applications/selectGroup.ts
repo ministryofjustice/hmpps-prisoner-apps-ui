@@ -6,6 +6,7 @@ import { URLS } from '../../constants/urls'
 import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 import { components } from '../../@types/managing-prisoner-apps-api'
+import { getAppGroupCard } from '../../constants/appGroupCards'
 
 type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
 
@@ -21,16 +22,22 @@ export default function selectGroupRouter({
   const router = Router()
 
   const buildGroups = (groups: ApplicationGroup[], selectedValue: string | null) =>
-    groups.map(group => ({
-      value: group.id.toString(),
-      text: group.name,
-      checked: selectedValue === group.id.toString(),
-    }))
+    groups.map(group => {
+      const { image, description } = getAppGroupCard(group.name)
+      return {
+        value: group.id.toString(),
+        text: group.name,
+        checked: selectedValue === group.id.toString(),
+        image,
+        description,
+      }
+    })
 
   router.get(URLS.LOG_GROUP, async (req: Request, res: Response) => {
     const { user } = res.locals
 
     const groups = await managingAppsService.getGroupsAndTypes(user.userId)
+    console.log({ groups })
     const selectedValue = req.session?.applicationData?.group?.value || null
 
     await auditService.logPageView(Page.LOG_GROUP_PAGE, {

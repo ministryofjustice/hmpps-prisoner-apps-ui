@@ -98,7 +98,7 @@ describe('GET /log/group', () => {
       .get('/log/group')
       .expect(200)
       .expect(res => {
-        expect(res.text).toContain('checked')
+        expect(res.text).toContain('link-tile--selected')
       })
   })
 })

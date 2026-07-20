@@ -16,19 +16,7 @@ test.describe('App group', () => {
     await page.goto('/log/group')
 
     await expect(page.getByRole('heading', { name: 'Select app group', level: 1 })).toBeVisible()
-    await expect(page.getByLabel('Pin Phone Contact Apps')).toBeVisible()
-  })
-
-  test('shows validation error when no group is selected', async ({ page }) => {
-    await managingAppsApi.stubGetPrisonerApps()
-    await managingAppsApi.stubGetGroupsAndTypes()
-    await loginWithPrisonerAuth(page)
-
-    await page.goto('/log/group')
-    await page.getByRole('button', { name: 'Continue' }).click()
-
-    await expect(page.getByRole('link', { name: 'Choose an app group' })).toBeVisible()
-    await expect(page.locator('#group-error')).toContainText('Choose an app group')
+    await expect(page.getByRole('heading', { name: 'Pin Phone Contact Apps', level: 3 })).toBeVisible()
   })
 
   test('redirects to app type page when a group is selected', async ({ page }) => {
@@ -37,8 +25,7 @@ test.describe('App group', () => {
     await loginWithPrisonerAuth(page)
 
     await page.goto('/log/group')
-    await page.getByLabel('Pin Phone Contact Apps').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Pin Phone Contact Apps', exact: false }).click()
 
     await expect(page).toHaveURL('/log/type')
   })
