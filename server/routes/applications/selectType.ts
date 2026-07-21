@@ -110,16 +110,6 @@ export default function selectTypeRouter({
       })
     }
 
-    const pendingAppTypeCount = await managingAppsService.getPendingAppTypeCount(user.userId, selectedType.id)
-    const totalAppsInPending = pendingAppTypeCount.totalAppsInPending ?? 0
-
-    if (totalAppsInPending >= 1) {
-      return res.render(PATHS.LOG_APPLICATION.LIMIT_APP_SUBMISSION, {
-        appTypeName: pendingAppTypeCount.name,
-        submittedDate: format(pendingAppTypeCount.latestAppSubmittedDate, 'dd/MM/yyyy'),
-      })
-    }
-
     req.session.applicationData = {
       ...req.session.applicationData,
       type: {
@@ -134,6 +124,16 @@ export default function selectTypeRouter({
         genericForm: selectedType.genericForm ?? undefined,
       },
       additionalData: undefined,
+    }
+
+    const pendingAppTypeCount = await managingAppsService.getPendingAppTypeCount(user.userId, selectedType.id)
+    const totalAppsInPending = pendingAppTypeCount.totalAppsInPending ?? 0
+
+    if (totalAppsInPending >= 1) {
+      return res.render(PATHS.LOG_APPLICATION.LIMIT_APP_SUBMISSION, {
+        appTypeName: pendingAppTypeCount.name,
+        submittedDate: format(pendingAppTypeCount.latestAppSubmittedDate, 'dd/MM/yyyy'),
+      })
     }
 
     return res.redirect(URLS.LOG_APPLICATION_DETAILS)
