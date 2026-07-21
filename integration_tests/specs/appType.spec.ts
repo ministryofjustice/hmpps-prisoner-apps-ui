@@ -6,8 +6,7 @@ import { groups } from '../../server/testData/groups/groups'
 
 const selectPinPhoneAppGroup = async (page: Page) => {
   await page.goto('/log/group')
-  await page.getByLabel('Pin Phone Contact Apps').check()
-  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('button', { name: 'Pin Phone Contact Apps', exact: false }).click()
   await expect(page).toHaveURL('/log/type')
 }
 
