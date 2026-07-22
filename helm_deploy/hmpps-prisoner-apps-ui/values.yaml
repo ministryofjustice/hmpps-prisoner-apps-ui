@@ -1,4 +1,5 @@
 generic-service:
+  serviceAccountName: hmpps-managing-prisoner-apps
   nameOverride: hmpps-prisoner-apps-ui
   productId: "DPS097" # productId for the product that this belongs too, i.e. DPS001, see README.md for details
 
