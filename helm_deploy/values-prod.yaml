@@ -17,5 +17,11 @@ generic-service:
     ENVIRONMENT_NAME: PROD
     AUDIT_ENABLED: "true"
 
+  allowlist:
+    groups:
+      - internal
+      - prisons
+      - prisoner_facing_services
+
 generic-prometheus-alerts:
   alertSeverity: hmpps-managing-prisoner-apps-prod
