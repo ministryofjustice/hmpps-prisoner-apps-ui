@@ -17,7 +17,7 @@ generic-service:
     PERSONAL_RELATIONSHIPS_API_URL: "https://personal-relationships-api-preprod.hmpps.service.justice.gov.uk"
     OS_PLACES_API_URL: "https://api.os.uk/search/places/v1"
     ENVIRONMENT_NAME: PREPROD
-    AUDIT_ENABLED: "true"
+    AUDIT_ENABLED: "false"
 
 generic-prometheus-alerts:
   alertSeverity: hmpps-managing-prisoner-apps-nonprod
