@@ -6,7 +6,7 @@ import ManagingAppsService from '../../services/managingAppsService'
 
 import { URLS } from '../../constants/urls'
 import { PATHS } from '../../constants/paths'
-import { APPLICATION_STATUS_TAG_MAP } from '../../constants/applicationStatus'
+import { APPLICATION_STATUS_TAG_MAP, REJECTION_REASON_MAP } from '../../constants/applicationStatus'
 
 import { getPaginationData } from '../../utils/http/pagination'
 import { formatAppsToRows } from '../../utils/formatters/formatAppsToRows'
@@ -122,7 +122,12 @@ export default function viewAppsRouter({
     const { label: statusLabel, className: statusClass } =
       APPLICATION_STATUS_TAG_MAP[application.status] ?? APPLICATION_STATUS_TAG_MAP.PENDING
 
-    const isDecisionMade = application.status === 'APPROVED' || application.status === 'DECLINED'
+    const isDecisionMade =
+      application.status === 'APPROVED' || application.status === 'DECLINED' || application.status === 'REJECTED'
+    const rejectionReason =
+      application.status === 'REJECTED' && application.rejectionReason
+        ? (REJECTION_REASON_MAP[application.rejectionReason] ?? application.rejectionReason)
+        : null
     const messages = formatMessages(messagesResponse, username, userId, prisonerDisplayName, staffDisplayName)
 
     const latestMessage = await resolveLatestMessage(
@@ -156,6 +161,7 @@ export default function viewAppsRouter({
       isGeneric: application.genericForm,
       isDecisionMade,
       reason: isDecisionMade ? application.reason : null,
+      rejectionReason,
       messages,
       canSendReply,
       showAwaitingReplyMessage,
