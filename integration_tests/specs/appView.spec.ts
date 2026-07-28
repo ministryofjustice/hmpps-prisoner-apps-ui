@@ -109,4 +109,19 @@ test.describe('App view', () => {
     await expect(page.getByRole('link', { name: 'Messages must be 500 characters or less' })).toBeVisible()
     await expect(page.locator('#reply-error')).toContainText('Messages must be 500 characters or less')
   })
+
+  test('shows rejection reason for rejected app', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetPrisonerAppById('1', 200, {
+      status: 'REJECTED',
+      rejectionReason: 'Prisoner has already sent this app',
+    })
+    await managingAppsApi.stubGetAppMessages('1', 200, [])
+    await loginWithPrisonerAuth(page)
+
+    await page.goto('/applications/1')
+
+    await expect(page.getByText('This app has been rejected because you already sent this app')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Send' })).not.toBeVisible()
+  })
 })

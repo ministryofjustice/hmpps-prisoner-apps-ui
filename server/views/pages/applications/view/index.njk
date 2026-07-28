@@ -58,7 +58,12 @@
           }
         ] %}
 
-        {% if isDecisionMade and reason %}
+        {% if rejectionReason %}
+          {% set statusRows = (statusRows.push({
+            key: { text: "Reason" },
+            value: { text: rejectionReason }
+          }), statusRows) %}
+        {% elseif isDecisionMade and reason %}
           {% set statusRows = (statusRows.push({
             key: { text: "Reason" },
             value: { text: reason }
