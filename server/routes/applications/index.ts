@@ -10,6 +10,7 @@ import appDetailsRouter from './appDetails'
 import checkDetailsRouter from './checkDetails'
 import confirmationRouter from './confirmation'
 import cancelAppRouter from './cancelApp'
+import { Page } from '../../services/auditService'
 
 export default function applicationsRoutes({
   auditService,
@@ -18,6 +19,14 @@ export default function applicationsRoutes({
   osPlacesAddressService,
 }: Services): Router {
   const router = Router()
+
+  router.get('/test-prisoner-audit-works', async (req, res) => {
+    await auditService.logPageView('TEST_AUDIT_PATH' as Page, {
+      who: res.locals.user.username,
+      correlationId: req.id,
+    })
+    res.send('WORKED')
+  })
 
   router.get('/', (req: Request, res: Response) => {
     return res.render(PATHS.LANDING)
