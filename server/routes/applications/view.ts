@@ -22,7 +22,7 @@ const MESSAGE_VISIBILITY_PRISONER = 'STAFF_AND_PRISONER'
 function getStaffDisplayName(res: Response): string | undefined {
   const { user } = res.locals
   if (user.authSource === 'prisoner-auth') {
-    return user.establishment?.display_name || user.establishment?.name
+    return user.idToken?.establishment?.display_name || user.idToken?.establishment?.name
   }
 
   return undefined
@@ -36,7 +36,7 @@ function getPrisonerDisplayName(res: Response, username: string): string {
 
   const { user } = res.locals
   if (user.authSource === 'prisoner-auth') {
-    const nameFromParts = [user.familyName, user.givenName].filter(Boolean).join(', ')
+    const nameFromParts = [user.idToken.family_name, user.idToken.given_name].filter(Boolean).join(', ')
     if (nameFromParts) {
       return nameFromParts
     }
