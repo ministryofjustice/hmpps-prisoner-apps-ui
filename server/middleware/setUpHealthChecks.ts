@@ -6,8 +6,9 @@ import type { ApplicationInfo } from '../applicationInfo'
 import logger from '../../logger'
 import config from '../config'
 import { ACTIVE_AGENCIES } from '../constants/activeAgencies'
+import AuditService, { Page } from '../services/auditService'
 
-export default function setUpHealthChecks(applicationInfo: ApplicationInfo): Router {
+export default function setUpHealthChecks(applicationInfo: ApplicationInfo, auditService: AuditService): Router {
   const router = express.Router()
 
   const apiConfig = Object.entries(config.apis).filter(([, options]) => 'healthPath' in options) as Array<
@@ -17,6 +18,14 @@ export default function setUpHealthChecks(applicationInfo: ApplicationInfo): Rou
   const middleware = monitoringMiddleware({
     applicationInfo,
     healthComponents: apiConfig.map(([name, options]) => endpointHealthComponent(logger, name, options)),
+  })
+
+  router.get('/test-audit', async (req, res) => {
+    await auditService.logPageView('TEST_AUDIT_PATH' as Page, {
+      who: 'test-user',
+      correlationId: req.id,
+    })
+    res.send('WORKED')
   })
 
   router.get('/health', middleware.health)
