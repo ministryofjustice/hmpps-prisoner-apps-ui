@@ -3,9 +3,8 @@
 {%- from "govuk/components/button/macro.njk" import govukButton -%}
 {%- from "govuk/components/inset-text/macro.njk" import govukInsetText -%}
 
-<h2 class="govuk-heading-m govuk-!-margin-top-6">Messages</h2>
-
 {% if messages and messages.length %}
+  <h2 class="govuk-heading-m govuk-!-margin-top-6">Messages</h2>
   {{ mojMessages({ items: messages }) }}
 {% endif %}
 
