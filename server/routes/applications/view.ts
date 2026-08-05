@@ -125,8 +125,8 @@ export default function viewAppsRouter({
     const isDecisionMade =
       application.status === 'APPROVED' || application.status === 'DECLINED' || application.status === 'REJECTED'
     const rejectionReason =
-      application.status === 'REJECTED' && application.rejectionReason
-        ? (REJECTION_REASON_MAP[application.rejectionReason] ?? application.rejectionReason)
+      application.status === 'REJECTED' && application.reason
+        ? (REJECTION_REASON_MAP[application.reason] ?? application.reason)
         : null
     const messages = formatMessages(messagesResponse, username, userId, prisonerDisplayName, staffDisplayName)
 

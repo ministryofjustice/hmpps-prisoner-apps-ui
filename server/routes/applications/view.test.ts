@@ -67,8 +67,7 @@ describe('GET /applications/:id - View App Route', () => {
     it('maps known rejection reason "Prisoner has already sent this app"', async () => {
       const mockApp = createMockApp({
         status: 'REJECTED',
-        rejectionReason: 'Prisoner has already sent this app',
-        reason: null,
+        reason: 'Prisoner has already sent this app',
       })
 
       managingAppsService.getPrisonerAppById.mockResolvedValue(mockApp)
@@ -91,8 +90,7 @@ describe('GET /applications/:id - View App Route', () => {
     it('maps known rejection reason "Prisoner used the wrong app"', async () => {
       const mockApp = createMockApp({
         status: 'REJECTED',
-        rejectionReason: 'Prisoner used the wrong app',
-        reason: null,
+        reason: 'Prisoner used the wrong app',
       })
 
       managingAppsService.getPrisonerAppById.mockResolvedValue(mockApp)
@@ -115,8 +113,7 @@ describe('GET /applications/:id - View App Route', () => {
     it('maps known rejection reason "Prisoner sent an abusive app"', async () => {
       const mockApp = createMockApp({
         status: 'REJECTED',
-        rejectionReason: 'Prisoner sent an abusive app',
-        reason: null,
+        reason: 'Prisoner sent an abusive app',
       })
 
       managingAppsService.getPrisonerAppById.mockResolvedValue(mockApp)
@@ -136,57 +133,10 @@ describe('GET /applications/:id - View App Route', () => {
         })
     })
 
-    it('does not show rejection reason for APPROVED status', async () => {
-      const mockApp = createMockApp({
-        status: 'APPROVED',
-        rejectionReason: null,
-        reason: 'Application approved',
-      })
-
-      managingAppsService.getPrisonerAppById.mockResolvedValue(mockApp)
-
-      app = appWithAllRoutes({
-        services: { managingAppsService, auditService },
-        userSupplier: () => user,
-      })
-
-      return request(app)
-        .get('/applications/1')
-        .expect('Content-Type', /html/)
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain('Application approved')
-        })
-    })
-
-    it('does not show rejection reason for DECLINED status', async () => {
-      const mockApp = createMockApp({
-        status: 'DECLINED',
-        rejectionReason: null,
-        reason: 'Application declined',
-      })
-
-      managingAppsService.getPrisonerAppById.mockResolvedValue(mockApp)
-
-      app = appWithAllRoutes({
-        services: { managingAppsService, auditService },
-        userSupplier: () => user,
-      })
-
-      return request(app)
-        .get('/applications/1')
-        .expect('Content-Type', /html/)
-        .expect(200)
-        .expect(res => {
-          expect(res.text).toContain('Application declined')
-        })
-    })
-
     it('renders page successfully with proper status tag for rejected app', async () => {
       const mockApp = createMockApp({
         status: 'REJECTED',
-        rejectionReason: 'Prisoner has already sent this app',
-        reason: null,
+        reason: 'Prisoner has already sent this app',
       })
 
       managingAppsService.getPrisonerAppById.mockResolvedValue(mockApp)
@@ -212,8 +162,7 @@ describe('GET /applications/:id - View App Route', () => {
       it(`correctly displays "${displayMessage}" for reason code "${reasonCode}"`, async () => {
         const mockApp = createMockApp({
           status: 'REJECTED',
-          rejectionReason: reasonCode,
-          reason: null,
+          reason: reasonCode,
         })
 
         managingAppsService.getPrisonerAppById.mockResolvedValue(mockApp)
