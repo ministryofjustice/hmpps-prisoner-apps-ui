@@ -114,7 +114,7 @@ test.describe('App view', () => {
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1', 200, {
       status: 'REJECTED',
-      rejectionReason: 'Prisoner has already sent this app',
+      reason: 'Prisoner has already sent this app',
     })
     await managingAppsApi.stubGetAppMessages('1', 200, [])
     await loginWithPrisonerAuth(page)

@@ -713,7 +713,6 @@ export interface components {
     }
     AppDecisionRequestDto: {
       reason: string
-      rejectionReason?: string | null
       /** @enum {string} */
       decision: 'APPROVED' | 'DECLINED' | 'REJECTED'
       appliesTo: string[]
@@ -725,7 +724,6 @@ export interface components {
       /** Format: uuid */
       appId: string
       reason: string
-      rejectionReason?: string | null
       /** @enum {string} */
       decision: 'APPROVED' | 'DECLINED' | 'REJECTED'
       /** Format: date-time */
@@ -788,7 +786,6 @@ export interface components {
       status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'REJECTED'
       establishmentId: string
       reason?: string | null
-      rejectionReason?: string | null
     }
     AppsSearchQueryDto: {
       /** Format: int64 */
