@@ -50,6 +50,7 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
       fieldValue: details,
       fieldName: 'Details',
       isRequired: true,
+      maxLength: 1000,
     })
 
     if (Object.keys(detailErrors).length === 0) {
@@ -63,7 +64,12 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
       case 1: {
         const { amount, reason } = req.body
         const { errors: amountErrors, value: sanitizedAmount } = validateAmountField(amount, 'Amount', true)
-        const reasonErrors = validateTextField({ fieldValue: reason, fieldName: 'Reason', isRequired: true })
+        const reasonErrors = validateTextField({
+          fieldValue: reason,
+          fieldName: 'Reason',
+          isRequired: true,
+          maxLength: 1000,
+        })
 
         const fieldErrors = {
           ...amountErrors,
@@ -247,7 +253,12 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
 
       case 5: {
         const { details } = req.body
-        const detailErrors = validateTextField({ fieldValue: details, fieldName: 'Details', isRequired: false })
+        const detailErrors = validateTextField({
+          fieldValue: details,
+          fieldName: 'Details',
+          isRequired: false,
+          maxLength: 1000,
+        })
 
         if (Object.keys(detailErrors).length === 0) {
           additionalData.details = details
@@ -260,7 +271,12 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
 
       case 6: {
         const { details } = req.body
-        const detailErrors = validateTextField({ fieldValue: details, fieldName: 'Details', isRequired: false })
+        const detailErrors = validateTextField({
+          fieldValue: details,
+          fieldName: 'Details',
+          isRequired: false,
+          maxLength: 1000,
+        })
 
         if (Object.keys(detailErrors).length === 0) {
           additionalData.details = details
@@ -273,7 +289,12 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
 
       case 7: {
         const { details } = req.body
-        const detailErrors = validateTextField({ fieldValue: details, fieldName: 'Details', isRequired: true })
+        const detailErrors = validateTextField({
+          fieldValue: details,
+          fieldName: 'Details',
+          isRequired: true,
+          maxLength: 1000,
+        })
 
         if (Object.keys(detailErrors).length === 0) {
           additionalData.details = details

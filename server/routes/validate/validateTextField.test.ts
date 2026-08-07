@@ -95,6 +95,20 @@ describe('validateTextField', () => {
         Reason: { text: 'Reason must be 500 characters or less' },
       })
     })
+
+    it('should support custom max length', () => {
+      const longText = 'x'.repeat(1001)
+      const errors = validateTextField({
+        fieldValue: longText,
+        fieldName: 'Details',
+        isRequired: false,
+        maxLength: 1000,
+      })
+
+      expect(errors).toEqual({
+        Details: { text: 'Details must be 1000 characters or less' },
+      })
+    })
   })
 
   describe('edge cases', () => {
