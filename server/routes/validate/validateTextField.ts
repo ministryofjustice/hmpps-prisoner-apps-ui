@@ -2,10 +2,16 @@ type ValidateTextField = {
   fieldValue: string
   fieldName: string
   isRequired?: boolean
+  maxLength?: number
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export const validateTextField = ({ fieldValue, fieldName, isRequired = false }: ValidateTextField) => {
+export const validateTextField = ({
+  fieldValue,
+  fieldName,
+  isRequired = false,
+  maxLength = 500,
+}: ValidateTextField) => {
   const errors: Record<string, { text: string }> = {}
 
   const errorMessages: Record<string, string> = {
@@ -18,8 +24,8 @@ export const validateTextField = ({ fieldValue, fieldName, isRequired = false }:
     errors[fieldName] = { text: errorMessages[fieldName] }
   }
 
-  if (fieldValue && fieldValue.length > 500) {
-    errors[fieldName] = { text: `${fieldName} must be 500 characters or less` }
+  if (fieldValue && fieldValue.length > maxLength) {
+    errors[fieldName] = { text: `${fieldName} must be ${maxLength} characters or less` }
   }
 
   return errors
