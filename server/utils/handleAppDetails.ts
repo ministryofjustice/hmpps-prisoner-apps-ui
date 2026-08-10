@@ -50,7 +50,6 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
       fieldValue: details,
       fieldName: 'Details',
       isRequired: true,
-      maxLength: 1000,
     })
 
     if (Object.keys(detailErrors).length === 0) {
@@ -68,7 +67,6 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
           fieldValue: reason,
           fieldName: 'Reason',
           isRequired: true,
-          maxLength: 1000,
         })
 
         const fieldErrors = {
@@ -257,7 +255,6 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
           fieldValue: details,
           fieldName: 'Details',
           isRequired: false,
-          maxLength: 1000,
         })
 
         if (Object.keys(detailErrors).length === 0) {
@@ -275,7 +272,6 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
           fieldValue: details,
           fieldName: 'Details',
           isRequired: false,
-          maxLength: 1000,
         })
 
         if (Object.keys(detailErrors).length === 0) {
@@ -293,7 +289,6 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
           fieldValue: details,
           fieldName: 'Details',
           isRequired: true,
-          maxLength: 1000,
         })
 
         if (Object.keys(detailErrors).length === 0) {

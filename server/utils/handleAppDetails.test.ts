@@ -76,7 +76,6 @@ describe(handleApplicationDetails.name, () => {
         fieldValue: 'Test details',
         fieldName: 'Details',
         isRequired: true,
-        maxLength: 1000,
       })
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
         additionalData: { details: 'Test details' },
@@ -137,7 +136,6 @@ describe(handleApplicationDetails.name, () => {
         fieldValue: 'Emergency call',
         fieldName: 'Reason',
         isRequired: true,
-        maxLength: 1000,
       })
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
         additionalData: { amount: '10.50', reason: 'Emergency call' },
@@ -486,7 +484,6 @@ describe(handleApplicationDetails.name, () => {
         fieldValue: 'Test details',
         fieldName: 'Details',
         isRequired,
-        maxLength: 1000,
       })
       expect(session.updateSessionData).toHaveBeenCalledWith(mockReq, {
         additionalData: { details: 'Test details' },
