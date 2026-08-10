@@ -7,6 +7,8 @@ import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 import { components } from '../../@types/managing-prisoner-apps-api'
 import { getAppGroupCard } from '../../constants/appGroupCards'
+import { APP_LOGGING_METRIC_EVENTS } from '../../constants/metrics'
+import { recordAppLoggingMetric } from '../../helpers/application/recordAppLoggingMetric'
 
 type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
 
@@ -35,6 +37,8 @@ export default function selectGroupRouter({
 
   router.get(URLS.LOG_GROUP, async (req: Request, res: Response) => {
     const { user } = res.locals
+
+    recordAppLoggingMetric(req, APP_LOGGING_METRIC_EVENTS.APP_GROUP_VIEWED, { start: true })
 
     const groups = await managingAppsService.getGroupsAndTypes(user.userId)
     const selectedValue = req.session?.applicationData?.group?.value || null

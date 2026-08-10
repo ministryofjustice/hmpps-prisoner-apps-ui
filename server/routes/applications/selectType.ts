@@ -7,6 +7,8 @@ import { URLS } from '../../constants/urls'
 import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 import { ApplicationGroup } from '../../@types/managingAppsApi'
+import { APP_LOGGING_METRIC_EVENTS } from '../../constants/metrics'
+import { recordAppLoggingMetric } from '../../helpers/application/recordAppLoggingMetric'
 
 type AppTypeItem = { value: string; text: string; checked: boolean } | { divider: 'or' }
 
@@ -67,6 +69,8 @@ export default function selectTypeRouter({
     }
 
     const selectedValue = req.session?.applicationData?.type?.value || null
+
+    recordAppLoggingMetric(req, APP_LOGGING_METRIC_EVENTS.APP_TYPE_VIEWED)
 
     await auditService.logPageView(Page.LOG_TYPE_PAGE, {
       who: user.username,

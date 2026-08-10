@@ -7,6 +7,17 @@ export declare module 'express-session' {
     returnTo: string
     applicationData?: ApplicationData
     pendingMessageAppId?: string
+    metrics?: AppLoggingMetrics
+  }
+
+  interface AppLoggingMetrics {
+    journeyId: string
+    events: MetricEvent[]
+  }
+
+  interface MetricEvent {
+    event: string
+    timestamp: string
   }
 
   interface ApplicationData {

@@ -7,6 +7,8 @@ import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 
 import buildCheckDetailsSummary, { getPinPhoneSummaryListHeading } from '../../utils/buildCheckDetailsSummary'
+import { APP_LOGGING_METRIC_EVENTS } from '../../constants/metrics'
+import { recordAppLoggingMetric } from '../../helpers/application/recordAppLoggingMetric'
 
 export default function checkDetailsRouter({
   auditService,
@@ -70,6 +72,8 @@ export default function checkDetailsRouter({
       genericForm: isGeneric,
       requests: [{ ...(additionalData as Record<string, unknown>) }],
     })
+
+    recordAppLoggingMetric(req, APP_LOGGING_METRIC_EVENTS.APP_SUBMITTED)
 
     req.session.applicationData = {
       ...applicationData,

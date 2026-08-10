@@ -17,6 +17,8 @@ import { getAppTypeLogDetailsData } from '../../utils/getAppTypeLogDetails'
 import { handleApplicationDetails } from '../../utils/handleAppDetails'
 import getFormattedRelationshipDropdown from '../../utils/formatters/getFormattedRelationshipDropdown'
 import { getFormattedCountries } from '../../utils/data/countries'
+import { APP_LOGGING_METRIC_EVENTS } from '../../constants/metrics'
+import { recordAppLoggingMetric } from '../../helpers/application/recordAppLoggingMetric'
 
 export default function appDetailsRouter({
   auditService,
@@ -57,6 +59,8 @@ export default function appDetailsRouter({
     }
 
     const templateFields = await getApplicationDetails(logDetails, personalRelationshipsService, undefined)
+
+    recordAppLoggingMetric(req, APP_LOGGING_METRIC_EVENTS.APP_CREATION_PAGE_VIEWED)
 
     await auditService.logPageView(Page.VIEW_APPLICATIONS_PAGE, {
       who: res.locals.user.username,
