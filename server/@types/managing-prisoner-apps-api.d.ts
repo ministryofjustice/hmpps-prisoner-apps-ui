@@ -224,6 +224,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/v1/prisoners/{prisonerId}/apps/{appId}/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Update App status to InProgress
+     * @description This api endpoint is for updating app status to InProgress. The logged staff and prisoner should belong to the same establishment. Requires role ROLE_MANAGING_PRISONER_APPS
+     */
+    patch: operations['updateAppToInProgress']
+    trace?: never
+  }
   '/v2/establishments/apps/groups': {
     parameters: {
       query?: never
@@ -524,6 +544,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/v1/establishments/apps/groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get application groups and types by logged in user's establishment
+     * @description This api endpoint is for getting an application groups and types by establishment. Requires role ROLE_MANAGING_PRISONER_APPS
+     */
+    get: operations['getAppGroupsForEstablishment']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/subject-access-request': {
     parameters: {
       query?: never
@@ -646,7 +686,7 @@ export interface components {
       requestedByFirstName: string
       requestedByLastName: string
       /** @enum {string} */
-      status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'REJECTED'
+      status: 'NEW' | 'IN_PROGRESS' | 'APPROVED' | 'DECLINED' | 'REJECTED'
       establishmentId: string
       firstNightCenter: boolean
       files: components['schemas']['FileResponseDto'][]
@@ -783,7 +823,7 @@ export interface components {
       requestedByFirstName: string
       requestedByLastName: string
       /** @enum {string} */
-      status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'REJECTED'
+      status: 'NEW' | 'IN_PROGRESS' | 'APPROVED' | 'DECLINED' | 'REJECTED'
       establishmentId: string
       reason?: string | null
     }
@@ -792,7 +832,7 @@ export interface components {
       page: number
       /** Format: int64 */
       size: number
-      status: ('PENDING' | 'APPROVED' | 'DECLINED' | 'REJECTED')[]
+      status: ('NEW' | 'IN_PROGRESS' | 'APPROVED' | 'DECLINED' | 'REJECTED')[]
       applicationTypes?: number[] | null
       requestedBy?: string | null
       assignedGroups?: string[] | null
@@ -836,6 +876,11 @@ export interface components {
       /** Format: int64 */
       count?: number | null
     }
+    AppStatusUpdateDto: {
+      /** @enum {string} */
+      status: 'NEW' | 'IN_PROGRESS' | 'APPROVED' | 'DECLINED' | 'REJECTED'
+      comment?: string | null
+    }
     ActivityMessage: {
       header: string
       body?: string | null
@@ -876,7 +921,7 @@ export interface components {
       /** Format: date-time */
       lastUpdatedDate: string
       /** @enum {string} */
-      status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'REJECTED'
+      status: 'NEW' | 'IN_PROGRESS' | 'APPROVED' | 'DECLINED' | 'REJECTED'
     }
     PrisonerAppsPage: {
       /** Format: int32 */
@@ -1519,6 +1564,51 @@ export interface operations {
       }
     }
   }
+  updateAppToInProgress: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonerId: string
+        appId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AppStatusUpdateDto']
+      }
+    }
+    responses: {
+      /** @description App status updated to InProgress */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AppResponseDtoObjectObject']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getAppGroupsByEstablishment: {
     parameters: {
       query?: never
@@ -2105,6 +2195,44 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['EstablishmentDto']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAppGroupsForEstablishment: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Establishment add successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ApplicationGroupResponse'][]
         }
       }
       /** @description Unauthorized to access this endpoint */

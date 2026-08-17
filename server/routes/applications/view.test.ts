@@ -45,7 +45,7 @@ const createMockApp = (overrides = {}): components['schemas']['AppResponsePrison
   requestedBy: null,
   requestedByFirstName: 'John',
   requestedByLastName: 'Doe',
-  status: 'PENDING',
+  status: 'NEW',
   establishmentId: 'MDI',
   ...overrides,
 })

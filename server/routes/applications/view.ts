@@ -120,7 +120,7 @@ export default function viewAppsRouter({
     ])
 
     const { label: statusLabel, className: statusClass } =
-      APPLICATION_STATUS_TAG_MAP[application.status] ?? APPLICATION_STATUS_TAG_MAP.PENDING
+      APPLICATION_STATUS_TAG_MAP[application.status] ?? APPLICATION_STATUS_TAG_MAP.NEW
 
     const isDecisionMade =
       application.status === 'APPROVED' || application.status === 'DECLINED' || application.status === 'REJECTED'
@@ -157,7 +157,7 @@ export default function viewAppsRouter({
       },
       statusLabel,
       statusClass,
-      isPending: application.status === 'PENDING',
+      isPending: application.status === 'NEW' || application.status === 'IN_PROGRESS',
       isGeneric: application.genericForm,
       isDecisionMade,
       reason: isDecisionMade ? application.reason : null,
