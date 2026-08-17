@@ -6,7 +6,7 @@ export const prisonerApp: ViewAppListDto = {
   applicationType: 'Add an official PIN phone contact',
   createdDate: '2024-01-10T10:30:00Z',
   lastUpdatedDate: '2024-01-11T12:00:00Z',
-  status: 'PENDING',
+  status: 'NEW',
 }
 
 export const prisonerAppsResponse: ViewAppListDto[] = [prisonerApp]
@@ -36,7 +36,7 @@ export const applicationTypeResponse: ApplicationGroup = {
 export const viewAppResponse = {
   id: '1',
   createdDate: '2024-01-10T10:30:00Z',
-  status: 'PENDING',
+  status: 'NEW',
   genericForm: true,
   applicationType: {
     id: 7,

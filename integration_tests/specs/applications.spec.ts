@@ -54,7 +54,7 @@ test.describe('Applications', () => {
     const firstRow = resultsTable.locator('tbody tr').first()
     await expect(firstRow).toContainText('10/01/2024')
     await expect(firstRow).toContainText('Add an official PIN phone contact')
-    await expect(firstRow).toContainText('Pending')
+    await expect(firstRow).toContainText('New')
 
     const firstViewLink = resultsTable.getByRole('link', { name: 'View' }).first()
     await expect(firstViewLink).toBeVisible()

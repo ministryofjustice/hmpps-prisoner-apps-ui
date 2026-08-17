@@ -1,8 +1,13 @@
 export const APPLICATION_STATUS_TAG_MAP: Record<string, { label: string; className: string; html: string }> = {
-  PENDING: {
-    label: 'Pending',
+  NEW: {
+    label: 'New',
+    className: 'govuk-tag--light-blue',
+    html: '<strong class="govuk-tag govuk-tag--light-blue">New</strong>',
+  },
+  IN_PROGRESS: {
+    label: 'In progress',
     className: 'govuk-tag--yellow',
-    html: '<strong class="govuk-tag govuk-tag--yellow">Pending</strong>',
+    html: '<strong class="govuk-tag govuk-tag--yellow">In progress</strong>',
   },
   APPROVED: {
     label: 'Approved',
@@ -16,8 +21,8 @@ export const APPLICATION_STATUS_TAG_MAP: Record<string, { label: string; classNa
   },
   REJECTED: {
     label: 'Rejected',
-    className: 'govuk-tag--orange',
-    html: '<strong class="govuk-tag govuk-tag--orange">Rejected</strong>',
+    className: 'govuk-tag--purple',
+    html: '<strong class="govuk-tag govuk-tag--purple">Rejected</strong>',
   },
 }
 

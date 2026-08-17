@@ -21,7 +21,7 @@ describe(formatAppsToRows.name, () => {
         applicationType: 'Transfer',
         createdDate: '2024-01-10T00:00:00Z',
         lastUpdatedDate: '2024-01-10T00:00:00Z',
-        status: 'PENDING' as const,
+        status: 'NEW' as const,
       },
     ]
 
@@ -37,7 +37,7 @@ describe(formatAppsToRows.name, () => {
           classes: 'govuk-!-text-nowrap',
         },
         { text: 'Transfer' },
-        { html: '<strong class="govuk-tag govuk-tag--yellow">Pending</strong>' },
+        { html: '<strong class="govuk-tag govuk-tag--light-blue">New</strong>' },
         {
           html: '<a href="/applications/app-1" class="govuk-link">View</a>',
         },
