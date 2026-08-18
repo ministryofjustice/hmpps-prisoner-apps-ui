@@ -3,6 +3,7 @@ import type { AuthenticationClient } from '@ministryofjustice/hmpps-auth-clients
 import ManagingAppsApiClient from './managingAppsApiClient'
 import config from '../config'
 import { prisonerAppsPageResponse } from '../testData/applications/app'
+import type { JourneyEventsRequest } from '../@types/managingAppsApi'
 
 describe('ManagingAppsApiClient', () => {
   let managingAppsApiClient: ManagingAppsApiClient
@@ -52,6 +53,22 @@ describe('ManagingAppsApiClient', () => {
       expect(response).toEqual(expectedResponse)
       expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(userId)
       expect(mockAuthenticationClient.getToken).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('submitJourneyEvents', () => {
+    it('should post journey events for an application', async () => {
+      const userId = 'A1234BC'
+      const body: JourneyEventsRequest = {
+        appId: 'app-123',
+        events: [{ event: 'app_submitted', timestamp: '2026-08-17T12:00:00.000Z' }],
+      }
+
+      nock(config.apis.managingAppsApi.url).post('/v1/prisoners/apps/journey-events', body).reply(204)
+
+      await managingAppsApiClient.submitJourneyEvents(userId, body)
+
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(userId)
     })
   })
 })

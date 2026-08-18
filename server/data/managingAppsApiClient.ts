@@ -9,6 +9,7 @@ import type {
   AppResponsePrisoner,
   PrisonerAppsPage,
   PendingAppTypeCount,
+  JourneyEventsRequest,
 } from '../@types/managingAppsApi'
 import config from '../config'
 
@@ -57,6 +58,16 @@ export default class ManagingAppsApiClient extends RestClient {
     return this.get<AppResponsePrisoner>(
       {
         path: `/v1/prisoners/apps/${encodeURIComponent(id)}`,
+      },
+      asSystem(userId),
+    )
+  }
+
+  submitJourneyEvents(userId: string, body: JourneyEventsRequest): Promise<void> {
+    return this.post<void>(
+      {
+        path: '/v1/prisoners/apps/journey-events',
+        data: body as unknown as Record<string, unknown>,
       },
       asSystem(userId),
     )
