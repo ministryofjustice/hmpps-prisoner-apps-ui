@@ -14,6 +14,8 @@ export type AppMessages = components['schemas']['PageResultComments']
 export type AppPrisonerMessage = components['schemas']['CommentRequestDto']
 export type PendingAppTypeCount = components['schemas']['PrisonerApplicationTypeCount']
 
+export type JourneyEventsRequest = components['schemas']['AppJourneyEventsRequest']
+
 export interface App extends ApplicationDto {
   applicationType: {
     id: number

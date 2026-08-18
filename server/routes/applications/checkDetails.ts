@@ -9,6 +9,8 @@ import ManagingAppsService from '../../services/managingAppsService'
 import buildCheckDetailsSummary, { getPinPhoneSummaryListHeading } from '../../utils/buildCheckDetailsSummary'
 import { APP_LOGGING_METRIC_EVENTS } from '../../constants/metrics'
 import { recordAppLoggingMetric } from '../../helpers/application/recordAppLoggingMetric'
+import logger from '../../../logger'
+import type { JourneyEventsRequest } from '../../@types/managingAppsApi'
 
 export default function checkDetailsRouter({
   auditService,
@@ -74,6 +76,16 @@ export default function checkDetailsRouter({
     })
 
     recordAppLoggingMetric(req, APP_LOGGING_METRIC_EVENTS.APP_SUBMITTED)
+
+    if (submittedApp.id && req.session.metrics) {
+      await managingAppsService
+        .submitJourneyEvents(user.userId, {
+          appId: submittedApp.id,
+          events: req.session.metrics.events as JourneyEventsRequest['events'],
+        } as JourneyEventsRequest)
+        .catch(error => logger.error(error, 'Failed to record application journey events'))
+      delete req.session.metrics
+    }
 
     req.session.applicationData = {
       ...applicationData,

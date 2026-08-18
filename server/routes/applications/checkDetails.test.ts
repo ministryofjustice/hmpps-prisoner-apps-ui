@@ -17,6 +17,7 @@ let app: Express
 beforeEach(() => {
   auditService.logPageView.mockResolvedValue(null)
   managingAppsService.submitApp.mockResolvedValue({ id: 'app-123' } as AppResponsePrisoner)
+  managingAppsService.submitJourneyEvents.mockResolvedValue(undefined)
 })
 
 afterEach(() => {
@@ -85,6 +86,13 @@ describe('POST /log/confirm', () => {
       services: { auditService, managingAppsService },
       userSupplier: () => user,
       sessionData: {
+        metrics: {
+          journeyId: 'journey-123',
+          events: [
+            { event: 'app_group_viewed', timestamp: '2026-08-17T12:00:00.000Z' },
+            { event: 'app_type_viewed', timestamp: '2026-08-17T12:01:00.000Z' },
+          ],
+        },
         applicationData: {
           group: { name: 'PIN Phone', value: '1' },
           type: { key: 'EMERGENCY_CREDIT', name: 'Emergency Credit', value: '1' },
@@ -107,6 +115,14 @@ describe('POST /log/confirm', () => {
               reason: 'Emergency expenses',
             }),
           ]),
+        })
+        expect(managingAppsService.submitJourneyEvents).toHaveBeenCalledWith(user.userId, {
+          appId: 'app-123',
+          events: [
+            { event: 'app_group_viewed', timestamp: '2026-08-17T12:00:00.000Z' },
+            { event: 'app_type_viewed', timestamp: '2026-08-17T12:01:00.000Z' },
+            { event: 'app_submitted', timestamp: expect.any(String) },
+          ],
         })
       })
   })

@@ -6,6 +6,7 @@ import type {
   AppMessages,
   AppPrisonerMessage,
   PendingAppTypeCount,
+  JourneyEventsRequest,
 } from '../@types/managingAppsApi'
 import ManagingAppsApiClient from '../data/managingAppsApiClient'
 
@@ -26,6 +27,10 @@ export default class ManagingAppsService {
 
   getPrisonerAppById(userId: string, id: string): Promise<AppResponsePrisoner> {
     return this.managingAppsApiClient.getPrisonerAppById(userId, id)
+  }
+
+  submitJourneyEvents(userId: string, body: JourneyEventsRequest): Promise<void> {
+    return this.managingAppsApiClient.submitJourneyEvents(userId, body)
   }
 
   getPendingAppTypeCount(userId: string, appTypeId: number): Promise<PendingAppTypeCount> {
