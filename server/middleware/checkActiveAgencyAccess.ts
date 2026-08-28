@@ -12,7 +12,7 @@ export default function checkActiveAgencyAccess(): RequestHandler {
       return res.status(403).render('autherror')
     }
 
-    const agencyId = user.establishment?.agency_id
+    const agencyId = user.idToken?.establishment?.agency_id
     const isAllowed = !!agencyId && ACTIVE_AGENCIES.includes(agencyId)
 
     logger.info(`Active agency access check: agencyId=${agencyId}, isAllowed=${isAllowed}`)

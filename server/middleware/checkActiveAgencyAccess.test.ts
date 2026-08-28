@@ -18,10 +18,12 @@ function mockReq(agencyId?: string) {
   return {
     user: agencyId
       ? {
-          authSource: 'prisoner-auth',
-          username: 'A1234BC',
+        authSource: 'prisoner-auth',
+        idToken: {
+          sub: 'A1234BC',
           establishment: { agency_id: agencyId, name: 'Ranby', display_name: 'Ranby', youth: false },
         }
+      }
       : undefined,
   } as unknown as Request
 }
@@ -88,8 +90,9 @@ describe('checkActiveAgencyAccess', () => {
     const req = {
       user: {
         authSource: 'prisoner-auth',
-        username: 'A1234BC',
-        establishment: null,
+        idToken: {
+          sub: 'A1234BC',
+        },
       },
     } as unknown as Request
     const res = mockRes()
