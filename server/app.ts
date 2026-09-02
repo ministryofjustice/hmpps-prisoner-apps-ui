@@ -4,7 +4,6 @@ import createError from 'http-errors'
 
 import nunjucksSetup from './utils/nunjucksSetup'
 import errorHandler from './errorHandler'
-import { appInsightsMiddleware } from './utils/azureAppInsights'
 
 import setUpAuthentication from './middleware/setUpAuthentication'
 import setUpCsrf from './middleware/setUpCsrf'
@@ -30,7 +29,6 @@ export default function createApp(services: Services): express.Application {
 
   app.locals.launchpadHome = config.launchpadHome
 
-  app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(services.applicationInfo, services.auditService))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
