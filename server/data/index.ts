@@ -1,12 +1,9 @@
 /* eslint-disable import/first */
 import { OsPlacesApiClient } from '@ministryofjustice/hmpps-connect-dps-shared-items'
 import { AuthenticationClient, InMemoryTokenStore, RedisTokenStore } from '@ministryofjustice/hmpps-auth-clients'
-import { initialiseAppInsights, buildAppInsightsClient } from '../utils/azureAppInsights'
 import applicationInfoSupplier from '../applicationInfo'
 
 const applicationInfo = applicationInfoSupplier()
-initialiseAppInsights()
-buildAppInsightsClient(applicationInfo)
 
 import { createRedisClient } from './redisClient'
 import config from '../config'
