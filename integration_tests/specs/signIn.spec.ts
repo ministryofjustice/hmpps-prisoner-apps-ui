@@ -1,31 +1,32 @@
 import { expect, test } from '@playwright/test'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import prisonerAuth from '../mockApis/prisonerAuth'
-
 import managingAppsApi from '../mockApis/managingAppsApi'
+import SignInPage from '../pages/signInPage'
 
 test.describe('SignIn', () => {
   test.use({
     baseURL: 'http://localhost:3007',
   })
-  test.beforeEach(async () => {})
 
   test.afterEach(async () => {
     await resetStubs()
   })
 
   test('Unauthenticated user directed to auth', async ({ page }) => {
+    const signInPage = new SignInPage(page)
     await prisonerAuth.stubSignInPage()
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
+    await signInPage.expectSignInPage()
   })
 
   test('Unauthenticated user navigating to sign in page directed to auth', async ({ page }) => {
+    const signInPage = new SignInPage(page)
     await prisonerAuth.stubSignInPage()
     await page.goto('/sign-in')
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Sign in')
+    await signInPage.expectSignInPage()
   })
 
   test('User name visible in header', async ({ page }) => {
@@ -36,15 +37,17 @@ test.describe('SignIn', () => {
   })
 
   test('Token verification failure takes user to sign in page', async ({ page }) => {
+    const signInPage = new SignInPage(page)
     await loginWithPrisonerAuth(page, { tokenExpiresInSeconds: -1 })
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Authorisation Error')
+    await signInPage.expectAuthorisationError()
   })
 
   test('Token verification failure clears user session', async ({ page }) => {
+    const signInPage = new SignInPage(page)
     await loginWithPrisonerAuth(page, { name: 'A TestUser', tokenExpiresInSeconds: -1 })
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Authorisation Error')
+    await signInPage.expectAuthorisationError()
 
     await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page, { name: 'Some OtherTestUser', active: true })

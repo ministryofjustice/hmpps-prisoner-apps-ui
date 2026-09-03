@@ -2,6 +2,10 @@ import { expect, test } from '@playwright/test'
 
 import managingAppsApi from '../mockApis/managingAppsApi'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
+import AppGroupPage from '../pages/appGroupPage'
+import AppTypePage from '../pages/appTypePage'
+import AppDetailsPage from '../pages/appDetailsPage'
+import AppSubmissionPage from '../pages/appSubmissionPage'
 
 test.describe('App submission', () => {
   test.afterEach(async () => {
@@ -9,55 +13,58 @@ test.describe('App submission', () => {
   })
 
   test('submits one app type and shows confirmation page content', async ({ page }) => {
+    const appGroupPage = new AppGroupPage(page)
+    const appTypePage = new AppTypePage(page)
+    const appDetailsPage = new AppDetailsPage(page)
+    const appSubmissionPage = new AppSubmissionPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes()
     await managingAppsApi.stubGetPendingAppType(1, 0)
     await managingAppsApi.stubSubmitApp()
     await loginWithPrisonerAuth(page)
 
-    await page.goto('/log/group')
-    await page.getByRole('button', { name: 'Pin Phone Contact Apps', exact: false }).click()
+    await appGroupPage.open()
+    await appGroupPage.selectPinPhoneContactApps()
     await expect(page).toHaveURL('/log/type')
 
-    await page.getByLabel('Add emergency phone credit').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await appTypePage.selectAppType('Add emergency phone credit')
+    await appTypePage.continue()
     await expect(page).toHaveURL('/log/application-details')
 
-    await page.fill('input[name="amount"]', '10')
-    await page.fill('textarea[name="reason"]', 'Emergency credit needed for family call')
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await appDetailsPage.fillAmount('10')
+    await appDetailsPage.fillReason('Emergency credit needed for family call')
+    await appDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirm')
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(page).toHaveURL('/log/confirmation')
 
-    await expect(page.getByText('You have sent your app')).toBeVisible()
-    await expect(page.getByText('Add emergency phone credit')).toBeVisible()
-    await expect(page.getByText('You have sent a new app to staff.')).toBeVisible()
-    await expect(page.getByText('Staff will process it as soon as possible.')).toBeVisible()
-
-    await expect(page.getByRole('link', { name: 'send a new app' })).toHaveAttribute('href', '/log/group')
-    await expect(page.getByRole('link', { name: 'this app' })).toHaveAttribute('href', '/applications/app-123')
-    await expect(page.getByRole('link', { name: 'all your apps' })).toHaveAttribute('href', '/applications')
+    await appSubmissionPage.expectSuccess('Add emergency phone credit')
   })
 
   test('allows changing details from check details page before submit', async ({ page }) => {
+    const appGroupPage = new AppGroupPage(page)
+    const appTypePage = new AppTypePage(page)
+    const appDetailsPage = new AppDetailsPage(page)
+    const appSubmissionPage = new AppSubmissionPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes()
     await managingAppsApi.stubGetPendingAppType(7, 0)
     await managingAppsApi.stubSubmitApp()
     await loginWithPrisonerAuth(page)
 
-    await page.goto('/log/group')
-    await page.getByRole('button', { name: 'Pin Phone Contact Apps', exact: false }).click()
+    await appGroupPage.open()
+    await appGroupPage.selectPinPhoneContactApps()
     await expect(page).toHaveURL('/log/type')
 
-    await page.getByLabel('Make a general PIN phone enquiry').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await appTypePage.selectAppType('Make a general PIN phone enquiry')
+    await appTypePage.continue()
     await expect(page).toHaveURL('/log/application-details')
 
-    await page.fill('textarea[name="details"]', 'Initial enquiry details')
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await appDetailsPage.fillDetails('Initial enquiry details')
+    await appDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirm')
     await expect(page.getByText('Initial enquiry details')).toBeVisible()
 
@@ -67,13 +74,14 @@ test.describe('App submission', () => {
       .click()
     await expect(page).toHaveURL('/log/application-details')
 
-    await page.fill('textarea[name="details"]', 'Updated enquiry details after change')
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await appDetailsPage.fillDetails('Updated enquiry details after change')
+    await appDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirm')
     await expect(page.getByText('Updated enquiry details after change')).toBeVisible()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(page).toHaveURL('/log/confirmation')
     await expect(page.getByText('You have sent your app')).toBeVisible()
+    await appSubmissionPage.expectSuccess('Make a general PIN phone enquiry')
   })
 })
