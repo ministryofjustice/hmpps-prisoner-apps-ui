@@ -4,6 +4,7 @@ import managingAppsApi from '../mockApis/managingAppsApi'
 import { getMatchingRequests } from '../mockApis/wiremock'
 import { prisonerSentMessage, staffReplyMessage } from '../../server/testData/applications/messages'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
+import AppViewPage from '../pages/appViewPage'
 
 test.describe('App view', () => {
   test.afterEach(async () => {
@@ -11,24 +12,26 @@ test.describe('App view', () => {
   })
 
   test('clicking View from app list opens submitted app page', async ({ page }) => {
+    const appViewPage = new AppViewPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1')
     await managingAppsApi.stubGetAppMessages('1')
     await loginWithPrisonerAuth(page)
 
     await page.goto('/applications')
-    await expect(page.locator('[data-qa="app-results-table"]')).toBeVisible()
+    await expect(appViewPage.resultsTable).toBeVisible()
 
     await page.getByRole('link', { name: 'View' }).first().click()
 
     await expect(page).toHaveURL('/applications/1')
-    await expect(page.getByRole('heading', { name: 'Make a general PIN phone enquiry', level: 1 })).toBeVisible()
-    await expect(page.getByText('You have sent this app and staff will process it as soon as possible.')).toBeVisible()
+    await appViewPage.expectSubmittedAppVisible()
     await expect(page.getByText('Testing general PIN phone enquiry')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Back to apps home' })).toBeVisible()
   })
 
   test('prisoner cannot send another message until staff replies', async ({ page }) => {
+    const appViewPage = new AppViewPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1')
     await managingAppsApi.stubGetAppMessages('1', 200, [prisonerSentMessage])
@@ -37,11 +40,13 @@ test.describe('App view', () => {
     await page.goto('/applications/1')
 
     await expect(page.getByText('You can’t send another message until staff reply to this one.')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Send' })).not.toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Send a reply' })).not.toBeVisible()
+    await expect(appViewPage.sendButton).not.toBeVisible()
+    await expect(appViewPage.replyHeading).not.toBeVisible()
   })
 
   test('prisoner can send a message when latest message is from staff', async ({ page }) => {
+    const appViewPage = new AppViewPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1')
     await managingAppsApi.stubGetAppMessages('1', 200, [prisonerSentMessage, staffReplyMessage])
@@ -50,9 +55,9 @@ test.describe('App view', () => {
 
     await page.goto('/applications/1')
 
-    await expect(page.getByRole('heading', { name: 'Send a reply' })).toBeVisible()
-    await page.fill('#reply', 'Prisoner reply to staff message')
-    await page.getByRole('button', { name: 'Send' }).click()
+    await appViewPage.expectReplyFormVisible()
+    await appViewPage.fillReply('Prisoner reply to staff message')
+    await appViewPage.submitReply()
 
     await expect(page).toHaveURL('/applications/1')
     const addMessageRequests = await getMatchingRequests({
@@ -63,6 +68,8 @@ test.describe('App view', () => {
   })
 
   test('no messages can be sent when app is closed', async ({ page }) => {
+    const appViewPage = new AppViewPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1', 200, {
       status: 'APPROVED',
@@ -72,38 +79,41 @@ test.describe('App view', () => {
 
     await page.goto('/applications/1')
 
-    await expect(page.getByRole('button', { name: 'Send' })).not.toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Send a reply' })).not.toBeVisible()
+    await expect(appViewPage.sendButton).not.toBeVisible()
+    await expect(appViewPage.replyHeading).not.toBeVisible()
     await expect(page.getByText('You can’t send another message until staff reply to this one.')).not.toBeVisible()
   })
 
   test('shows validation error when sending an empty message', async ({ page }) => {
+    const appViewPage = new AppViewPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1')
     await managingAppsApi.stubGetAppMessages('1', 200, [staffReplyMessage])
     await loginWithPrisonerAuth(page)
 
     await page.goto('/applications/1')
-    await expect(page.getByRole('heading', { name: 'Send a reply' })).toBeVisible()
+    await appViewPage.expectReplyFormVisible()
 
-    await page.getByRole('button', { name: 'Send' }).click()
+    await appViewPage.submitReply()
 
     await expect(page).toHaveURL('/applications/1')
-    await expect(page.getByText('There is a problem')).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Add a message' })).toBeVisible()
+    await appViewPage.expectValidationSummary()
   })
 
   test('shows validation error when message is longer than 500 characters', async ({ page }) => {
+    const appViewPage = new AppViewPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1')
     await managingAppsApi.stubGetAppMessages('1', 200, [staffReplyMessage])
     await loginWithPrisonerAuth(page)
 
     await page.goto('/applications/1')
-    await expect(page.getByRole('heading', { name: 'Send a reply' })).toBeVisible()
+    await appViewPage.expectReplyFormVisible()
 
-    await page.fill('#reply', 'a'.repeat(501))
-    await page.getByRole('button', { name: 'Send' }).click()
+    await appViewPage.fillReply('a'.repeat(501))
+    await appViewPage.submitReply()
 
     await expect(page).toHaveURL('/applications/1')
     await expect(page.getByRole('link', { name: 'Messages must be 500 characters or less' })).toBeVisible()
@@ -111,6 +121,8 @@ test.describe('App view', () => {
   })
 
   test('shows rejection reason for rejected app', async ({ page }) => {
+    const appViewPage = new AppViewPage(page)
+
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetPrisonerAppById('1', 200, {
       status: 'REJECTED',
@@ -122,6 +134,6 @@ test.describe('App view', () => {
     await page.goto('/applications/1')
 
     await expect(page.getByText('This app has been rejected because you already sent this app')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Send' })).not.toBeVisible()
+    await expect(appViewPage.sendButton).not.toBeVisible()
   })
 })

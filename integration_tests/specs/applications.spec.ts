@@ -3,6 +3,7 @@ import { expect, test } from '@playwright/test'
 import managingAppsApi from '../mockApis/managingAppsApi'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import ApplicationListPage from '../pages/applicationListPage'
+import ApplicationsPage from '../pages/applicationsPage'
 
 test.describe('Applications', () => {
   test.afterEach(async () => {
@@ -13,16 +14,15 @@ test.describe('Applications', () => {
     await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page)
 
-    await expect(page.getByRole('heading', { name: 'Manage apps', level: 1 })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Send an app' })).toHaveAttribute('href', '/log/group')
-    await expect(page.getByRole('link', { name: 'Your apps' })).toHaveAttribute('href', '/applications')
+    await ApplicationsPage.verifyOnPage(page)
   })
 
   test('applications page is visible from landing page', async ({ page }) => {
     await managingAppsApi.stubGetPrisonerApps()
     await loginWithPrisonerAuth(page)
 
-    await page.getByRole('link', { name: 'Your apps' }).click()
+    const applicationsPage = new ApplicationsPage(page)
+    await applicationsPage.openYourApps()
     await ApplicationListPage.verifyOnPage(page)
   })
 

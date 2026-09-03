@@ -4,6 +4,9 @@ import managingAppsApi from '../mockApis/managingAppsApi'
 import personalRelationshipsApi from '../mockApis/personalRelationshipsApi'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import { groups } from '../../server/testData/groups/groups'
+import AppGroupPage from '../pages/appGroupPage'
+import AppTypePage from '../pages/appTypePage'
+import AppDetailsPage from '../pages/appDetailsPage'
 
 const stubDependencies = async () => {
   await managingAppsApi.stubGetPrisonerApps()
@@ -15,49 +18,57 @@ const stubDependencies = async () => {
 }
 
 const navigateToAppDetails = async (page: Page, appTypeName: string) => {
-  await page.goto('/log/group')
-  await page.getByRole('button', { name: 'Pin Phone Contact Apps', exact: false }).click()
+  const appGroupPage = new AppGroupPage(page)
+  const appTypePage = new AppTypePage(page)
+  await appGroupPage.open()
+  await appGroupPage.selectPinPhoneContactApps()
   await expect(page).toHaveURL('/log/type')
 
-  await page.getByLabel(appTypeName).check()
-  await page.getByRole('button', { name: 'Continue' }).click()
+  await appTypePage.selectAppType(appTypeName)
+  await appTypePage.continue()
   await expect(page).toHaveURL('/log/application-details')
 }
 
 const fillLogDetailsForAppType = async (page: Page, appTypeId: number) => {
+  const appDetailsPage = new AppDetailsPage(page)
   switch (appTypeId) {
     case 1:
-      await page.fill('input[name="amount"]', '10')
-      await page.fill('textarea[name="reason"]', 'Test reason for emergency credit')
+      await appDetailsPage.fillAmount('10')
+      await appDetailsPage.fillReason('Test reason for emergency credit')
       break
-    case 2: {
-      await page.fill('input[name="firstName"]', 'John')
-      await page.fill('input[name="lastName"]', 'Smith')
-      await page.fill('input[name="organisation"]', 'NHS')
-      await page.selectOption('select[name="relationship"]', { label: 'Friend' })
-      await page.fill('input[name="telephone1"]', '07911123456')
+    case 2:
+      await appDetailsPage.fillContactDetails({
+        firstName: 'John',
+        lastName: 'Smith',
+        organisation: 'NHS',
+        relation: 'Friend',
+        telephone: '07911123456',
+      })
       break
-    }
     case 3:
-      await page.fill('input[name="firstName"]', 'Jane')
-      await page.fill('input[name="lastName"]', 'Doe')
-      await page.getByLabel('I do not know their age or date of birth').check()
-      await page.selectOption('select[name="relationship"]', { label: 'Friend' })
-      await page.fill('input[name="telephone1"]', '07911123457')
+      await appDetailsPage.fillContactDetails({
+        firstName: 'Jane',
+        lastName: 'Doe',
+        relation: 'Friend',
+        telephone: '07911123457',
+        ageUnknown: true,
+      })
       break
     case 4:
-      await page.fill('input[name="firstName"]', 'Mark')
-      await page.fill('input[name="lastName"]', 'Taylor')
-      await page.fill('input[name="telephone1"]', '07911123458')
+      await appDetailsPage.fillContactDetails({
+        firstName: 'Mark',
+        lastName: 'Taylor',
+        telephone: '07911123458',
+      })
       break
     case 5:
-      await page.fill('textarea[name="details"]', 'Swap visiting orders details')
+      await appDetailsPage.fillDetails('Swap visiting orders details')
       break
     case 6:
-      await page.fill('textarea[name="details"]', 'Supply list of contacts details')
+      await appDetailsPage.fillDetails('Supply list of contacts details')
       break
     case 7:
-      await page.fill('textarea[name="details"]', 'General enquiry details')
+      await appDetailsPage.fillDetails('General enquiry details')
       break
     default:
       throw new Error(`Unsupported app type id: ${appTypeId}`)
@@ -70,6 +81,7 @@ test.describe('App details', () => {
   })
 
   test('shows app details page with app type name and Add details heading', async ({ page }) => {
+    const appDetailsPage = new AppDetailsPage(page)
     await stubDependencies()
     await loginWithPrisonerAuth(page)
 
@@ -77,45 +89,44 @@ test.describe('App details', () => {
 
     await navigateToAppDetails(page, appType.name)
 
-    await expect(page.locator('.govuk-caption-xl')).toHaveText(appType.name)
-    await expect(page.getByRole('heading', { name: 'Add details', level: 1 })).toBeVisible()
+    await appDetailsPage.expectForAppType(appType.name)
   })
 
   test('back link redirects to app type page', async ({ page }) => {
+    const appDetailsPage = new AppDetailsPage(page)
     await stubDependencies()
     await loginWithPrisonerAuth(page)
 
     const appType = groups[0].appTypes[0]
 
     await navigateToAppDetails(page, appType.name)
-    await page.getByRole('link', { name: 'Back' }).click()
+    await appDetailsPage.backLink.click()
 
     await expect(page).toHaveURL('/log/type')
   })
 
   test('cancel link redirects to landing page', async ({ page }) => {
+    const appDetailsPage = new AppDetailsPage(page)
     await stubDependencies()
     await loginWithPrisonerAuth(page)
 
     const appType = groups[0].appTypes[0]
 
     await navigateToAppDetails(page, appType.name)
-    await page.getByRole('link', { name: 'Cancel' }).click()
+    await appDetailsPage.cancelLink.click()
 
     await expect(page).toHaveURL('/')
   })
 
   groups[0].appTypes.forEach(appType => {
     test(`app details page shows form for "${appType.name}"`, async ({ page }) => {
+      const appDetailsPage = new AppDetailsPage(page)
       await stubDependencies()
       await loginWithPrisonerAuth(page)
 
       await navigateToAppDetails(page, appType.name)
 
-      await expect(page.locator('.govuk-caption-xl')).toHaveText(appType.name)
-      await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
-      await expect(page.getByRole('link', { name: 'Back' })).toBeVisible()
-      await expect(page.getByRole('link', { name: 'Cancel' })).toBeVisible()
+      await appDetailsPage.expectForAppType(appType.name)
     })
   })
 

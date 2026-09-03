@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test'
 
 import managingAppsApi from '../mockApis/managingAppsApi'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
+import AppGroupPage from '../pages/appGroupPage'
+import ApplicationsPage from '../pages/applicationsPage'
 
 test.describe('App group', () => {
   test.afterEach(async () => {
@@ -9,46 +11,49 @@ test.describe('App group', () => {
   })
 
   test('shows app groups on the page', async ({ page }) => {
+    const appGroupPage = new AppGroupPage(page)
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes()
     await loginWithPrisonerAuth(page)
 
-    await page.goto('/log/group')
-
-    await expect(page.getByRole('heading', { name: 'Select app group', level: 1 })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Pin Phone Contact Apps', level: 3 })).toBeVisible()
+    await appGroupPage.open()
+    await appGroupPage.expectVisible()
   })
 
   test('redirects to app type page when a group is selected', async ({ page }) => {
+    const appGroupPage = new AppGroupPage(page)
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes()
     await loginWithPrisonerAuth(page)
 
-    await page.goto('/log/group')
-    await page.getByRole('button', { name: 'Pin Phone Contact Apps', exact: false }).click()
+    await appGroupPage.open()
+    await appGroupPage.selectPinPhoneContactApps()
 
     await expect(page).toHaveURL('/log/type')
   })
 
   test('cancel link returns user to landing page', async ({ page }) => {
+    const appGroupPage = new AppGroupPage(page)
+    const applicationsPage = new ApplicationsPage(page)
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes()
     await loginWithPrisonerAuth(page)
 
-    await page.goto('/log/group')
-    await page.getByRole('link', { name: 'Cancel' }).click()
+    await appGroupPage.open()
+    await appGroupPage.cancelLink.click()
 
     await expect(page).toHaveURL('/')
-    await expect(page.getByRole('heading', { name: 'Manage apps', level: 1 })).toBeVisible()
+    await applicationsPage.pageHeading.waitFor()
   })
 
   test('shows error page when groups API fails', async ({ page }) => {
+    const appGroupPage = new AppGroupPage(page)
     await managingAppsApi.stubGetPrisonerApps()
     await managingAppsApi.stubGetGroupsAndTypes(500)
     await loginWithPrisonerAuth(page)
 
-    await page.goto('/log/group')
+    await appGroupPage.open()
 
-    await expect(page.locator('h1', { hasText: 'Internal Server Error' })).toBeVisible()
+    await expect(appGroupPage.errorHeading).toBeVisible()
   })
 })
