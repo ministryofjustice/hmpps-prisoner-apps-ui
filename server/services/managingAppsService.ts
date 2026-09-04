@@ -41,7 +41,7 @@ export default class ManagingAppsService {
     return this.managingAppsApiClient.getAppMessages(userId, appId, page, size)
   }
 
-  addAppMessage(userId: string, appId: string, message: string, visibility: string): Promise<AppPrisonerMessage> {
-    return this.managingAppsApiClient.addAppMessage(userId, appId, message, visibility)
+  addAppMessage(userId: string, appId: string, message: string): Promise<AppPrisonerMessage> {
+    return this.managingAppsApiClient.addAppMessage(userId, appId, message)
   }
 }
