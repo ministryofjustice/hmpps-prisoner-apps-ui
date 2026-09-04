@@ -92,7 +92,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPath: `/managingPrisonerApps/v1/prisoners/apps/${appId}/comments`,
+        urlPath: `/managingPrisonerApps/v1/prisoners/apps/${appId}/messages`,
       },
       response: {
         status: httpStatus,
@@ -110,7 +110,7 @@ export default {
     stubFor({
       request: {
         method: 'POST',
-        urlPath: `/managingPrisonerApps/v1/prisoners/apps/${appId}/comments`,
+        urlPath: `/managingPrisonerApps/v1/prisoners/apps/${appId}/messages`,
       },
       response: {
         status: httpStatus,

@@ -62,7 +62,7 @@ test.describe('App view', () => {
     await expect(page).toHaveURL('/applications/1')
     const addMessageRequests = await getMatchingRequests({
       method: 'POST',
-      urlPath: '/managingPrisonerApps/v1/prisoners/apps/1/comments',
+      urlPath: '/managingPrisonerApps/v1/prisoners/apps/1/messages',
     })
     expect(addMessageRequests.body.requests.length).toBeGreaterThan(0)
   })
