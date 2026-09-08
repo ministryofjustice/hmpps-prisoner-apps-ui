@@ -85,18 +85,19 @@ export default class ManagingAppsApiClient extends RestClient {
   getAppMessages(userId: string, appId: string, page: number, size: number): Promise<AppMessages> {
     return this.get<AppMessages>(
       {
-        path: `/v1/prisoners/apps/${encodeURIComponent(appId)}/comments`,
+        path: `/v1/prisoners/apps/${encodeURIComponent(appId)}/messages`,
         query: { page, size },
       },
       asSystem(userId),
     )
   }
 
-  addAppMessage(userId: string, appId: string, message: string, visibility: string): Promise<AppPrisonerMessage> {
+  addAppMessage(userId: string, appId: string, message: string): Promise<AppPrisonerMessage> {
     return this.post<AppPrisonerMessage>(
       {
-        path: `/v1/prisoners/apps/${encodeURIComponent(appId)}/comments`,
-        data: { message, visibility },
+        path: `/v1/prisoners/apps/${encodeURIComponent(appId)}/messages`,
+        data: message,
+        headers: { 'Content-Type': 'application/json' },
       },
       asSystem(userId),
     )

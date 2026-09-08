@@ -17,7 +17,6 @@ import { type MessageItem, formatMessages } from '../../utils/formatters/formatM
 
 const ITEMS_PER_PAGE = 10
 const MESSAGES_PAGE_SIZE = 50
-const MESSAGE_VISIBILITY_PRISONER = 'STAFF_AND_PRISONER'
 
 function getStaffDisplayName(res: Response): string | undefined {
   const { user } = res.locals
@@ -210,7 +209,7 @@ export default function viewAppsRouter({
 
     req.session.pendingMessageAppId = appId
     try {
-      await managingAppsService.addAppMessage(userId, appId, reply, MESSAGE_VISIBILITY_PRISONER)
+      await managingAppsService.addAppMessage(userId, appId, reply)
     } finally {
       delete req.session.pendingMessageAppId
     }
