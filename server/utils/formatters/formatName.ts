@@ -1,4 +1,4 @@
-enum NameFormatStyle {
+export enum NameFormatStyle {
   firstMiddleLast,
   lastCommaFirstMiddle,
   lastCommaFirst,
@@ -40,4 +40,13 @@ export const formatGivenName = (givenName: string): string => {
     /^([^A-Za-z]*)([A-Za-z])/,
     (_match, prefix, letter) => `${prefix}${letter.toUpperCase()}`,
   )
+}
+
+export const formatFullName = (fullName?: string | null): string => {
+  const trimmedName = (fullName || '').trim()
+  const prefix = trimmedName.match(/^[^A-Za-z]*/)?.[0] || ''
+  const nameParts = trimmedName.slice(prefix.length).split(/\s+/).filter(Boolean)
+  const firstName = nameParts.shift() || ''
+  const lastName = nameParts.pop() || ''
+  return `${prefix}${formatName(firstName, nameParts.join(' '), lastName)}`
 }
