@@ -50,10 +50,8 @@
 
     {% if apps and apps.length %}
       {% include "./partials/results.njk" %}
-    {% elif activeTab == "closed" %}
-      <p class="govuk-body">You do not have any closed apps.</p>
     {% else %}
-      <p class="govuk-body">You do not have any open apps.</p>
+      <p class="govuk-body">You have not not sent any apps.</p>
 
       {{ govukButton({
         text: "Send a new app",
