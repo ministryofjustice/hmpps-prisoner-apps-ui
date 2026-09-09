@@ -1,4 +1,5 @@
 import type { AppMessages } from '../../@types/managingAppsApi'
+import { formatFullName } from './formatName'
 
 export type MessageItem = {
   text: string
@@ -75,7 +76,7 @@ export function formatMessages(
         sender = `${staffDisplayName} staff`
       }
       if (isSentByPrisoner) {
-        sender = prisonerDisplayName
+        sender = formatFullName(prisonerDisplayName)
       }
       return {
         text: comment.message,

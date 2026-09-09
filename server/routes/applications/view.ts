@@ -10,7 +10,7 @@ import { APPLICATION_STATUS_TAG_MAP, REJECTION_REASON_MAP } from '../../constant
 
 import { getPaginationData } from '../../utils/http/pagination'
 import { formatAppsToRows } from '../../utils/formatters/formatAppsToRows'
-import { formatGivenName, hasGivenName } from '../../utils/formatters/formatName'
+import { formatFullName, formatGivenName, formatName, hasGivenName } from '../../utils/formatters/formatName'
 import { validateTextField } from '../validate/validateTextField'
 import type { AppMessages } from '../../@types/managingAppsApi'
 import { type MessageItem, formatMessages } from '../../utils/formatters/formatMessages'
@@ -30,12 +30,12 @@ function getStaffDisplayName(res: Response): string | undefined {
 function getPrisonerDisplayName(res: Response, username: string): string {
   const headerName = res.locals.launchpadHeaderConfig?.user?.name?.trim()
   if (headerName) {
-    return headerName
+    return formatFullName(headerName)
   }
 
   const { user } = res.locals
   if (user.authSource === 'prisoner-auth') {
-    const nameFromParts = [user.familyName, user.givenName].filter(Boolean).join(', ')
+    const nameFromParts = formatName(user.givenName || '', '', user.familyName || '')
     if (nameFromParts) {
       return nameFromParts
     }
