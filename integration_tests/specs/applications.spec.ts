@@ -42,7 +42,7 @@ test.describe('Applications', () => {
     await page.goto('/applications')
 
     await expect(page.getByRole('heading', { name: "A's apps", level: 1 })).toBeVisible()
-    await expect(page.getByText('Check on apps already sent.')).toBeVisible()
+    await expect(page.getByText('Apps you have already sent.')).toBeVisible()
 
     const resultsTable = page.locator('[data-qa="app-results-table"]')
     await expect(resultsTable).toBeVisible()
@@ -59,5 +59,26 @@ test.describe('Applications', () => {
     const firstViewLink = resultsTable.getByRole('link', { name: 'View' }).first()
     await expect(firstViewLink).toBeVisible()
     await expect(firstViewLink).toHaveAttribute('href', /\/applications\/.+/)
+  })
+
+  test('shows Open and Closed tabs and switches between them', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+
+    await loginWithPrisonerAuth(page)
+    await page.goto('/applications')
+
+    const openTab = page.getByRole('link', { name: 'Open' })
+    const closedTab = page.getByRole('link', { name: 'Closed' })
+    await expect(openTab).toBeVisible()
+    await expect(closedTab).toBeVisible()
+    await expect(openTab).toHaveAttribute('aria-current', 'page')
+
+    const resultsTable = page.locator('[data-qa="app-results-table"]')
+    await expect(resultsTable.getByRole('cell', { name: 'New' })).toBeVisible()
+
+    await closedTab.click()
+    await expect(page).toHaveURL(/tab=closed/)
+    await expect(closedTab).toHaveAttribute('aria-current', 'page')
+    await expect(resultsTable.getByRole('cell', { name: 'Approved' })).toBeVisible()
   })
 })

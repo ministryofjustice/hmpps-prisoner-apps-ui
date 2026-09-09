@@ -7,6 +7,7 @@ import ManagingAppsService from '../../services/managingAppsService'
 import { URLS } from '../../constants/urls'
 import { PATHS } from '../../constants/paths'
 import { APPLICATION_STATUS_TAG_MAP, REJECTION_REASON_MAP } from '../../constants/applicationStatus'
+import { APPLICATION_TABS, APP_SCOPES, isApplicationTab } from '../../constants/applicationTabs'
 
 import { getPaginationData } from '../../utils/http/pagination'
 import { formatAppsToRows } from '../../utils/formatters/formatAppsToRows'
@@ -82,6 +83,8 @@ export default function viewAppsRouter({
   router.get(URLS.APPLICATIONS, async (req: Request, res: Response) => {
     const { userId } = res.locals.user
     const page = Number(req.query.page) || 1
+    const activeTab = isApplicationTab(req.query.tab) ? req.query.tab : APPLICATION_TABS.OPEN
+    const scope = activeTab === APPLICATION_TABS.CLOSED ? APP_SCOPES.CLOSED : APP_SCOPES.OPEN
 
     const givenName = hasGivenName(res.locals.user) ? res.locals.user.givenName : ''
     const firstName = formatGivenName(givenName)
@@ -91,7 +94,7 @@ export default function viewAppsRouter({
       correlationId: req.id,
     })
 
-    const prisonerApps = await managingAppsService.getPrisonerApps(userId, page, ITEMS_PER_PAGE)
+    const prisonerApps = await managingAppsService.getPrisonerApps(userId, page, scope, ITEMS_PER_PAGE)
     const pagination = getPaginationData(page, prisonerApps.totalRecords, ITEMS_PER_PAGE)
     const rows = formatAppsToRows(prisonerApps.apps)
 
@@ -99,6 +102,7 @@ export default function viewAppsRouter({
       apps: rows,
       pagination,
       firstName,
+      activeTab,
       query: req.query,
     })
   })

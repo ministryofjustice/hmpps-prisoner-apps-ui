@@ -13,7 +13,7 @@ describe('ManagingAppsService', () => {
     managingAppsService = new ManagingAppsService(managingAppsApiClient)
   })
 
-  it('should call getPrisonerApps on the api client and return its result', async () => {
+  it('should call getPrisonerApps on the api client with the given scope and return its result', async () => {
     const userId = 'A1234BC'
     const pageNum = 1
     const pageSize = 10
@@ -21,9 +21,9 @@ describe('ManagingAppsService', () => {
 
     managingAppsApiClient.getPrisonerApps.mockResolvedValue(expectedAppsPage)
 
-    const result = await managingAppsService.getPrisonerApps(userId, pageNum, pageSize)
+    const result = await managingAppsService.getPrisonerApps(userId, pageNum, 'OPEN', pageSize)
 
-    expect(managingAppsApiClient.getPrisonerApps).toHaveBeenCalledWith(userId, pageNum, pageSize)
+    expect(managingAppsApiClient.getPrisonerApps).toHaveBeenCalledWith(userId, pageNum, 'OPEN', pageSize)
     expect(managingAppsApiClient.getPrisonerApps).toHaveBeenCalledTimes(1)
     expect(result).toEqual(expectedAppsPage)
   })
@@ -35,9 +35,9 @@ describe('ManagingAppsService', () => {
 
     managingAppsApiClient.getPrisonerApps.mockResolvedValue(expectedAppsPage)
 
-    const result = await managingAppsService.getPrisonerApps(userId, pageNum)
+    const result = await managingAppsService.getPrisonerApps(userId, pageNum, 'CLOSED')
 
-    expect(managingAppsApiClient.getPrisonerApps).toHaveBeenCalledWith(userId, pageNum, undefined)
+    expect(managingAppsApiClient.getPrisonerApps).toHaveBeenCalledWith(userId, pageNum, 'CLOSED', undefined)
     expect(managingAppsApiClient.getPrisonerApps).toHaveBeenCalledTimes(1)
     expect(result).toEqual(expectedAppsPage)
   })

@@ -6,10 +6,16 @@ export default class ApplicationListPage extends AbstractPage {
 
   readonly header: Locator
 
+  readonly openTab: Locator
+
+  readonly closedTab: Locator
+
   private constructor(page: Page) {
     super(page)
     this.usersName = page.getByTestId('launchpad-home-header-user-name')
     this.header = page.getByRole('heading', { name: "A's apps", level: 1 })
+    this.openTab = page.getByRole('link', { name: 'Open' })
+    this.closedTab = page.getByRole('link', { name: 'Closed' })
   }
 
   static async verifyOnPage(page: Page): Promise<ApplicationListPage> {

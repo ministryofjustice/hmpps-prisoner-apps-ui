@@ -12,14 +12,15 @@ import type {
   JourneyEventsRequest,
 } from '../@types/managingAppsApi'
 import config from '../config'
+import type { AppScope } from '../constants/applicationTabs'
 
 export default class ManagingAppsApiClient extends RestClient {
   constructor(authenticationClient: AuthenticationClient) {
     super('Managing Apps API', config.apis.managingAppsApi, logger, authenticationClient)
   }
 
-  getPrisonerApps(userId: string, pageNum: number, pageSize?: number) {
-    const query = pageSize === undefined ? { pageNum } : { pageNum, pageSize }
+  getPrisonerApps(userId: string, pageNum: number, scope: AppScope, pageSize?: number) {
+    const query = pageSize === undefined ? { pageNum, scope } : { pageNum, pageSize, scope }
 
     return this.get<PrisonerAppsPage>(
       {

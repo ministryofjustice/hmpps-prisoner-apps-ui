@@ -1,6 +1,11 @@
 import type { SuperAgentRequest } from 'superagent'
 
-import { appTypePendingResponse, prisonerAppsPageResponse, viewAppResponse } from '../../server/testData'
+import {
+  appTypePendingResponse,
+  prisonerAppsPageResponse,
+  prisonerClosedAppsPageResponse,
+  viewAppResponse,
+} from '../../server/testData'
 import { groups } from '../../server/testData/groups/groups'
 import { stubFor } from './wiremock'
 
@@ -18,11 +23,12 @@ export default {
       },
     }),
 
-  stubGetPrisonerApps: (httpStatus = 200): SuperAgentRequest =>
+  stubGetPrisonerOpenApps: (httpStatus = 200): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
         urlPath: '/managingPrisonerApps/v1/prisoners/apps',
+        queryParameters: { scope: { equalTo: 'OPEN' } },
       },
       response: {
         status: httpStatus,
@@ -30,6 +36,24 @@ export default {
         jsonBody: prisonerAppsPageResponse,
       },
     }),
+
+  stubGetPrisonerClosedApps: (httpStatus = 200): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPath: '/managingPrisonerApps/v1/prisoners/apps',
+        queryParameters: { scope: { equalTo: 'CLOSED' } },
+      },
+      response: {
+        status: httpStatus,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: prisonerClosedAppsPageResponse,
+      },
+    }),
+
+  async stubGetPrisonerApps(httpStatus = 200): Promise<void> {
+    await Promise.all([this.stubGetPrisonerOpenApps(httpStatus), this.stubGetPrisonerClosedApps(httpStatus)])
+  },
 
   stubGetGroupsAndTypes: (httpStatus = 200): SuperAgentRequest =>
     stubFor({

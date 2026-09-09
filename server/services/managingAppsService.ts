@@ -9,12 +9,13 @@ import type {
   JourneyEventsRequest,
 } from '../@types/managingAppsApi'
 import ManagingAppsApiClient from '../data/managingAppsApiClient'
+import type { AppScope } from '../constants/applicationTabs'
 
 export default class ManagingAppsService {
   constructor(private readonly managingAppsApiClient: ManagingAppsApiClient) {}
 
-  getPrisonerApps(userId: string, pageNum: number, pageSize?: number): Promise<PrisonerAppsPage> {
-    return this.managingAppsApiClient.getPrisonerApps(userId, pageNum, pageSize)
+  getPrisonerApps(userId: string, pageNum: number, scope: AppScope, pageSize?: number): Promise<PrisonerAppsPage> {
+    return this.managingAppsApiClient.getPrisonerApps(userId, pageNum, scope, pageSize)
   }
 
   getGroupsAndTypes(userId: string): Promise<ApplicationGroup[]> {

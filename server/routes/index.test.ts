@@ -43,7 +43,7 @@ describe('GET /', () => {
 })
 
 describe('GET /applications', () => {
-  it('should render applications page', () => {
+  it('should render the open apps tab by default', () => {
     auditService.logPageView.mockResolvedValue(null)
     managingAppsService.getPrisonerApps.mockResolvedValue(prisonerAppsPageResponse)
 
@@ -56,7 +56,33 @@ describe('GET /applications', () => {
           who: user.username,
           correlationId: expect.any(String),
         })
-        expect(managingAppsService.getPrisonerApps).toHaveBeenCalledWith(user.userId, 1, 10)
+        expect(managingAppsService.getPrisonerApps).toHaveBeenCalledWith(user.userId, 1, 'OPEN', 10)
+      })
+  })
+
+  it('should render the closed apps tab when requested', () => {
+    auditService.logPageView.mockResolvedValue(null)
+    managingAppsService.getPrisonerApps.mockResolvedValue(prisonerAppsPageResponse)
+
+    return request(app)
+      .get('/applications?tab=closed')
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        expect(managingAppsService.getPrisonerApps).toHaveBeenCalledWith(user.userId, 1, 'CLOSED', 10)
+      })
+  })
+
+  it('should fall back to the open apps tab for an unknown tab value', () => {
+    auditService.logPageView.mockResolvedValue(null)
+    managingAppsService.getPrisonerApps.mockResolvedValue(prisonerAppsPageResponse)
+
+    return request(app)
+      .get('/applications?tab=unknown')
+      .expect('Content-Type', /html/)
+      .expect(200)
+      .expect(res => {
+        expect(managingAppsService.getPrisonerApps).toHaveBeenCalledWith(user.userId, 1, 'OPEN', 10)
       })
   })
 

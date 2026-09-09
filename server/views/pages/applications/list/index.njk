@@ -3,6 +3,7 @@
 {% from "../../../partials/breadcrumb.njk" import breadcrumb %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
 
 {% set pageTitle = "Manage apps" %}
 {% set mainClasses = "govuk-body" %}
@@ -29,11 +30,30 @@
   <div class="govuk-width-container govuk-!-padding-bottom-5">
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">{{ firstName }}'s apps</h1>
 
+    <p class="govuk-body-l">Apps you have already sent.</p>
+
+    {{ mojSubNavigation({
+      label: "Apps",
+      items: [
+        {
+          text: "Open",
+          href: "/applications?tab=open",
+          active: activeTab == "open"
+        },
+        {
+          text: "Closed",
+          href: "/applications?tab=closed",
+          active: activeTab == "closed"
+        }
+      ]
+    }) }}
+
     {% if apps and apps.length %}
-      <p class="govuk-body-l">Check on apps already sent.</p>
       {% include "./partials/results.njk" %}
+    {% elif activeTab == "closed" %}
+      <p class="govuk-body">You do not have any closed apps.</p>
     {% else %}
-      <p class="govuk-body">You have not not sent any apps.</p>
+      <p class="govuk-body">You do not have any open apps.</p>
 
       {{ govukButton({
         text: "Send a new app",
