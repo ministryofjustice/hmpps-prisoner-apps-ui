@@ -22,7 +22,7 @@ test.describe('App view', () => {
     await page.goto('/applications')
     await expect(appViewPage.resultsTable).toBeVisible()
 
-    await page.getByRole('link', { name: 'View' }).first().click()
+    await page.getByRole('link', { name: 'Add an official PIN phone contact' }).first().click()
 
     await expect(page).toHaveURL('/applications/1')
     await appViewPage.expectSubmittedAppVisible()

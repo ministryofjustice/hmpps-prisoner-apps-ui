@@ -23,7 +23,7 @@ describe('ManagingAppsApiClient', () => {
   })
 
   describe('getPrisonerApps', () => {
-    it('should make a GET request to getPrisonerApps endpoint and return the response body', async () => {
+    it('should make a GET request with the OPEN scope and return the response body', async () => {
       const userId = 'A1234BC'
       const pageNum = 1
       const pageSize = 10
@@ -31,10 +31,28 @@ describe('ManagingAppsApiClient', () => {
 
       nock(config.apis.managingAppsApi.url)
         .get('/v1/prisoners/apps')
-        .query({ pageNum, pageSize })
+        .query({ pageNum, pageSize, scope: 'OPEN' })
         .reply(200, expectedResponse)
 
-      const response = await managingAppsApiClient.getPrisonerApps(userId, pageNum, pageSize)
+      const response = await managingAppsApiClient.getPrisonerApps(userId, pageNum, 'OPEN', pageSize)
+
+      expect(response).toEqual(expectedResponse)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(userId)
+      expect(mockAuthenticationClient.getToken).toHaveBeenCalledTimes(1)
+    })
+
+    it('should make a GET request with the CLOSED scope and return the response body', async () => {
+      const userId = 'A1234BC'
+      const pageNum = 1
+      const pageSize = 10
+      const expectedResponse = prisonerAppsPageResponse
+
+      nock(config.apis.managingAppsApi.url)
+        .get('/v1/prisoners/apps')
+        .query({ pageNum, pageSize, scope: 'CLOSED' })
+        .reply(200, expectedResponse)
+
+      const response = await managingAppsApiClient.getPrisonerApps(userId, pageNum, 'CLOSED', pageSize)
 
       expect(response).toEqual(expectedResponse)
       expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(userId)
@@ -46,9 +64,12 @@ describe('ManagingAppsApiClient', () => {
       const pageNum = 2
       const expectedResponse = { ...prisonerAppsPageResponse, page: pageNum }
 
-      nock(config.apis.managingAppsApi.url).get('/v1/prisoners/apps').query({ pageNum }).reply(200, expectedResponse)
+      nock(config.apis.managingAppsApi.url)
+        .get('/v1/prisoners/apps')
+        .query({ pageNum, scope: 'OPEN' })
+        .reply(200, expectedResponse)
 
-      const response = await managingAppsApiClient.getPrisonerApps(userId, pageNum)
+      const response = await managingAppsApiClient.getPrisonerApps(userId, pageNum, 'OPEN')
 
       expect(response).toEqual(expectedResponse)
       expect(mockAuthenticationClient.getToken).toHaveBeenCalledWith(userId)

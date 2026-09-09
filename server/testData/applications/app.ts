@@ -1,22 +1,31 @@
 import type { PrisonerAppsPage, ViewAppListDto, ApplicationGroup } from '../../@types/managingAppsApi'
 
-export const prisonerApp: ViewAppListDto = {
+const baseApp: Omit<ViewAppListDto, 'status'> = {
   id: '1',
   prisonerId: 'A1234BC',
   applicationType: 'Add an official PIN phone contact',
   createdDate: '2024-01-10T10:30:00Z',
   lastUpdatedDate: '2024-01-11T12:00:00Z',
-  status: 'NEW',
 }
+
+const toAppsPage = (apps: ViewAppListDto[]): PrisonerAppsPage => ({
+  page: 1,
+  totalRecords: apps.length,
+  exhausted: true,
+  apps,
+})
+
+export const prisonerApp: ViewAppListDto = { ...baseApp, status: 'NEW' }
 
 export const prisonerAppsResponse: ViewAppListDto[] = [prisonerApp]
 
-export const prisonerAppsPageResponse: PrisonerAppsPage = {
-  page: 1,
-  totalRecords: prisonerAppsResponse.length,
-  exhausted: true,
-  apps: prisonerAppsResponse,
-}
+export const prisonerAppsPageResponse: PrisonerAppsPage = toAppsPage(prisonerAppsResponse)
+
+export const prisonerClosedApp: ViewAppListDto = { ...baseApp, status: 'APPROVED' }
+
+export const prisonerClosedAppsResponse: ViewAppListDto[] = [prisonerClosedApp]
+
+export const prisonerClosedAppsPageResponse: PrisonerAppsPage = toAppsPage(prisonerClosedAppsResponse)
 
 export const applicationTypeResponse: ApplicationGroup = {
   id: 1,

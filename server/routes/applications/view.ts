@@ -7,6 +7,7 @@ import ManagingAppsService from '../../services/managingAppsService'
 import { URLS } from '../../constants/urls'
 import { PATHS } from '../../constants/paths'
 import { APPLICATION_STATUS_TAG_MAP, REJECTION_REASON_MAP } from '../../constants/applicationStatus'
+import { APPLICATION_TABS, APP_SCOPES, isApplicationTab } from '../../constants/applicationTabs'
 
 import { getPaginationData } from '../../utils/http/pagination'
 import { formatAppsToRows } from '../../utils/formatters/formatAppsToRows'
@@ -81,6 +82,10 @@ export default function viewAppsRouter({
   router.get(URLS.APPLICATIONS, async (req: Request, res: Response) => {
     const { userId } = res.locals.user
     const page = Number(req.query.page) || 1
+    const activeTab = isApplicationTab(req.query.tab) ? req.query.tab : APPLICATION_TABS.OPEN
+
+    const openPage = activeTab === APPLICATION_TABS.OPEN ? page : 1
+    const closedPage = activeTab === APPLICATION_TABS.CLOSED ? page : 1
 
     const givenName = hasGivenName(res.locals.user) ? res.locals.user.givenName : ''
     const firstName = formatGivenName(givenName)
@@ -90,15 +95,18 @@ export default function viewAppsRouter({
       correlationId: req.id,
     })
 
-    const prisonerApps = await managingAppsService.getPrisonerApps(userId, page, ITEMS_PER_PAGE)
-    const pagination = getPaginationData(page, prisonerApps.totalRecords, ITEMS_PER_PAGE)
-    const rows = formatAppsToRows(prisonerApps.apps)
+    const [openApps, closedApps] = await Promise.all([
+      managingAppsService.getPrisonerApps(userId, openPage, APP_SCOPES.OPEN, ITEMS_PER_PAGE),
+      managingAppsService.getPrisonerApps(userId, closedPage, APP_SCOPES.CLOSED, ITEMS_PER_PAGE),
+    ])
 
     res.render(PATHS.APPLICATIONS.LIST, {
-      apps: rows,
-      pagination,
       firstName,
-      query: req.query,
+      activeTab,
+      openApps: formatAppsToRows(openApps.apps, APPLICATION_TABS.OPEN),
+      openPagination: getPaginationData(openPage, openApps.totalRecords, ITEMS_PER_PAGE),
+      closedApps: formatAppsToRows(closedApps.apps, APPLICATION_TABS.CLOSED),
+      closedPagination: getPaginationData(closedPage, closedApps.totalRecords, ITEMS_PER_PAGE),
     })
   })
 

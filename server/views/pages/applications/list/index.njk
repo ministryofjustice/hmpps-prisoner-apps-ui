@@ -3,6 +3,8 @@
 {% from "../../../partials/breadcrumb.njk" import breadcrumb %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "./partials/results.njk" import results %}
 
 {% set pageTitle = "Manage apps" %}
 {% set mainClasses = "govuk-body" %}
@@ -29,16 +31,43 @@
   <div class="govuk-width-container govuk-!-padding-bottom-5">
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">{{ firstName }}'s apps</h1>
 
-    {% if apps and apps.length %}
-      <p class="govuk-body-l">Check on apps already sent.</p>
-      {% include "./partials/results.njk" %}
-    {% else %}
-      <p class="govuk-body">You have not not sent any apps.</p>
+    <p class="govuk-body-l">Apps you have already sent</p>
 
-      {{ govukButton({
-        text: "Send a new app",
-        href: '/log/group'
-      }) }}
-    {% endif %}
+    {% set openPanel %}
+      {% if openApps and openApps.length %}
+        {{ results(openApps, openPagination, "open", "#open", "app-results-table") }}
+      {% else %}
+        <p class="govuk-body">You have not sent any apps.</p>
+
+        {{ govukButton({
+          text: "Send a new app",
+          href: '/log/group'
+        }) }}
+      {% endif %}
+    {% endset %}
+
+    {% set closedPanel %}
+      {% if closedApps and closedApps.length %}
+        {{ results(closedApps, closedPagination, "closed", "#closed", "app-results-table-closed") }}
+      {% else %}
+        <p class="govuk-body">You have no closed apps.</p>
+      {% endif %}
+    {% endset %}
+
+    {{ govukTabs({
+      title: "Apps",
+      items: [
+        {
+          label: "Open apps",
+          id: "open",
+          panel: { html: openPanel }
+        },
+        {
+          label: "Closed apps",
+          id: "closed",
+          panel: { html: closedPanel }
+        }
+      ]
+    }) }}
   </div>
 {% endblock %}

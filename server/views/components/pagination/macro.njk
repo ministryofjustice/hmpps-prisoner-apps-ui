@@ -1,10 +1,11 @@
 {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
-{% macro pagination(pagination, query) %}
+{% macro pagination(pagination, query, hash) %}
   {% if pagination.totalPages > 1 %}
     {% set currentPage = pagination.page %}
     {% set totalPages = pagination.totalPages %}
     {% set baseUrl = "/applications?" %}
+    {% set hashSuffix = hash if hash else "" %}
     {% set queryParams = [] %}
 
     {% for key, value in query %}
@@ -59,7 +60,7 @@
         {% set _ = items.push({
           number: p,
           current: p == currentPage,
-          href: pageLink ~ p
+          href: pageLink ~ p ~ hashSuffix
         }) %}
       {% endif %}
     {% endfor %}
@@ -67,7 +68,7 @@
     {% set previous = null %}
     {% if currentPage > 1 %}
       {% set previous = {
-        href: pageLink ~ (currentPage - 1),
+        href: pageLink ~ (currentPage - 1) ~ hashSuffix,
         text: "Previous"
       } %}
     {% endif %}
@@ -75,7 +76,7 @@
     {% set next = null %}
     {% if currentPage < totalPages %}
       {% set next = {
-        href: pageLink ~ (currentPage + 1),
+        href: pageLink ~ (currentPage + 1) ~ hashSuffix,
         text: "Next"
       } %}
     {% endif %}

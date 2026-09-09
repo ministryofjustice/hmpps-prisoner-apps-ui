@@ -42,7 +42,7 @@ test.describe('Applications', () => {
     await page.goto('/applications')
 
     await expect(page.getByRole('heading', { name: "A's apps", level: 1 })).toBeVisible()
-    await expect(page.getByText('Check on apps already sent.')).toBeVisible()
+    await expect(page.getByText('Apps you have already sent')).toBeVisible()
 
     const resultsTable = page.locator('[data-qa="app-results-table"]')
     await expect(resultsTable).toBeVisible()
@@ -52,12 +52,36 @@ test.describe('Applications', () => {
     await expect(resultsTable.getByRole('columnheader', { name: 'Status' })).toBeVisible()
 
     const firstRow = resultsTable.locator('tbody tr').first()
-    await expect(firstRow).toContainText('10/01/2024')
+    await expect(firstRow).toContainText('10 January 2024')
     await expect(firstRow).toContainText('Add an official PIN phone contact')
     await expect(firstRow).toContainText('New')
 
-    const firstViewLink = resultsTable.getByRole('link', { name: 'View' }).first()
+    const firstViewLink = resultsTable.getByRole('link', { name: 'Add an official PIN phone contact' }).first()
     await expect(firstViewLink).toBeVisible()
     await expect(firstViewLink).toHaveAttribute('href', /\/applications\/.+/)
+  })
+
+  test('shows Open and Closed tabs and switches between them', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+
+    await loginWithPrisonerAuth(page)
+    await page.goto('/applications')
+
+    const openTab = page.getByRole('tab', { name: 'Open apps' })
+    const closedTab = page.getByRole('tab', { name: 'Closed apps' })
+    await expect(openTab).toBeVisible()
+    await expect(closedTab).toBeVisible()
+    await expect(openTab).toHaveAttribute('aria-selected', 'true')
+
+    const openTable = page.locator('[data-qa="app-results-table"]')
+    await expect(openTable.getByRole('cell', { name: 'New' })).toBeVisible()
+
+    await closedTab.click()
+    await expect(page).toHaveURL(/#closed/)
+    await expect(closedTab).toHaveAttribute('aria-selected', 'true')
+
+    const closedTable = page.locator('[data-qa="app-results-table-closed"]')
+    await expect(closedTable.getByRole('columnheader', { name: 'Last updated' })).toBeVisible()
+    await expect(closedTable.getByRole('cell', { name: 'Approved' })).toBeVisible()
   })
 })
