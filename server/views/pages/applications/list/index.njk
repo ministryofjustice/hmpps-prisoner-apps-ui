@@ -3,7 +3,8 @@
 {% from "../../../partials/breadcrumb.njk" import breadcrumb %}
 
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "moj/components/sub-navigation/macro.njk" import mojSubNavigation %}
+{% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "./partials/results.njk" import results %}
 
 {% set pageTitle = "Manage apps" %}
 {% set mainClasses = "govuk-body" %}
@@ -32,31 +33,41 @@
 
     <p class="govuk-body-l">Apps you have already sent.</p>
 
-    {{ mojSubNavigation({
-      label: "Apps",
+    {% set openPanel %}
+      {% if openApps and openApps.length %}
+        {{ results(openApps, openPagination, "open", "#open", "app-results-table") }}
+      {% else %}
+        <p class="govuk-body">You have not sent any apps.</p>
+
+        {{ govukButton({
+          text: "Send a new app",
+          href: '/log/group'
+        }) }}
+      {% endif %}
+    {% endset %}
+
+    {% set closedPanel %}
+      {% if closedApps and closedApps.length %}
+        {{ results(closedApps, closedPagination, "closed", "#closed", "app-results-table-closed") }}
+      {% else %}
+        <p class="govuk-body">You have no closed apps.</p>
+      {% endif %}
+    {% endset %}
+
+    {{ govukTabs({
+      title: "Apps",
       items: [
         {
-          text: "Open",
-          href: "/applications?tab=open",
-          active: activeTab == "open"
+          label: "Open apps",
+          id: "open",
+          panel: { html: openPanel }
         },
         {
-          text: "Closed",
-          href: "/applications?tab=closed",
-          active: activeTab == "closed"
+          label: "Closed apps",
+          id: "closed",
+          panel: { html: closedPanel }
         }
       ]
     }) }}
-
-    {% if apps and apps.length %}
-      {% include "./partials/results.njk" %}
-    {% else %}
-      <p class="govuk-body">You have not not sent any apps.</p>
-
-      {{ govukButton({
-        text: "Send a new app",
-        href: '/log/group'
-      }) }}
-    {% endif %}
   </div>
 {% endblock %}
