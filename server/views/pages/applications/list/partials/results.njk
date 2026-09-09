@@ -3,6 +3,7 @@
 
 {% macro results(apps, paginationData, tab, hash, qa) %}
 <div class="app-results-table">
+  <h2 class="govuk-heading-m">{% if tab == "closed" %}Closed apps{% else %}Open apps{% endif %}</h2>
   {{ govukTable({
     head: [
       { text: "App" },

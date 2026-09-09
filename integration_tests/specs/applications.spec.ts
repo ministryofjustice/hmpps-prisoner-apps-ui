@@ -42,7 +42,7 @@ test.describe('Applications', () => {
     await page.goto('/applications')
 
     await expect(page.getByRole('heading', { name: "A's apps", level: 1 })).toBeVisible()
-    await expect(page.getByText('Apps you have already sent.')).toBeVisible()
+    await expect(page.getByText('Apps you have already sent')).toBeVisible()
 
     const resultsTable = page.locator('[data-qa="app-results-table"]')
     await expect(resultsTable).toBeVisible()
