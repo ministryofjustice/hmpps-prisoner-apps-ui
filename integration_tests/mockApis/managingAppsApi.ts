@@ -1,4 +1,5 @@
 import type { SuperAgentRequest } from 'superagent'
+import type { PrisonerAppsPage } from '../../server/@types/managingAppsApi'
 
 import {
   appTypePendingResponse,
@@ -23,7 +24,10 @@ export default {
       },
     }),
 
-  stubGetPrisonerOpenApps: (httpStatus = 200): SuperAgentRequest =>
+  stubGetPrisonerOpenApps: (
+    httpStatus = 200,
+    responseBody: PrisonerAppsPage = prisonerAppsPageResponse,
+  ): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -33,11 +37,14 @@ export default {
       response: {
         status: httpStatus,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: prisonerAppsPageResponse,
+        jsonBody: responseBody,
       },
     }),
 
-  stubGetPrisonerClosedApps: (httpStatus = 200): SuperAgentRequest =>
+  stubGetPrisonerClosedApps: (
+    httpStatus = 200,
+    responseBody: PrisonerAppsPage = prisonerClosedAppsPageResponse,
+  ): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -47,12 +54,19 @@ export default {
       response: {
         status: httpStatus,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: prisonerClosedAppsPageResponse,
+        jsonBody: responseBody,
       },
     }),
 
-  async stubGetPrisonerApps(httpStatus = 200): Promise<void> {
-    await Promise.all([this.stubGetPrisonerOpenApps(httpStatus), this.stubGetPrisonerClosedApps(httpStatus)])
+  async stubGetPrisonerApps(
+    httpStatus = 200,
+    openAppsResponse: PrisonerAppsPage = prisonerAppsPageResponse,
+    closedAppsResponse: PrisonerAppsPage = prisonerClosedAppsPageResponse,
+  ): Promise<void> {
+    await Promise.all([
+      this.stubGetPrisonerOpenApps(httpStatus, openAppsResponse),
+      this.stubGetPrisonerClosedApps(httpStatus, closedAppsResponse),
+    ])
   },
 
   stubGetGroupsAndTypes: (httpStatus = 200): SuperAgentRequest =>
