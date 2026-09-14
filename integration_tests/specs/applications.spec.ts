@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import managingAppsApi from '../mockApis/managingAppsApi'
+import buildApplicationsStatusFixtures from '../testData/applicationsFixtures'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import ApplicationListPage from '../pages/applicationListPage'
 import ApplicationsPage from '../pages/applicationsPage'
@@ -62,26 +63,21 @@ test.describe('Applications', () => {
   })
 
   test('shows Open and Closed tabs and switches between them', async ({ page }) => {
-    await managingAppsApi.stubGetPrisonerApps()
+    const { openApps, closedApps } = buildApplicationsStatusFixtures()
+
+    await managingAppsApi.stubGetPrisonerApps(200, openApps, closedApps)
 
     await loginWithPrisonerAuth(page)
     await page.goto('/applications')
 
-    const openTab = page.getByRole('tab', { name: 'Open apps' })
-    const closedTab = page.getByRole('tab', { name: 'Closed apps' })
-    await expect(openTab).toBeVisible()
-    await expect(closedTab).toBeVisible()
-    await expect(openTab).toHaveAttribute('aria-selected', 'true')
+    const applicationListPage = await ApplicationListPage.verifyOnPage(page)
+    await applicationListPage.expectTabsVisible()
+    await applicationListPage.expectOpenTabSelected()
+    await applicationListPage.expectOpenStatusesVisible(['New', 'In progress'])
 
-    const openTable = page.locator('[data-qa="app-results-table"]')
-    await expect(openTable.getByRole('cell', { name: 'New' })).toBeVisible()
-
-    await closedTab.click()
-    await expect(page).toHaveURL(/#closed/)
-    await expect(closedTab).toHaveAttribute('aria-selected', 'true')
-
-    const closedTable = page.locator('[data-qa="app-results-table-closed"]')
-    await expect(closedTable.getByRole('columnheader', { name: 'Last updated' })).toBeVisible()
-    await expect(closedTable.getByRole('cell', { name: 'Approved' })).toBeVisible()
+    await applicationListPage.openClosedTab()
+    await applicationListPage.expectClosedTabSelected()
+    await applicationListPage.expectClosedResultsHeaderVisible()
+    await applicationListPage.expectClosedStatusesVisible(['Approved', 'Rejected', 'Declined'])
   })
 })
