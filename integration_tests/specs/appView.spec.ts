@@ -136,4 +136,26 @@ test.describe('App view', () => {
     await expect(page.getByText('This app has been rejected because you already sent this app')).toBeVisible()
     await expect(appViewPage.sendButton).not.toBeVisible()
   })
+
+  test('shows establishment staff sender label for staff messages', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetPrisonerAppById('1')
+    await managingAppsApi.stubGetAppMessages('1', 200, [staffReplyMessage])
+    await loginWithPrisonerAuth(page)
+
+    await page.goto('/applications/1')
+
+    await expect(page.getByText('HMP Cookham Wood staff')).toBeVisible()
+  })
+
+  test('shows prisoner name for prisoner-authored messages', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetPrisonerAppById('1')
+    await managingAppsApi.stubGetAppMessages('1', 200, [prisonerSentMessage])
+    await loginWithPrisonerAuth(page, { name: 'aUtomATion tEStuSER' })
+
+    await page.goto('/applications/1')
+
+    await expect(page.getByText('Automation Testuser', { exact: true })).toBeVisible()
+  })
 })
