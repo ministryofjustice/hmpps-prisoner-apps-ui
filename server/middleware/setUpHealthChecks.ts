@@ -20,14 +20,6 @@ export default function setUpHealthChecks(applicationInfo: ApplicationInfo, audi
     healthComponents: apiConfig.map(([name, options]) => endpointHealthComponent(logger, name, options)),
   })
 
-  router.get('/test-audit', async (req, res) => {
-    await auditService.logPageView('TEST_AUDIT_PATH' as Page, {
-      who: 'test-user',
-      correlationId: req.id,
-    })
-    res.send('WORKED')
-  })
-
   router.get('/health', middleware.health)
   router.get(
     '/info',
