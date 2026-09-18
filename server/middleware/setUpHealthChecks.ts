@@ -6,9 +6,8 @@ import type { ApplicationInfo } from '../applicationInfo'
 import logger from '../../logger'
 import config from '../config'
 import { ACTIVE_AGENCIES } from '../constants/activeAgencies'
-import AuditService, { Page } from '../services/auditService'
 
-export default function setUpHealthChecks(applicationInfo: ApplicationInfo, auditService: AuditService): Router {
+export default function setUpHealthChecks(applicationInfo: ApplicationInfo): Router {
   const router = express.Router()
 
   const apiConfig = Object.entries(config.apis).filter(([, options]) => 'healthPath' in options) as Array<
