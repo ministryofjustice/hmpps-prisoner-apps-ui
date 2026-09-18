@@ -29,7 +29,7 @@ export default function createApp(services: Services): express.Application {
 
   app.locals.launchpadHome = config.launchpadHome
 
-  app.use(setUpHealthChecks(services.applicationInfo, services.auditService))
+  app.use(setUpHealthChecks(services.applicationInfo))
   app.use(setUpWebSecurity())
   app.use(setUpWebSession())
   app.use(setUpWebRequestParsing())
