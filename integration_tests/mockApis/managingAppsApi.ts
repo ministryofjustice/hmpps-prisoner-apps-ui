@@ -1,5 +1,6 @@
 import type { SuperAgentRequest } from 'superagent'
 import type { PrisonerAppsPage } from '../../server/@types/managingAppsApi'
+import type { components } from '../../server/@types/managing-prisoner-apps-api'
 
 import {
   appTypePendingResponse,
@@ -9,6 +10,8 @@ import {
 } from '../../server/testData'
 import { groups } from '../../server/testData/groups/groups'
 import { stubFor } from './wiremock'
+
+type ApplicationGroup = components['schemas']['ApplicationGroupResponse']
 
 export default {
   stubPing: (httpStatus = 200): SuperAgentRequest =>
@@ -69,7 +72,7 @@ export default {
     ])
   },
 
-  stubGetGroupsAndTypes: (httpStatus = 200): SuperAgentRequest =>
+  stubGetGroupsAndTypes: (httpStatus = 200, responseBody: ApplicationGroup[] = groups): SuperAgentRequest =>
     stubFor({
       request: {
         method: 'GET',
@@ -78,7 +81,7 @@ export default {
       response: {
         status: httpStatus,
         headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-        jsonBody: groups,
+        jsonBody: responseBody,
       },
     }),
 

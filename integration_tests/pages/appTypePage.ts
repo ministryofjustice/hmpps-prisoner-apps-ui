@@ -29,6 +29,10 @@ export default class AppTypePage extends AbstractPage {
     await this.appTypeOption(appTypeName).check()
   }
 
+  async expectAppTypesVisible(appTypeNames: string[]) {
+    await Promise.all(appTypeNames.map(appTypeName => expect(this.appTypeOption(appTypeName)).toBeVisible()))
+  }
+
   async continue() {
     await this.continueButton.click()
   }
