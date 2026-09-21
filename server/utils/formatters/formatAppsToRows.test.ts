@@ -22,6 +22,7 @@ describe(formatAppsToRows.name, () => {
         createdDate: '2024-01-10T00:00:00Z',
         lastUpdatedDate: '2024-01-10T00:00:00Z',
         status: 'NEW' as const,
+        messageCount: 3,
       },
     ]
 
@@ -38,6 +39,13 @@ describe(formatAppsToRows.name, () => {
           classes: 'govuk-!-text-nowrap',
         },
         { html: '<strong class="govuk-tag govuk-tag--light-blue">New</strong>' },
+        {
+          text: '3',
+          format: 'numeric',
+          attributes: {
+            'data-sort-value': '3',
+          },
+        },
       ],
     ])
   })
@@ -69,6 +77,13 @@ describe(formatAppsToRows.name, () => {
           classes: 'govuk-!-text-nowrap',
         },
         { html: '<strong class="govuk-tag govuk-tag--green">Approved</strong>' },
+        {
+          text: '0',
+          format: 'numeric',
+          attributes: {
+            'data-sort-value': '0',
+          },
+        },
       ],
     ])
   })
