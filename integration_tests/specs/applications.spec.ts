@@ -5,6 +5,7 @@ import buildApplicationsStatusFixtures from '../testData/applicationsFixtures'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import ApplicationListPage from '../pages/applicationListPage'
 import ApplicationsPage from '../pages/applicationsPage'
+import AppViewPage from '../pages/appViewPage'
 
 test.describe('Applications', () => {
   test.afterEach(async () => {
@@ -60,6 +61,23 @@ test.describe('Applications', () => {
     const firstViewLink = resultsTable.getByRole('link', { name: 'Add an official PIN phone contact' }).first()
     await expect(firstViewLink).toBeVisible()
     await expect(firstViewLink).toHaveAttribute('href', /\/applications\/.+/)
+  })
+
+  test('clicking app name opens app summary page', async ({ page }) => {
+    const appViewPage = new AppViewPage(page)
+
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetPrisonerAppById('1')
+    await managingAppsApi.stubGetAppMessages('1')
+    await loginWithPrisonerAuth(page)
+
+    await page.goto('/applications')
+
+    await page.getByRole('link', { name: 'Add an official PIN phone contact' }).first().click()
+
+    await expect(page).toHaveURL('/applications/1')
+    await appViewPage.expectSubmittedAppVisible()
+    await expect(page.getByText('Testing general PIN phone enquiry')).toBeVisible()
   })
 
   test('shows Open and Closed tabs and switches between them', async ({ page }) => {
