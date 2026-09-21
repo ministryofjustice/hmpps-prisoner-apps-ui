@@ -5,11 +5,12 @@ import { APPLICATION_TABS, type ApplicationTab } from '../../constants/applicati
 
 // eslint-disable-next-line import/prefer-default-export
 export const formatAppsToRows = (apps: ViewAppListDto[], tab: ApplicationTab = APPLICATION_TABS.OPEN) => {
-  return apps.map(({ id, applicationType, createdDate, lastUpdatedDate, status }) => {
+  return apps.map(({ id, applicationType, createdDate, lastUpdatedDate, status, messageCount }) => {
     const date = new Date(tab === APPLICATION_TABS.CLOSED ? lastUpdatedDate : createdDate)
 
     const formattedDate = format(date, 'd MMMM yyyy')
     const sortValue = getTime(date).toString()
+    const messages = messageCount ?? 0
 
     return [
       {
@@ -21,6 +22,11 @@ export const formatAppsToRows = (apps: ViewAppListDto[], tab: ApplicationTab = A
         classes: 'govuk-!-text-nowrap',
       },
       { html: APPLICATION_STATUS_TAG_MAP[status]?.html ?? status },
+      {
+        text: String(messages),
+        format: 'numeric',
+        attributes: { 'data-sort-value': String(messages) },
+      },
     ]
   })
 }

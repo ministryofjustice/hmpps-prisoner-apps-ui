@@ -168,7 +168,7 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get apps for  a prisoner
+     * Get Open or Closed apps for  a prisoner
      * @description This api endpoint to get prisoner apps. Requires role ROLE_PRISONER_FACING_APPS
      */
     get: operations['getPrisonerApps']
@@ -1001,6 +1001,8 @@ export interface components {
       lastUpdatedDate: string
       /** @enum {string} */
       status: 'NEW' | 'IN_PROGRESS' | 'APPROVED' | 'DECLINED' | 'REJECTED'
+      /** Format: int64 */
+      messageCount?: number | null
     }
     PrisonerAppsPage: {
       /** Format: int32 */
@@ -1478,6 +1480,7 @@ export interface operations {
       query: {
         pageNum: number
         pageSize?: number
+        scope: 'OPEN' | 'CLOSED'
       }
       header?: never
       path?: never
