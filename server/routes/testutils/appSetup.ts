@@ -10,6 +10,7 @@ import AuditService from '../../services/auditService'
 import { HmppsUser } from '../../interfaces/hmppsUser'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import HmppsAuditClient from '../../data/hmppsAuditClient'
+import { PresentedUser } from '../../utils/formatters/formatName'
 
 jest.mock('../../services/auditService')
 
@@ -43,6 +44,7 @@ function appSetup(
     req.flash = flashProvider
     res.locals = {
       user: { ...req.user } as HmppsUser,
+      presentedUser: {} as PresentedUser,
       cspNonce: '',
       csrfToken: '',
       asset_path: '',

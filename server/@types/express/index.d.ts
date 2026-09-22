@@ -1,5 +1,6 @@
 import { LaunchpadHeaderLocals, LaunchpadFooterLocals } from '@ministryofjustice/hmpps-prisoner-facing-components'
 import { HmppsUser } from '../../interfaces/hmppsUser'
+import { PresentedUser } from '../../utils/formatters/formatName'
 
 export declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
@@ -124,6 +125,7 @@ export declare global {
 
     interface Locals extends LaunchpadHeaderLocals, LaunchpadFooterLocals {
       user: HmppsUser
+      presentedUser: PresentedUser
       cspNonce: string
       csrfToken: string
       asset_path: string

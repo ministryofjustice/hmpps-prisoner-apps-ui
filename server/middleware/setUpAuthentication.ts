@@ -4,6 +4,7 @@ import { Router } from 'express'
 import { LaunchpadUser, PrisonerAuth, minutes } from '@ministryofjustice/hmpps-prisoner-auth'
 import config from '../config'
 import { HmppsUser } from '../interfaces/hmppsUser'
+import { presentedUser } from '../utils/formatters/formatName'
 
 passport.serializeUser((user, done) => {
   // Not used but required for Passport
@@ -72,6 +73,7 @@ export default function setupAuthentication() {
 
   router.use((req, res, next) => {
     res.locals.user = req.user as HmppsUser
+    res.locals.presentedUser = presentedUser(res.locals.user)
     next()
   })
 

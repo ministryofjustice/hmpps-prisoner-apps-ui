@@ -11,7 +11,6 @@ import { APPLICATION_TABS, APP_SCOPES, isApplicationTab } from '../../constants/
 
 import { getPaginationData } from '../../utils/http/pagination'
 import { formatAppsToRows } from '../../utils/formatters/formatAppsToRows'
-import { formatFullName, formatGivenName, formatName, hasGivenName } from '../../utils/formatters/formatName'
 import { validateTextField } from '../validate/validateTextField'
 import type { AppMessages } from '../../@types/managingAppsApi'
 import { type MessageItem, formatMessages } from '../../utils/formatters/formatMessages'
@@ -19,30 +18,20 @@ import { type MessageItem, formatMessages } from '../../utils/formatters/formatM
 const ITEMS_PER_PAGE = 10
 const MESSAGES_PAGE_SIZE = 50
 
+// TODO: just use presentedUser
 function getStaffDisplayName(res: Response): string | undefined {
-  const { user } = res.locals
+  const { user, presentedUser } = res.locals
   if (user.authSource === 'prisoner-auth') {
-    return user.establishment?.display_name || user.establishment?.name
+    return presentedUser.establishmentName
   }
 
   return undefined
 }
 
+// TODO: just use presentedUser
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getPrisonerDisplayName(res: Response, username: string): string {
-  const headerName = res.locals.launchpadHeaderConfig?.user?.name?.trim()
-  if (headerName) {
-    return formatFullName(headerName)
-  }
-
-  const { user } = res.locals
-  if (user.authSource === 'prisoner-auth') {
-    const nameFromParts = formatName(user.givenName || '', '', user.familyName || '')
-    if (nameFromParts) {
-      return nameFromParts
-    }
-  }
-
-  return user.displayName || user.name || username
+  return res.locals.presentedUser.displayName
 }
 
 async function resolveLatestMessage(
@@ -87,8 +76,7 @@ export default function viewAppsRouter({
     const openPage = activeTab === APPLICATION_TABS.OPEN ? page : 1
     const closedPage = activeTab === APPLICATION_TABS.CLOSED ? page : 1
 
-    const givenName = hasGivenName(res.locals.user) ? res.locals.user.givenName : ''
-    const firstName = formatGivenName(givenName)
+    const { firstName } = res.locals.presentedUser
 
     await auditService.logPageView(Page.VIEW_APPLICATIONS_PAGE, {
       who: res.locals.user.username,
@@ -116,10 +104,9 @@ export default function viewAppsRouter({
     options: { errors?: Record<string, { text: string }>; replyValue?: string } = {},
   ) => {
     const { userId, username } = res.locals.user
-    const givenName = hasGivenName(res.locals.user) ? res.locals.user.givenName : ''
-    const firstName = formatGivenName(givenName)
+    const { firstName, establishmentName: staffDisplayName } = res.locals.presentedUser
+
     const prisonerDisplayName = getPrisonerDisplayName(res, username)
-    const staffDisplayName = getStaffDisplayName(res)
 
     const [application, messagesResponse] = await Promise.all([
       managingAppsService.getPrisonerAppById(userId, req.params.id),
