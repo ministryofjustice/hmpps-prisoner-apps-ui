@@ -11,7 +11,6 @@ import { APPLICATION_TABS, APP_SCOPES, isApplicationTab } from '../../constants/
 
 import { getPaginationData } from '../../utils/http/pagination'
 import { formatAppsToRows } from '../../utils/formatters/formatAppsToRows'
-import { formatGivenName, hasGivenName } from '../../utils/formatters/formatName'
 import { validateTextField } from '../validate/validateTextField'
 import type { AppMessages } from '../../@types/managingAppsApi'
 import { type MessageItem, formatMessages } from '../../utils/formatters/formatMessages'
