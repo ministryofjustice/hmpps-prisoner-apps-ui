@@ -1,3 +1,6 @@
+import { LaunchpadUser } from '@ministryofjustice/hmpps-prisoner-auth'
+import { HmppsUser } from '../../interfaces/hmppsUser'
+
 export enum NameFormatStyle {
   firstMiddleLast,
   lastCommaFirstMiddle,
@@ -49,4 +52,30 @@ export const formatFullName = (fullName?: string | null): string => {
   const firstName = nameParts.shift() || ''
   const lastName = nameParts.pop() || ''
   return `${prefix}${formatName(firstName, nameParts.join(' '), lastName)}`
+}
+
+export type PresentedUser = {
+  firstName: string
+  lastName: string
+  displayName: string
+  username: string
+  establishmentName: string
+}
+export const presentedUser = (user: LaunchpadUser | HmppsUser): PresentedUser => {
+  const {
+    username,
+    displayName,
+    idToken: {
+      given_name: firstName,
+      family_name: lastName,
+      establishment: { display_name: establishmentName },
+    },
+  } = user as LaunchpadUser
+  return {
+    username,
+    displayName: formatFullName(displayName),
+    firstName: formatGivenName(firstName),
+    lastName,
+    establishmentName,
+  }
 }
