@@ -61,7 +61,7 @@ export type PresentedUser = {
   username: string
   establishmentName: string
 }
-export const presentedUser = (user: LaunchpadUser | HmppsUser): PresentedUser => {
+export const presentedUser = (user?: LaunchpadUser | HmppsUser): PresentedUser => {
   const {
     username,
     displayName,
