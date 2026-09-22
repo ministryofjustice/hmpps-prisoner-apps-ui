@@ -29,6 +29,10 @@ export default class AppGroupPage extends AbstractPage {
     await this.pinPhoneContactAppsButton.click()
   }
 
+  async selectAppGroup(groupName: string) {
+    await this.page.getByRole('button', { name: groupName, exact: false }).click()
+  }
+
   async expectVisible() {
     await expect(this.pageHeading).toBeVisible()
     await expect(this.groupHeading).toBeVisible()

@@ -6,6 +6,7 @@ import AppGroupPage from '../pages/appGroupPage'
 import AppTypePage from '../pages/appTypePage'
 import AppDetailsPage from '../pages/appDetailsPage'
 import AppSubmissionPage from '../pages/appSubmissionPage'
+import { gymAppTypes, gymBookingAppType, gymGroups } from '../testData/appSubmissionFixtures'
 
 test.describe('App submission', () => {
   test.afterEach(async () => {
@@ -83,5 +84,50 @@ test.describe('App submission', () => {
     await expect(page).toHaveURL('/log/confirmation')
     await expect(page.getByText('You have sent your app')).toBeVisible()
     await appSubmissionPage.expectSuccess('Make a general PIN phone enquiry')
+  })
+
+  test('submits a new gym app and shows confirmation page content', async ({ page }) => {
+    const appGroupPage = new AppGroupPage(page)
+    const appTypePage = new AppTypePage(page)
+    const appDetailsPage = new AppDetailsPage(page)
+    const appSubmissionPage = new AppSubmissionPage(page)
+
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetGroupsAndTypes(200, gymGroups)
+    await managingAppsApi.stubGetPendingAppType(gymBookingAppType.id, 0)
+    await managingAppsApi.stubSubmitApp()
+    await loginWithPrisonerAuth(page)
+
+    await appGroupPage.open()
+    await appGroupPage.selectAppGroup('Gym')
+    await expect(page).toHaveURL('/log/type')
+
+    await appTypePage.selectAppType(gymBookingAppType.name)
+    await appTypePage.continue()
+    await expect(page).toHaveURL('/log/application-details')
+
+    await appDetailsPage.fillDetails('Please add me to the next available gym induction session.')
+    await appDetailsPage.continue()
+    await expect(page).toHaveURL('/log/confirm')
+
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(page).toHaveURL('/log/confirmation')
+
+    await appSubmissionPage.expectSuccess(gymBookingAppType.name)
+  })
+
+  test('shows all gym app types when the gym group is selected', async ({ page }) => {
+    const appGroupPage = new AppGroupPage(page)
+    const appTypePage = new AppTypePage(page)
+
+    await managingAppsApi.stubGetPrisonerApps()
+    await managingAppsApi.stubGetGroupsAndTypes(200, gymGroups)
+    await loginWithPrisonerAuth(page)
+
+    await appGroupPage.open()
+    await appGroupPage.selectAppGroup('Gym')
+    await expect(page).toHaveURL('/log/type')
+
+    await appTypePage.expectAppTypesVisible(gymAppTypes.map(appType => appType.name))
   })
 })
