@@ -104,3 +104,13 @@
 .app-group-tile__button p {
     margin-bottom: 0;
 }
+
+.app-messages-count {
+    // Mirror the MOJ notification badge box metrics so read and unread counts align in the column
+    @include govuk-font($size: 16);
+    display: inline-block;
+    min-width: 0.75em;
+    margin-left: 0.5em;
+    padding: 1px 0.25em 0;
+    text-align: center;
+}

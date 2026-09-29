@@ -17,7 +17,7 @@ export const formatAppsToRows = (apps: ViewAppListDto[], tab: ApplicationTab = A
         ? {
             html: `<span class="moj-notification-badge"><span aria-hidden="true">${messages}</span><span class="govuk-visually-hidden">(${messages} unread messages)</span></span>`,
           }
-        : { text: String(messages) }),
+        : { html: `<span class="app-messages-count">${messages}</span>` }),
       attributes: { 'data-sort-value': String(messages) },
     }
 

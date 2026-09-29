@@ -79,7 +79,7 @@ describe(formatAppsToRows.name, () => {
         },
         { html: '<strong class="govuk-tag govuk-tag--green">Approved</strong>' },
         {
-          text: '0',
+          html: '<span class="app-messages-count">0</span>',
           attributes: {
             'data-sort-value': '0',
           },
