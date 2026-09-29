@@ -12,17 +12,15 @@ export const formatAppsToRows = (apps: ViewAppListDto[], tab: ApplicationTab = A
     const sortValue = getTime(date).toString()
     const messages = messageCount ?? 0
 
-    const messagesCell = hasUnreadMessages
-      ? {
-          html: `<span class="app-messages-count app-messages-count--unread">${messages}<span class="govuk-visually-hidden"> unread messages</span></span>`,
-          format: 'numeric',
-          attributes: { 'data-sort-value': String(messages) },
-        }
-      : {
-          text: String(messages),
-          format: 'numeric',
-          attributes: { 'data-sort-value': String(messages) },
-        }
+    const messagesCell = {
+      ...(hasUnreadMessages
+        ? {
+            html: `<span class="app-messages-count app-messages-count--unread">${messages}<span class="govuk-visually-hidden"> unread messages</span></span>`,
+          }
+        : { text: String(messages) }),
+      format: 'numeric',
+      attributes: { 'data-sort-value': String(messages) },
+    }
 
     return [
       {
