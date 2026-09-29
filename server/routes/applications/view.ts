@@ -180,7 +180,7 @@ export default function viewAppsRouter({
 
   router.get(`${URLS.APPLICATIONS}/:id`, async (req: Request<{ id: string }>, res: Response) => {
     const { userId } = res.locals.user
-    // Mark staff messages as read when the prisoner opens the app; failure must not block the page.
+
     managingAppsService.markAppMessagesAsRead(userId, req.params.id).catch(error => {
       logger.warn(`Failed to mark messages as read for app ${req.params.id}`, error)
     })
