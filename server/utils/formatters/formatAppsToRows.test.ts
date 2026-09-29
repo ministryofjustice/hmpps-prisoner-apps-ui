@@ -41,8 +41,7 @@ describe(formatAppsToRows.name, () => {
         },
         { html: '<strong class="govuk-tag govuk-tag--light-blue">New</strong>' },
         {
-          html: '<span class="app-messages-count app-messages-count--unread">3<span class="govuk-visually-hidden"> unread messages</span></span>',
-          format: 'numeric',
+          html: '<span class="moj-notification-badge"><span aria-hidden="true">3</span><span class="govuk-visually-hidden">(3 unread messages)</span></span>',
           attributes: {
             'data-sort-value': '3',
           },
@@ -81,7 +80,6 @@ describe(formatAppsToRows.name, () => {
         { html: '<strong class="govuk-tag govuk-tag--green">Approved</strong>' },
         {
           text: '0',
-          format: 'numeric',
           attributes: {
             'data-sort-value': '0',
           },

@@ -15,10 +15,9 @@ export const formatAppsToRows = (apps: ViewAppListDto[], tab: ApplicationTab = A
     const messagesCell = {
       ...(hasUnreadMessages
         ? {
-            html: `<span class="app-messages-count app-messages-count--unread">${messages}<span class="govuk-visually-hidden"> unread messages</span></span>`,
+            html: `<span class="moj-notification-badge"><span aria-hidden="true">${messages}</span><span class="govuk-visually-hidden">(${messages} unread messages)</span></span>`,
           }
         : { text: String(messages) }),
-      format: 'numeric',
       attributes: { 'data-sort-value': String(messages) },
     }
 

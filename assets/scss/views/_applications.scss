@@ -104,17 +104,3 @@
 .app-group-tile__button p {
     margin-bottom: 0;
 }
-
-.app-messages-count--unread {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 24px;
-    height: 24px;
-    padding: 0 govuk-spacing(1);
-    border-radius: 50%;
-    background-color: govuk-colour("red");
-    color: govuk-colour("white");
-    font-weight: bold;
-    box-sizing: border-box;
-}
