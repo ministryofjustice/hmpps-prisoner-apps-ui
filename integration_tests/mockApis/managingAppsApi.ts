@@ -159,6 +159,17 @@ export default {
       },
     }),
 
+  stubMarkAppMessagesAsRead: (appId = '1', httpStatus = 204): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'PUT',
+        urlPath: `/managingPrisonerApps/v1/prisoners/apps/${appId}/messages/read`,
+      },
+      response: {
+        status: httpStatus,
+      },
+    }),
+
   stubGetPendingAppType: (appTypeId: number, count = 0, httpStatus = 200): SuperAgentRequest =>
     stubFor({
       request: {

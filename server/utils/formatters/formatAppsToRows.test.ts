@@ -23,6 +23,7 @@ describe(formatAppsToRows.name, () => {
         lastUpdatedDate: '2024-01-10T00:00:00Z',
         status: 'NEW' as const,
         messageCount: 3,
+        hasUnreadMessages: true,
       },
     ]
 
@@ -40,7 +41,7 @@ describe(formatAppsToRows.name, () => {
         },
         { html: '<strong class="govuk-tag govuk-tag--light-blue">New</strong>' },
         {
-          text: '3',
+          html: '<span class="app-messages-count app-messages-count--unread">3<span class="govuk-visually-hidden"> unread messages</span></span>',
           format: 'numeric',
           attributes: {
             'data-sort-value': '3',
@@ -61,6 +62,7 @@ describe(formatAppsToRows.name, () => {
         createdDate: '2024-01-10T00:00:00Z',
         lastUpdatedDate: '2024-01-11T00:00:00Z',
         status: 'APPROVED' as const,
+        hasUnreadMessages: false,
       },
     ]
 

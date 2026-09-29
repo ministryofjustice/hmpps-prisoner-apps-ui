@@ -5,12 +5,24 @@ import { APPLICATION_TABS, type ApplicationTab } from '../../constants/applicati
 
 // eslint-disable-next-line import/prefer-default-export
 export const formatAppsToRows = (apps: ViewAppListDto[], tab: ApplicationTab = APPLICATION_TABS.OPEN) => {
-  return apps.map(({ id, applicationType, createdDate, lastUpdatedDate, status, messageCount }) => {
+  return apps.map(({ id, applicationType, createdDate, lastUpdatedDate, status, messageCount, hasUnreadMessages }) => {
     const date = new Date(tab === APPLICATION_TABS.CLOSED ? lastUpdatedDate : createdDate)
 
     const formattedDate = format(date, 'd MMMM yyyy')
     const sortValue = getTime(date).toString()
     const messages = messageCount ?? 0
+
+    const messagesCell = hasUnreadMessages
+      ? {
+          html: `<span class="app-messages-count app-messages-count--unread">${messages}<span class="govuk-visually-hidden"> unread messages</span></span>`,
+          format: 'numeric',
+          attributes: { 'data-sort-value': String(messages) },
+        }
+      : {
+          text: String(messages),
+          format: 'numeric',
+          attributes: { 'data-sort-value': String(messages) },
+        }
 
     return [
       {
@@ -22,11 +34,7 @@ export const formatAppsToRows = (apps: ViewAppListDto[], tab: ApplicationTab = A
         classes: 'govuk-!-text-nowrap',
       },
       { html: APPLICATION_STATUS_TAG_MAP[status]?.html ?? status },
-      {
-        text: String(messages),
-        format: 'numeric',
-        attributes: { 'data-sort-value': String(messages) },
-      },
+      messagesCell,
     ]
   })
 }
