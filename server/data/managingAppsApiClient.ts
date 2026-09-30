@@ -103,4 +103,13 @@ export default class ManagingAppsApiClient extends RestClient {
       asSystem(userId),
     )
   }
+
+  markAppMessagesAsRead(userId: string, appId: string): Promise<void> {
+    return this.put<void>(
+      {
+        path: `/v1/prisoners/apps/${encodeURIComponent(appId)}/messages/read`,
+      },
+      asSystem(userId),
+    )
+  }
 }

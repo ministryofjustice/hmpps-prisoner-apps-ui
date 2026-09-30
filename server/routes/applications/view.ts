@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 
 import { Request, Response, Router } from 'express'
+import logger from '../../../logger'
 import AuditService, { Page } from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 
@@ -165,6 +166,11 @@ export default function viewAppsRouter({
   }
 
   router.get(`${URLS.APPLICATIONS}/:id`, async (req: Request<{ id: string }>, res: Response) => {
+    const { userId } = res.locals.user
+
+    managingAppsService.markAppMessagesAsRead(userId, req.params.id).catch(error => {
+      logger.warn(`Failed to mark messages as read for app ${req.params.id}`, error)
+    })
     await renderAppView(req, res)
   })
 

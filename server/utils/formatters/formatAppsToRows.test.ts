@@ -22,6 +22,8 @@ describe(formatAppsToRows.name, () => {
         createdDate: '2024-01-10T00:00:00Z',
         lastUpdatedDate: '2024-01-10T00:00:00Z',
         status: 'NEW' as const,
+        messageCount: 3,
+        hasUnreadMessages: true,
       },
     ]
 
@@ -38,6 +40,12 @@ describe(formatAppsToRows.name, () => {
           classes: 'govuk-!-text-nowrap',
         },
         { html: '<strong class="govuk-tag govuk-tag--light-blue">New</strong>' },
+        {
+          html: '<span class="moj-notification-badge"><span aria-hidden="true">3</span><span class="govuk-visually-hidden">(3 unread messages)</span></span>',
+          attributes: {
+            'data-sort-value': '3',
+          },
+        },
       ],
     ])
   })
@@ -53,6 +61,7 @@ describe(formatAppsToRows.name, () => {
         createdDate: '2024-01-10T00:00:00Z',
         lastUpdatedDate: '2024-01-11T00:00:00Z',
         status: 'APPROVED' as const,
+        hasUnreadMessages: false,
       },
     ]
 
@@ -69,6 +78,12 @@ describe(formatAppsToRows.name, () => {
           classes: 'govuk-!-text-nowrap',
         },
         { html: '<strong class="govuk-tag govuk-tag--green">Approved</strong>' },
+        {
+          html: '<span class="app-messages-count">0</span>',
+          attributes: {
+            'data-sort-value': '0',
+          },
+        },
       ],
     ])
   })

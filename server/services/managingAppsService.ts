@@ -45,4 +45,8 @@ export default class ManagingAppsService {
   addAppMessage(userId: string, appId: string, message: string): Promise<AppPrisonerMessage> {
     return this.managingAppsApiClient.addAppMessage(userId, appId, message)
   }
+
+  markAppMessagesAsRead(userId: string, appId: string): Promise<void> {
+    return this.managingAppsApiClient.markAppMessagesAsRead(userId, appId)
+  }
 }

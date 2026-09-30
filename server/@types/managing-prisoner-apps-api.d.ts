@@ -24,7 +24,7 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/queue-admin/retry-dlq/{dlqName}': {
+  '/v1/prisoners/apps/{appId}/messages/read': {
     parameters: {
       query?: never
       header?: never
@@ -32,39 +32,11 @@ export interface paths {
       cookie?: never
     }
     get?: never
-    put: operations['retryDlq']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/retry-all-dlqs': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['retryAllDlqs']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/purge-queue/{queueName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['purgeQueue']
+    /**
+     * Mark staff messages on an app as read
+     * @description This api endpoint marks the staff messages on an app as read for the logged prisoner by advancing the read watermark to the server time. The app should belong to the logged prisoner. Requires role ROLE_PRISONER_FACING_APPS
+     */
+    put: operations['markMessagesAsRead']
     post?: never
     delete?: never
     options?: never
@@ -168,7 +140,7 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Get apps for  a prisoner
+     * Get Open or Closed apps for  a prisoner
      * @description This api endpoint to get prisoner apps. Requires role ROLE_PRISONER_FACING_APPS
      */
     get: operations['getPrisonerApps']
@@ -675,22 +647,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/queue-admin/get-dlq-messages/{dlqName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['getDlqMessages']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
 }
 export type webhooks = Record<string, never>
 export interface components {
@@ -772,14 +728,6 @@ export interface components {
       createdDate: string
       createdBy: string
       fileType: string
-    }
-    RetryDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
-    PurgeQueueResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
     }
     AppRequestDto: {
       reference?: string | null
@@ -986,9 +934,9 @@ export interface components {
       contents: components['schemas']['CommentResponseDtoObject'][]
     }
     RequestedByNameSearchResult: {
+      prisonerId: string
       firstName: string
       lastName: string
-      prisonerId: string
     }
     AppListPrisonerFacing: {
       /** Format: uuid */
@@ -1001,6 +949,10 @@ export interface components {
       lastUpdatedDate: string
       /** @enum {string} */
       status: 'NEW' | 'IN_PROGRESS' | 'APPROVED' | 'DECLINED' | 'REJECTED'
+      /** Format: int64 */
+      messageCount?: number | null
+      /** @description True when the app has a staff message the prisoner has not yet read */
+      hasUnreadMessages: boolean
     }
     PrisonerAppsPage: {
       /** Format: int32 */
@@ -1075,19 +1027,6 @@ export interface components {
       /** @description The details of any attachments for the subject access request response */
       attachments?: components['schemas']['Attachment'][] | null
     }
-    DlqMessage: {
-      body: {
-        [key: string]: unknown
-      }
-      messageId: string
-    }
-    GetDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
-    }
   }
   responses: never
   parameters: never
@@ -1142,66 +1081,49 @@ export interface operations {
       }
     }
   }
-  retryDlq: {
+  markMessagesAsRead: {
     parameters: {
       query?: never
       header?: never
       path: {
-        dlqName: string
+        appId: string
       }
       cookie?: never
     }
     requestBody?: never
     responses: {
-      /** @description OK */
-      200: {
+      /** @description Read watermark updated successfully. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['RetryDlqResult']
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
-    }
-  }
-  retryAllDlqs: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
+      /** @description Forbidden to access this endpoint */
+      403: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['RetryDlqResult'][]
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
-    }
-  }
-  purgeQueue: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        queueName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
+      /** @description App not found */
+      404: {
         headers: {
           [name: string]: unknown
         }
         content: {
-          '*/*': components['schemas']['PurgeQueueResult']
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -1478,6 +1400,7 @@ export interface operations {
       query: {
         pageNum: number
         pageSize?: number
+        scope: 'OPEN' | 'CLOSED'
       }
       header?: never
       path?: never
@@ -2628,30 +2551,6 @@ export interface operations {
         }
         content: {
           'application/octet-stream': string
-        }
-      }
-    }
-  }
-  getDlqMessages: {
-    parameters: {
-      query?: {
-        maxMessages?: number
-      }
-      header?: never
-      path: {
-        dlqName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

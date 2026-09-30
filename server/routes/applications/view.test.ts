@@ -56,6 +56,7 @@ beforeEach(() => {
   jest.clearAllMocks()
   auditService.logPageView.mockResolvedValue(null)
   managingAppsService.getAppMessages.mockResolvedValue(mockMessagesResponse)
+  managingAppsService.markAppMessagesAsRead.mockResolvedValue(undefined)
 })
 
 afterEach(() => {
