@@ -27,7 +27,7 @@ export default function selectTypeRouter({
     const items: AppTypeItem[] = []
     const appTypes = group.appTypes ?? []
 
-    const genericAppType = appTypes.find(appType => appType.genericType)
+    const genericAppTypes = appTypes.filter(appType => appType.genericType)
     const nonGenericAppTypes = appTypes.filter(appType => !appType.genericType)
 
     nonGenericAppTypes.forEach(appType => {
@@ -38,15 +38,17 @@ export default function selectTypeRouter({
       })
     })
 
-    if (genericAppType) {
-      if (nonGenericAppTypes.length > 0) {
-        items.push({ divider: 'or' })
-      }
+    if (genericAppTypes.length === 1 && nonGenericAppTypes.length > 0) {
+      items.push({ divider: 'or' })
+    }
 
-      items.push({
-        value: genericAppType.id.toString(),
-        text: genericAppType.name,
-        checked: selectedValue === genericAppType.id.toString(),
+    if (genericAppTypes.length > 0) {
+      genericAppTypes.forEach(appType => {
+        items.push({
+          value: appType.id.toString(),
+          text: appType.name,
+          checked: selectedValue === appType.id.toString(),
+        })
       })
     }
 
