@@ -102,6 +102,10 @@ export const APP_GROUP_CARDS: Record<string, AppGroupCard> = {
     image: '/assets/images/app-groups/laptops.png',
     description: 'Support with laptops, breakages, returns, passwords and Content Hub.',
   },
+  'Programmes, interventions, psychology': {
+    image: '/assets/images/app-groups/programmes.png',
+    description: 'Ask about your courses, meetings and therapy groups.',
+  },
 }
 
 export const getAppGroupCard = (groupName: string): AppGroupCard => APP_GROUP_CARDS[groupName] ?? DEFAULT_APP_GROUP_CARD
