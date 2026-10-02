@@ -48,11 +48,40 @@ const groupWithGenericType = {
   ],
 }
 
+const groupWithMultipleGenericTypes = {
+  id: 3,
+  name: 'Multiple generic types',
+  appTypes: [
+    {
+      id: 7,
+      name: 'Normal App',
+      genericType: false,
+      genericForm: false,
+    },
+    {
+      id: 5,
+      name: 'Generic App One',
+      genericType: true,
+      genericForm: false,
+    },
+    {
+      id: 6,
+      name: 'Generic App Two',
+      genericType: true,
+      genericForm: false,
+    },
+  ],
+}
+
 let app: Express
 
 beforeEach(() => {
   auditService.logPageView.mockResolvedValue(null)
-  managingAppsService.getGroupsAndTypes.mockResolvedValue([groupWithTypes, groupWithGenericType])
+  managingAppsService.getGroupsAndTypes.mockResolvedValue([
+    groupWithTypes,
+    groupWithGenericType,
+    groupWithMultipleGenericTypes,
+  ])
   managingAppsService.getPendingAppTypeCount.mockResolvedValue({
     id: 1,
     name: 'Emergency Credit',
@@ -112,6 +141,28 @@ describe('GET /log/type', () => {
       .expect(res => {
         expect(res.text).toContain('Specific App')
         expect(res.text).toContain('Generic App')
+        expect(res.text.match(/govuk-radios__divider/g) ?? []).toHaveLength(1)
+      })
+  })
+
+  it('should render multiple generic types without a divider', () => {
+    app = appWithAllRoutes({
+      services: { auditService, managingAppsService },
+      userSupplier: () => user,
+      sessionData: {
+        applicationData: {
+          group: { name: 'Multiple generic types', value: '3' },
+        },
+      },
+    })
+
+    return request(app)
+      .get('/log/type')
+      .expect(200)
+      .expect(res => {
+        expect(res.text).toContain('Generic App One')
+        expect(res.text).toContain('Generic App Two')
+        expect(res.text.match(/govuk-radios__divider/g) ?? []).toHaveLength(0)
       })
   })
 
