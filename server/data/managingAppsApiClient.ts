@@ -35,7 +35,7 @@ export default class ManagingAppsApiClient extends RestClient {
     try {
       return this.get<ApplicationGroup[]>(
         {
-          path: `/v1/prisoners/apps/groups`,
+          path: `/v2/prisoners/apps/groups`,
         },
         asSystem(userId),
       )

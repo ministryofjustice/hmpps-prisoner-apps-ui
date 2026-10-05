@@ -76,7 +76,7 @@ export default {
     stubFor({
       request: {
         method: 'GET',
-        urlPath: '/managingPrisonerApps/v1/prisoners/apps/groups',
+        urlPath: '/managingPrisonerApps/v2/prisoners/apps/groups',
       },
       response: {
         status: httpStatus,

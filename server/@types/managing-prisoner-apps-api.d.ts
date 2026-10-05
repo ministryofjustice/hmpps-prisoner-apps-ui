@@ -44,6 +44,54 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/queue-admin/retry-dlq/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryDlq']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/retry-all-dlqs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryAllDlqs']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['purgeQueue']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/v1/prisoners/{prisonerId}/apps': {
     parameters: {
       query?: never
@@ -269,6 +317,50 @@ export interface paths {
      * @description This api endpoint is for updating app status to InProgress. The logged staff and prisoner should belong to the same establishment. Requires role ROLE_MANAGING_PRISONER_APPS
      */
     patch: operations['updateAppToInProgress']
+    trace?: never
+  }
+  '/v1/admin/department-mappings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get All Application Types by Establishment
+     * @description This api endpoint is for getting all application types by establishment. The logged staff  must have the role MANAGING_PRISONER_APPS and be associated with an establishment.
+     */
+    get: operations['getAllApplicationTypes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Update Application Types by Establishment
+     * @description This api endpoint is for updating application types by establishment. The logged staff  must have the role MANAGING_PRISONER_APPS and be associated with an establishment.
+     */
+    patch: operations['updateApplicationTypes']
+    trace?: never
+  }
+  '/v2/prisoners/apps/groups': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get app groups and app types.
+     * @description This api endpoint to app groups and app types for a logged prisoner. Requires role ROLE_PRISONER_FACING_APPS
+     */
+    get: operations['getPrisonerAppGroupsAndTypes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
     trace?: never
   }
   '/v2/establishments/apps/groups': {
@@ -647,6 +739,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getDlqMessages']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
@@ -728,6 +836,14 @@ export interface components {
       createdDate: string
       createdBy: string
       fileType: string
+    }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
     }
     AppRequestDto: {
       reference?: string | null
@@ -907,6 +1023,25 @@ export interface components {
       status: 'NEW' | 'IN_PROGRESS' | 'APPROVED' | 'DECLINED' | 'REJECTED'
       comment?: string | null
     }
+    EstablishmentApplicationTypeRequestDto: {
+      /** Format: uuid */
+      id: string
+      /** Format: int64 */
+      applicationTypeId: number
+      establishmentId: string
+      /** Format: uuid */
+      departmentId?: string | null
+      active: boolean
+    }
+    EstablishmentApplicationTypeResponseDto: {
+      /** Format: uuid */
+      id: string
+      establishmentId: string
+      /** Format: uuid */
+      departmentId?: string | null
+      active: boolean
+      applicationGroupResponse: components['schemas']['ApplicationGroupResponse']
+    }
     ActivityMessage: {
       header: string
       createdBy: string
@@ -934,9 +1069,9 @@ export interface components {
       contents: components['schemas']['CommentResponseDtoObject'][]
     }
     RequestedByNameSearchResult: {
-      prisonerId: string
       firstName: string
       lastName: string
+      prisonerId: string
     }
     AppListPrisonerFacing: {
       /** Format: uuid */
@@ -1026,6 +1161,19 @@ export interface components {
       content: unknown
       /** @description The details of any attachments for the subject access request response */
       attachments?: components['schemas']['Attachment'][] | null
+    }
+    DlqMessage: {
+      body: {
+        [key: string]: unknown
+      }
+      messageId: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
   }
   responses: never
@@ -1124,6 +1272,70 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  retryDlq: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        queueName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
         }
       }
     }
@@ -1716,6 +1928,124 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['AppResponseDtoObjectObject']
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getAllApplicationTypes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully retrieved all application types for the staff's establishment */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EstablishmentApplicationTypeResponseDto'][]
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  updateApplicationTypes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['EstablishmentApplicationTypeRequestDto'][]
+      }
+    }
+    responses: {
+      /** @description Successfully updated all application types for the staff's establishment */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['EstablishmentApplicationTypeResponseDto'][]
+        }
+      }
+      /** @description Unauthorized to access this endpoint */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden to access this endpoint */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getPrisonerAppGroupsAndTypes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description App request created. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['ApplicationGroupResponse'][]
         }
       }
       /** @description Unauthorized to access this endpoint */
@@ -2551,6 +2881,30 @@ export interface operations {
         }
         content: {
           'application/octet-stream': string
+        }
+      }
+    }
+  }
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }
