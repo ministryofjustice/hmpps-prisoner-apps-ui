@@ -222,6 +222,71 @@ describe('POST /applications/:id - Reply to App Route', () => {
       })
   })
 
+  it('audits a validation failure without logging the reply text', async () => {
+    managingAppsService.getPrisonerAppById.mockResolvedValue(createMockApp())
+
+    app = appWithAllRoutes({
+      services: { managingAppsService, auditService },
+      userSupplier: () => user,
+    })
+
+    return request(app)
+      .post('/applications/1')
+      .send({ reply: '' })
+      .expect(200)
+      .expect(() => {
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_MESSAGE_ATTEMPT',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: '1' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_MESSAGE_FAILURE',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: '1', failureReason: 'Validation failed' },
+        })
+        expect(managingAppsService.addAppMessage).not.toHaveBeenCalled()
+      })
+  })
+
+  it('audits a duplicate submission and does not save another reply', async () => {
+    app = appWithAllRoutes({
+      services: { managingAppsService, auditService },
+      userSupplier: () => user,
+      sessionData: { pendingMessageAppId: '1' },
+    })
+
+    return request(app)
+      .post('/applications/1')
+      .send({ reply: 'A reply' })
+      .expect(302)
+      .expect(() => {
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_MESSAGE_ATTEMPT',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: '1' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_MESSAGE_FAILURE',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: '1', failureReason: 'Duplicate submission' },
+        })
+        expect(managingAppsService.addAppMessage).not.toHaveBeenCalled()
+      })
+  })
+
   it('audits a failed application message creation', async () => {
     managingAppsService.addAppMessage.mockRejectedValue(new Error('Service unavailable'))
 

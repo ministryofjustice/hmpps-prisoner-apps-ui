@@ -1,7 +1,7 @@
 import { format } from 'date-fns'
 
 import { Request, Response, Router } from 'express'
-import { auditLogged } from '@ministryofjustice/hmpps-prisoner-facing-services-utilities'
+import { auditEventLoggers, auditLogged } from '@ministryofjustice/hmpps-prisoner-facing-services-utilities'
 import logger from '../../../logger'
 import AuditService from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
@@ -191,57 +191,78 @@ export default function viewAppsRouter({
     const { id: appId } = req.params
     const reply = (req.body?.reply ?? '').toString().trim()
 
-    const errors = validateTextField({ fieldValue: reply, fieldName: 'Messages', isRequired: true })
+    const applicationDetails = { applicationId: appId }
+    const {
+      logAttempt,
+      logSuccess,
+      logFailure: logAuditFailure,
+    } = auditEventLoggers('CREATE_APPLICATION_MESSAGE', async (what, extraDetails = {}) => {
+      await auditService.logAuditEvent({
+        what,
+        who: username,
+        correlationId: req.id,
+        subjectId: userId,
+        subjectType: 'PRISONER_ID',
+        details: { ...applicationDetails, ...extraDetails },
+      })
+    })
 
-    if (Object.keys(errors).length > 0) {
-      await renderAppView(req, res, { errors: { reply: errors.Messages }, replyValue: reply })
-      return
+    await logAttempt(applicationDetails)
+
+    let auditOutcomeLogged = false
+    const recordFailure = async (failureReason: string) => {
+      auditOutcomeLogged = true
+      await logAuditFailure({ ...applicationDetails, failureReason })
     }
 
-    if (req.session.pendingMessageAppId === appId) {
-      res.redirect(`${URLS.APPLICATIONS}/${appId}`)
-      return
-    }
-
-    const messagesResponse = await managingAppsService.getAppMessages(userId, appId, 1, MESSAGES_PAGE_SIZE)
-    const latestMessage = await resolveLatestMessage(
-      managingAppsService,
-      userId,
-      appId,
-      messagesResponse,
-      username,
-      userId,
-      '',
-      staffDisplayName,
-    )
-    if (latestMessage?.type === 'sent') {
-      res.redirect(`${URLS.APPLICATIONS}/${appId}`)
-      return
-    }
-
-    req.session.pendingMessageAppId = appId
     try {
-      await auditLogged(
-        'CREATE_APPLICATION_MESSAGE',
-        async (what, extraDetails = {}) => {
-          await auditService.logAuditEvent({
-            what,
-            who: username,
-            correlationId: req.id,
-            subjectId: userId,
-            subjectType: 'PRISONER_ID',
-            details: { applicationId: appId, ...extraDetails },
-          })
-        },
-        async () => {
-          await managingAppsService.addAppMessage(userId, appId, reply)
-        },
-      )
-    } finally {
-      delete req.session.pendingMessageAppId
-    }
+      const errors = validateTextField({ fieldValue: reply, fieldName: 'Messages', isRequired: true })
 
-    res.redirect(`${URLS.APPLICATIONS}/${appId}`)
+      if (Object.keys(errors).length > 0) {
+        await recordFailure('Validation failed')
+        await renderAppView(req, res, { errors: { reply: errors.Messages }, replyValue: reply })
+        return
+      }
+
+      if (req.session.pendingMessageAppId === appId) {
+        await recordFailure('Duplicate submission')
+        res.redirect(`${URLS.APPLICATIONS}/${appId}`)
+        return
+      }
+
+      const messagesResponse = await managingAppsService.getAppMessages(userId, appId, 1, MESSAGES_PAGE_SIZE)
+      const latestMessage = await resolveLatestMessage(
+        managingAppsService,
+        userId,
+        appId,
+        messagesResponse,
+        username,
+        userId,
+        '',
+        staffDisplayName,
+      )
+      if (latestMessage?.type === 'sent') {
+        await recordFailure('Reply is no longer available')
+        res.redirect(`${URLS.APPLICATIONS}/${appId}`)
+        return
+      }
+
+      req.session.pendingMessageAppId = appId
+      try {
+        await managingAppsService.addAppMessage(userId, appId, reply)
+      } finally {
+        delete req.session.pendingMessageAppId
+      }
+
+      auditOutcomeLogged = true
+      await logSuccess(applicationDetails)
+      res.redirect(`${URLS.APPLICATIONS}/${appId}`)
+    } catch (error) {
+      if (!auditOutcomeLogged) {
+        await recordFailure(error instanceof Error ? error.message : 'Unknown error')
+      }
+      throw error
+    }
   })
 
   return router
