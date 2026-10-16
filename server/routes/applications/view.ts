@@ -1,8 +1,9 @@
 import { format } from 'date-fns'
 
 import { Request, Response, Router } from 'express'
+import { auditLogged } from '@ministryofjustice/hmpps-prisoner-facing-services-utilities'
 import logger from '../../../logger'
-import AuditService, { Page } from '../../services/auditService'
+import AuditService from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 
 import { URLS } from '../../constants/urls'
@@ -79,24 +80,34 @@ export default function viewAppsRouter({
 
     const { firstName } = res.locals.presentedUser
 
-    await auditService.logPageView(Page.VIEW_APPLICATIONS_PAGE, {
-      who: res.locals.user.username,
-      correlationId: req.id,
-    })
+    await auditLogged(
+      'VIEW_PRISONER_APPLICATIONS',
+      async (what, extraDetails = {}) => {
+        await auditService.logAuditEvent({
+          what,
+          who: res.locals.user.username,
+          correlationId: req.id,
+          subjectId: userId,
+          subjectType: 'PRISONER_ID',
+          details: extraDetails,
+        })
+      },
+      async () => {
+        const [openApps, closedApps] = await Promise.all([
+          managingAppsService.getPrisonerApps(userId, openPage, APP_SCOPES.OPEN, ITEMS_PER_PAGE),
+          managingAppsService.getPrisonerApps(userId, closedPage, APP_SCOPES.CLOSED, ITEMS_PER_PAGE),
+        ])
 
-    const [openApps, closedApps] = await Promise.all([
-      managingAppsService.getPrisonerApps(userId, openPage, APP_SCOPES.OPEN, ITEMS_PER_PAGE),
-      managingAppsService.getPrisonerApps(userId, closedPage, APP_SCOPES.CLOSED, ITEMS_PER_PAGE),
-    ])
-
-    res.render(PATHS.APPLICATIONS.LIST, {
-      firstName,
-      activeTab,
-      openApps: formatAppsToRows(openApps.apps, APPLICATION_TABS.OPEN),
-      openPagination: getPaginationData(openPage, openApps.totalRecords, ITEMS_PER_PAGE),
-      closedApps: formatAppsToRows(closedApps.apps, APPLICATION_TABS.CLOSED),
-      closedPagination: getPaginationData(closedPage, closedApps.totalRecords, ITEMS_PER_PAGE),
-    })
+        res.render(PATHS.APPLICATIONS.LIST, {
+          firstName,
+          activeTab,
+          openApps: formatAppsToRows(openApps.apps, APPLICATION_TABS.OPEN),
+          openPagination: getPaginationData(openPage, openApps.totalRecords, ITEMS_PER_PAGE),
+          closedApps: formatAppsToRows(closedApps.apps, APPLICATION_TABS.CLOSED),
+          closedPagination: getPaginationData(closedPage, closedApps.totalRecords, ITEMS_PER_PAGE),
+        })
+      },
+    )
   })
 
   const renderAppView = async (
@@ -210,7 +221,22 @@ export default function viewAppsRouter({
 
     req.session.pendingMessageAppId = appId
     try {
-      await managingAppsService.addAppMessage(userId, appId, reply)
+      await auditLogged(
+        'CREATE_APPLICATION_MESSAGE',
+        async (what, extraDetails = {}) => {
+          await auditService.logAuditEvent({
+            what,
+            who: username,
+            correlationId: req.id,
+            subjectId: userId,
+            subjectType: 'PRISONER_ID',
+            details: { applicationId: appId, ...extraDetails },
+          })
+        },
+        async () => {
+          await managingAppsService.addAppMessage(userId, appId, reply)
+        },
+      )
     } finally {
       delete req.session.pendingMessageAppId
     }

@@ -184,3 +184,73 @@ describe('GET /applications/:id - View App Route', () => {
     })
   })
 })
+
+describe('POST /applications/:id - Reply to App Route', () => {
+  beforeEach(() => {
+    auditService.logAuditEvent.mockResolvedValue(undefined)
+  })
+
+  it('audits a successful application message creation', async () => {
+    managingAppsService.addAppMessage.mockResolvedValue({} as Awaited<ReturnType<ManagingAppsService['addAppMessage']>>)
+
+    app = appWithAllRoutes({
+      services: { managingAppsService, auditService },
+      userSupplier: () => user,
+    })
+
+    return request(app)
+      .post('/applications/1')
+      .send({ reply: 'A private reply' })
+      .expect(302)
+      .expect(() => {
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_MESSAGE_ATTEMPT',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: '1' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_MESSAGE_SUCCESS',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: '1' },
+        })
+      })
+  })
+
+  it('audits a failed application message creation', async () => {
+    managingAppsService.addAppMessage.mockRejectedValue(new Error('Service unavailable'))
+
+    app = appWithAllRoutes({
+      services: { managingAppsService, auditService },
+      userSupplier: () => user,
+    })
+
+    return request(app)
+      .post('/applications/1')
+      .send({ reply: 'A private reply' })
+      .expect(500)
+      .expect(() => {
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_MESSAGE_ATTEMPT',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: '1' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_MESSAGE_FAILURE',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: '1', failureReason: 'Service unavailable' },
+        })
+      })
+  })
+})
