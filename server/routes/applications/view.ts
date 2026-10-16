@@ -179,10 +179,25 @@ export default function viewAppsRouter({
   router.get(`${URLS.APPLICATIONS}/:id`, async (req: Request<{ id: string }>, res: Response) => {
     const { userId } = res.locals.user
 
-    managingAppsService.markAppMessagesAsRead(userId, req.params.id).catch(error => {
-      logger.warn(`Failed to mark messages as read for app ${req.params.id}`, error)
-    })
-    await renderAppView(req, res)
+    await auditLogged(
+      'VIEW_PRISONER_APPLICATION',
+      async (what, extraDetails = {}) => {
+        await auditService.logAuditEvent({
+          what,
+          who: res.locals.user.username,
+          correlationId: req.id,
+          subjectId: userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: req.params.id, ...extraDetails },
+        })
+      },
+      async () => {
+        managingAppsService.markAppMessagesAsRead(userId, req.params.id).catch(error => {
+          logger.warn(`Failed to mark messages as read for app ${req.params.id}`, error)
+        })
+        await renderAppView(req, res)
+      },
+    )
   })
 
   router.post(`${URLS.APPLICATIONS}/:id`, async (req: Request<{ id: string }>, res: Response) => {
