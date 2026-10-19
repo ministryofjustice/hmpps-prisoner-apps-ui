@@ -81,7 +81,7 @@ export default function viewAppsRouter({
     const { firstName } = res.locals.presentedUser
 
     await auditLogged(
-      'VIEW_PRISONER_APPLICATIONS',
+      'VIEW_APPLICATIONS_PAGE',
       async (what, extraDetails = {}) => {
         await auditService.logAuditEvent({
           what,

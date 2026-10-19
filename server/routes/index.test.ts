@@ -71,7 +71,7 @@ describe('GET /applications', () => {
       .expect(200)
       .expect(res => {
         expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
-          what: 'VIEW_PRISONER_APPLICATIONS_ATTEMPT',
+          what: 'VIEW_APPLICATIONS_PAGE_ATTEMPT',
           who: user.username,
           correlationId: expect.any(String),
           subjectId: user.userId,
@@ -79,7 +79,7 @@ describe('GET /applications', () => {
           details: {},
         })
         expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
-          what: 'VIEW_PRISONER_APPLICATIONS_SUCCESS',
+          what: 'VIEW_APPLICATIONS_PAGE_SUCCESS',
           who: user.username,
           correlationId: expect.any(String),
           subjectId: user.userId,
@@ -127,7 +127,7 @@ describe('GET /applications', () => {
       .expect(res => {
         expect(res.text).toContain('Some problem calling api')
         expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
-          what: 'VIEW_PRISONER_APPLICATIONS_ATTEMPT',
+          what: 'VIEW_APPLICATIONS_PAGE_ATTEMPT',
           who: user.username,
           correlationId: expect.any(String),
           subjectId: user.userId,
@@ -135,7 +135,7 @@ describe('GET /applications', () => {
           details: {},
         })
         expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
-          what: 'VIEW_PRISONER_APPLICATIONS_FAILURE',
+          what: 'VIEW_APPLICATIONS_PAGE_FAILURE',
           who: user.username,
           correlationId: expect.any(String),
           subjectId: user.userId,
