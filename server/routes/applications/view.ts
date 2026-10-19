@@ -180,7 +180,7 @@ export default function viewAppsRouter({
     const { userId } = res.locals.user
 
     await auditLogged(
-      'VIEW_PRISONER_APPLICATION',
+      'VIEW_APPLICATION',
       async (what, extraDetails = {}) => {
         await auditService.logAuditEvent({
           what,
