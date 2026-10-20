@@ -45,10 +45,10 @@ beforeEach(() => {
   managingAppsService.getGroupsAndTypes.mockResolvedValue([
     { id: 1, name: 'General enquiry', appTypes: [applicationType] },
   ] as never)
-    ; (getAppType as jest.Mock).mockResolvedValue(applicationType)
-    ; (getAppTypeLogDetailsData as jest.Mock).mockReturnValue({ details: '' })
-    ; (getApplicationDetails as jest.Mock).mockResolvedValue({ details: '' })
-    ; (getFormattedRelationshipDropdown as jest.Mock).mockResolvedValue([])
+  ;(getAppType as jest.Mock).mockResolvedValue(applicationType)
+  ;(getAppTypeLogDetailsData as jest.Mock).mockReturnValue({ details: '' })
+  ;(getApplicationDetails as jest.Mock).mockResolvedValue({ details: '' })
+  ;(getFormattedRelationshipDropdown as jest.Mock).mockResolvedValue([])
 })
 
 const createApp = () =>
