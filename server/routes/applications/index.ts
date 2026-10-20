@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express'
+import { auditLogged } from '@ministryofjustice/hmpps-prisoner-facing-services-utilities'
 
 import type { Services } from '../../services'
 import { PATHS } from '../../constants/paths'
@@ -19,8 +20,23 @@ export default function applicationsRoutes({
 }: Services): Router {
   const router = Router()
 
-  router.get('/', (req: Request, res: Response) => {
-    return res.render(PATHS.LANDING)
+  router.get('/', async (req: Request, res: Response) => {
+    await auditLogged(
+      'VIEW_MANAGE_APPS_LANDING',
+      async (what, extraDetails = {}) => {
+        await auditService.logAuditEvent({
+          what,
+          who: res.locals.user.username,
+          correlationId: req.id,
+          subjectId: 'NONE',
+          subjectType: 'NOT_APPLICABLE',
+          details: extraDetails,
+        })
+      },
+      async () => {
+        res.render(PATHS.LANDING)
+      },
+    )
   })
 
   router.use(viewAppsRouter({ auditService, managingAppsService }))

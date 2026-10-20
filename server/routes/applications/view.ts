@@ -1,8 +1,9 @@
 import { format } from 'date-fns'
 
 import { Request, Response, Router } from 'express'
+import { auditEventLoggers, auditLogged } from '@ministryofjustice/hmpps-prisoner-facing-services-utilities'
 import logger from '../../../logger'
-import AuditService, { Page } from '../../services/auditService'
+import AuditService from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 
 import { URLS } from '../../constants/urls'
@@ -79,24 +80,34 @@ export default function viewAppsRouter({
 
     const { firstName } = res.locals.presentedUser
 
-    await auditService.logPageView(Page.VIEW_APPLICATIONS_PAGE, {
-      who: res.locals.user.username,
-      correlationId: req.id,
-    })
+    await auditLogged(
+      'VIEW_APPLICATIONS_PAGE',
+      async (what, extraDetails = {}) => {
+        await auditService.logAuditEvent({
+          what,
+          who: res.locals.user.username,
+          correlationId: req.id,
+          subjectId: userId,
+          subjectType: 'PRISONER_ID',
+          details: extraDetails,
+        })
+      },
+      async () => {
+        const [openApps, closedApps] = await Promise.all([
+          managingAppsService.getPrisonerApps(userId, openPage, APP_SCOPES.OPEN, ITEMS_PER_PAGE),
+          managingAppsService.getPrisonerApps(userId, closedPage, APP_SCOPES.CLOSED, ITEMS_PER_PAGE),
+        ])
 
-    const [openApps, closedApps] = await Promise.all([
-      managingAppsService.getPrisonerApps(userId, openPage, APP_SCOPES.OPEN, ITEMS_PER_PAGE),
-      managingAppsService.getPrisonerApps(userId, closedPage, APP_SCOPES.CLOSED, ITEMS_PER_PAGE),
-    ])
-
-    res.render(PATHS.APPLICATIONS.LIST, {
-      firstName,
-      activeTab,
-      openApps: formatAppsToRows(openApps.apps, APPLICATION_TABS.OPEN),
-      openPagination: getPaginationData(openPage, openApps.totalRecords, ITEMS_PER_PAGE),
-      closedApps: formatAppsToRows(closedApps.apps, APPLICATION_TABS.CLOSED),
-      closedPagination: getPaginationData(closedPage, closedApps.totalRecords, ITEMS_PER_PAGE),
-    })
+        res.render(PATHS.APPLICATIONS.LIST, {
+          firstName,
+          activeTab,
+          openApps: formatAppsToRows(openApps.apps, APPLICATION_TABS.OPEN),
+          openPagination: getPaginationData(openPage, openApps.totalRecords, ITEMS_PER_PAGE),
+          closedApps: formatAppsToRows(closedApps.apps, APPLICATION_TABS.CLOSED),
+          closedPagination: getPaginationData(closedPage, closedApps.totalRecords, ITEMS_PER_PAGE),
+        })
+      },
+    )
   })
 
   const renderAppView = async (
@@ -168,10 +179,25 @@ export default function viewAppsRouter({
   router.get(`${URLS.APPLICATIONS}/:id`, async (req: Request<{ id: string }>, res: Response) => {
     const { userId } = res.locals.user
 
-    managingAppsService.markAppMessagesAsRead(userId, req.params.id).catch(error => {
-      logger.warn(`Failed to mark messages as read for app ${req.params.id}`, error)
-    })
-    await renderAppView(req, res)
+    await auditLogged(
+      'VIEW_APPLICATION',
+      async (what, extraDetails = {}) => {
+        await auditService.logAuditEvent({
+          what,
+          who: res.locals.user.username,
+          correlationId: req.id,
+          subjectId: userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationId: req.params.id, ...extraDetails },
+        })
+      },
+      async () => {
+        managingAppsService.markAppMessagesAsRead(userId, req.params.id).catch(error => {
+          logger.warn(`Failed to mark messages as read for app ${req.params.id}`, error)
+        })
+        await renderAppView(req, res)
+      },
+    )
   })
 
   router.post(`${URLS.APPLICATIONS}/:id`, async (req: Request<{ id: string }>, res: Response) => {
@@ -180,42 +206,78 @@ export default function viewAppsRouter({
     const { id: appId } = req.params
     const reply = (req.body?.reply ?? '').toString().trim()
 
-    const errors = validateTextField({ fieldValue: reply, fieldName: 'Messages', isRequired: true })
+    const applicationDetails = { applicationId: appId }
+    const {
+      logAttempt,
+      logSuccess,
+      logFailure: logAuditFailure,
+    } = auditEventLoggers('CREATE_APPLICATION_MESSAGE', async (what, extraDetails = {}) => {
+      await auditService.logAuditEvent({
+        what,
+        who: username,
+        correlationId: req.id,
+        subjectId: userId,
+        subjectType: 'PRISONER_ID',
+        details: { ...applicationDetails, ...extraDetails },
+      })
+    })
 
-    if (Object.keys(errors).length > 0) {
-      await renderAppView(req, res, { errors: { reply: errors.Messages }, replyValue: reply })
-      return
+    await logAttempt(applicationDetails)
+
+    let auditOutcomeLogged = false
+    const recordFailure = async (failureReason: string) => {
+      auditOutcomeLogged = true
+      await logAuditFailure({ ...applicationDetails, failureReason })
     }
 
-    if (req.session.pendingMessageAppId === appId) {
-      res.redirect(`${URLS.APPLICATIONS}/${appId}`)
-      return
-    }
-
-    const messagesResponse = await managingAppsService.getAppMessages(userId, appId, 1, MESSAGES_PAGE_SIZE)
-    const latestMessage = await resolveLatestMessage(
-      managingAppsService,
-      userId,
-      appId,
-      messagesResponse,
-      username,
-      userId,
-      '',
-      staffDisplayName,
-    )
-    if (latestMessage?.type === 'sent') {
-      res.redirect(`${URLS.APPLICATIONS}/${appId}`)
-      return
-    }
-
-    req.session.pendingMessageAppId = appId
     try {
-      await managingAppsService.addAppMessage(userId, appId, reply)
-    } finally {
-      delete req.session.pendingMessageAppId
-    }
+      const errors = validateTextField({ fieldValue: reply, fieldName: 'Messages', isRequired: true })
 
-    res.redirect(`${URLS.APPLICATIONS}/${appId}`)
+      if (Object.keys(errors).length > 0) {
+        await recordFailure('Validation failed')
+        await renderAppView(req, res, { errors: { reply: errors.Messages }, replyValue: reply })
+        return
+      }
+
+      if (req.session.pendingMessageAppId === appId) {
+        await recordFailure('Duplicate submission')
+        res.redirect(`${URLS.APPLICATIONS}/${appId}`)
+        return
+      }
+
+      const messagesResponse = await managingAppsService.getAppMessages(userId, appId, 1, MESSAGES_PAGE_SIZE)
+      const latestMessage = await resolveLatestMessage(
+        managingAppsService,
+        userId,
+        appId,
+        messagesResponse,
+        username,
+        userId,
+        '',
+        staffDisplayName,
+      )
+      if (latestMessage?.type === 'sent') {
+        await recordFailure('Reply is no longer available')
+        res.redirect(`${URLS.APPLICATIONS}/${appId}`)
+        return
+      }
+
+      req.session.pendingMessageAppId = appId
+      try {
+        await managingAppsService.addAppMessage(userId, appId, reply)
+      } finally {
+        delete req.session.pendingMessageAppId
+      }
+
+      auditOutcomeLogged = true
+      await logSuccess(applicationDetails)
+      res.redirect(`${URLS.APPLICATIONS}/${appId}`)
+    } catch (error) {
+      if (!auditOutcomeLogged) {
+        await recordFailure(error instanceof Error ? error.message : 'Unknown error')
+      }
+      throw error
+    }
   })
 
   return router
