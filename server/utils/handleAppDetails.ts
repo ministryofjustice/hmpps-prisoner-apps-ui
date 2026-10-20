@@ -32,7 +32,7 @@ type SelectOption = {
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export async function handleApplicationDetails(req: Request, res: Response, options: ContextOptions): Promise<void> {
+export async function handleApplicationDetails(req: Request, res: Response, options: ContextOptions): Promise<boolean> {
   const applicationType = options.getAppType(req, res)
 
   const errors: Record<string, string> = {}
@@ -301,19 +301,22 @@ export async function handleApplicationDetails(req: Request, res: Response, opti
       }
 
       default:
-        return res.redirect(options.successRedirect(req, res))
+        res.redirect(options.successRedirect(req, res))
+        return true
     }
   }
   if (Object.keys(errors).length > 0) {
-    return res.render(options.renderPath, {
+    res.render(options.renderPath, {
       ...templateData,
       errors,
     })
+    return false
   }
 
   updateSessionData(req, {
     additionalData,
   })
 
-  return res.redirect(options.successRedirect(req, res))
+  res.redirect(options.successRedirect(req, res))
+  return true
 }
