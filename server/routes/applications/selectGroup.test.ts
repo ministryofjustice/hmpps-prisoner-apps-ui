@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, user } from '../testutils/appSetup'
-import AuditService, { Page } from '../../services/auditService'
+import AuditService from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 
 jest.mock('../../services/auditService')
@@ -31,7 +31,7 @@ const mockGroups = [
 let app: Express
 
 beforeEach(() => {
-  auditService.logPageView.mockResolvedValue(null)
+  auditService.logAuditEvent.mockResolvedValue(undefined)
   managingAppsService.getGroupsAndTypes.mockResolvedValue(mockGroups)
 })
 
@@ -58,7 +58,7 @@ describe('GET /log/group', () => {
       })
   })
 
-  it('should call auditService to log page view', async () => {
+  it('audits the group selection page view', async () => {
     app = appWithAllRoutes({
       services: { auditService, managingAppsService },
       userSupplier: () => user,
@@ -66,9 +66,21 @@ describe('GET /log/group', () => {
 
     await request(app).get('/log/group')
 
-    expect(auditService.logPageView).toHaveBeenCalledWith(Page.LOG_GROUP_PAGE, {
+    expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+      what: 'VIEW_LOG_APPLICATION_GROUP_PAGE_ATTEMPT',
       who: user.username,
       correlationId: expect.any(String),
+      subjectId: user.userId,
+      subjectType: 'PRISONER_ID',
+      details: {},
+    })
+    expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+      what: 'VIEW_LOG_APPLICATION_GROUP_PAGE_SUCCESS',
+      who: user.username,
+      correlationId: expect.any(String),
+      subjectId: user.userId,
+      subjectType: 'PRISONER_ID',
+      details: {},
     })
   })
 
@@ -104,16 +116,38 @@ describe('GET /log/group', () => {
 })
 
 describe('POST /log/group', () => {
-  it('should save selected group and redirect to type selection', () => {
+  it('audits a valid group selection and redirects to type selection', () => {
     app = appWithAllRoutes({
       services: { auditService, managingAppsService },
       userSupplier: () => user,
     })
 
-    return request(app).post('/log/group').send({ group: '1' }).expect(302).expect('Location', '/log/type')
+    return request(app)
+      .post('/log/group')
+      .send({ group: '1' })
+      .expect(302)
+      .expect('Location', '/log/type')
+      .expect(() => {
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_GROUP_SELECTION_ATTEMPT',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationGroupId: '1' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_GROUP_SELECTION_SUCCESS',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationGroupId: 1 },
+        })
+      })
   })
 
-  it('should re-render form with error when group not selected', () => {
+  it('audits a missing group selection and re-renders the form', () => {
     app = appWithAllRoutes({
       services: { auditService, managingAppsService },
       userSupplier: () => user,
@@ -126,6 +160,22 @@ describe('POST /log/group', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Choose an app group')
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_GROUP_SELECTION_ATTEMPT',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationGroupId: undefined },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_GROUP_SELECTION_FAILURE',
+          who: user.username,
+          correlationId: expect.any(String),
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          details: { applicationGroupId: undefined, failureReason: 'Invalid application group' },
+        })
       })
   })
 

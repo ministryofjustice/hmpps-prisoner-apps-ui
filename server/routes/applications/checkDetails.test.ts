@@ -2,7 +2,7 @@ import type { Express } from 'express'
 import request from 'supertest'
 import { AppResponsePrisoner } from '../../@types/managingAppsApi'
 import { URLS } from '../../constants/urls'
-import AuditService, { Page } from '../../services/auditService'
+import AuditService from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 import { appWithAllRoutes, user } from '../testutils/appSetup'
 
@@ -15,7 +15,7 @@ const managingAppsService = new ManagingAppsService(null) as jest.Mocked<Managin
 let app: Express
 
 beforeEach(() => {
-  auditService.logPageView.mockResolvedValue(null)
+  auditService.logAuditEvent.mockResolvedValue(undefined)
   managingAppsService.submitApp.mockResolvedValue({ id: 'app-123' } as AppResponsePrisoner)
   managingAppsService.submitJourneyEvents.mockResolvedValue(undefined)
 })
@@ -44,9 +44,21 @@ describe('GET /log/confirm', () => {
       .expect(200)
       .expect(res => {
         expect(res.text).toContain('Check details')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.LOG_CHECK_DETAILS_PAGE, {
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'VIEW_LOG_APPLICATION_CHECK_DETAILS_PAGE_ATTEMPT',
           who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
           correlationId: expect.any(String),
+          details: { applicationTypeId: 1 },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'VIEW_LOG_APPLICATION_CHECK_DETAILS_PAGE_SUCCESS',
+          who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          correlationId: expect.any(String),
+          details: { applicationTypeId: 1 },
         })
       })
   })
@@ -124,6 +136,22 @@ describe('POST /log/confirm', () => {
             { event: 'app_submitted', timestamp: expect.any(String) },
           ],
         })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_ATTEMPT',
+          who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          correlationId: expect.any(String),
+          details: { applicationTypeId: '1' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_SUCCESS',
+          who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          correlationId: expect.any(String),
+          details: { applicationTypeId: '1', applicationId: 'app-123' },
+        })
       })
   })
 
@@ -142,6 +170,26 @@ describe('POST /log/confirm', () => {
       },
     })
 
-    return request(app).post(URLS.LOG_CONFIRM_DETAILS).expect(500)
+    return request(app)
+      .post(URLS.LOG_CONFIRM_DETAILS)
+      .expect(500)
+      .expect(() => {
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_ATTEMPT',
+          who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          correlationId: expect.any(String),
+          details: { applicationTypeId: '1' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_FAILURE',
+          who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          correlationId: expect.any(String),
+          details: { applicationTypeId: '1', failureReason: 'API Error' },
+        })
+      })
   })
 })

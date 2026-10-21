@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import { appWithAllRoutes, user } from '../testutils/appSetup'
-import AuditService, { Page } from '../../services/auditService'
+import AuditService from '../../services/auditService'
 import ManagingAppsService from '../../services/managingAppsService'
 
 jest.mock('../../services/auditService')
@@ -76,7 +76,7 @@ const groupWithMultipleGenericTypes = {
 let app: Express
 
 beforeEach(() => {
-  auditService.logPageView.mockResolvedValue(null)
+  auditService.logAuditEvent.mockResolvedValue(undefined)
   managingAppsService.getGroupsAndTypes.mockResolvedValue([
     groupWithTypes,
     groupWithGenericType,
@@ -117,9 +117,21 @@ describe('GET /log/type', () => {
         expect(res.text).toContain('Select app type')
         expect(res.text).toContain('Emergency Credit')
         expect(res.text).toContain('Add Contact')
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.LOG_TYPE_PAGE, {
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'VIEW_LOG_APPLICATION_TYPE_PAGE_ATTEMPT',
           who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
           correlationId: expect.any(String),
+          details: { applicationGroupId: '1' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'VIEW_LOG_APPLICATION_TYPE_PAGE_SUCCESS',
+          who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          correlationId: expect.any(String),
+          details: { applicationGroupId: '1' },
         })
       })
   })
@@ -227,6 +239,22 @@ describe('POST /log/type', () => {
 
     expect(res.status).toBe(302)
     expect(res.headers.location).toContain('/log')
+    expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+      what: 'CREATE_APPLICATION_TYPE_SELECTION_ATTEMPT',
+      who: user.username,
+      subjectId: user.userId,
+      subjectType: 'PRISONER_ID',
+      correlationId: expect.any(String),
+      details: { applicationGroupId: '1', applicationTypeId: '1' },
+    })
+    expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+      what: 'CREATE_APPLICATION_TYPE_SELECTION_SUCCESS',
+      who: user.username,
+      subjectId: user.userId,
+      subjectType: 'PRISONER_ID',
+      correlationId: expect.any(String),
+      details: { applicationGroupId: '1', applicationTypeId: '1' },
+    })
   })
 
   it('should redirect to group when no group in session', () => {
@@ -270,6 +298,26 @@ describe('POST /log/type', () => {
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Choose an app type')
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+          what: 'CREATE_APPLICATION_TYPE_SELECTION_ATTEMPT',
+          who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          correlationId: expect.any(String),
+          details: { applicationGroupId: '1', applicationTypeId: '' },
+        })
+        expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+          what: 'CREATE_APPLICATION_TYPE_SELECTION_FAILURE',
+          who: user.username,
+          subjectId: user.userId,
+          subjectType: 'PRISONER_ID',
+          correlationId: expect.any(String),
+          details: {
+            applicationGroupId: '1',
+            applicationTypeId: '',
+            failureReason: 'Invalid application type',
+          },
+        })
       })
   })
 
@@ -335,5 +383,25 @@ describe('POST /log/type', () => {
 
     expect(res.status).toBe(200)
     expect(res.text).toContain('You sent it on 25/06/2026')
+    expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(1, {
+      what: 'CREATE_APPLICATION_TYPE_SELECTION_ATTEMPT',
+      who: user.username,
+      subjectId: user.userId,
+      subjectType: 'PRISONER_ID',
+      correlationId: expect.any(String),
+      details: { applicationGroupId: '1', applicationTypeId: '1' },
+    })
+    expect(auditService.logAuditEvent).toHaveBeenNthCalledWith(2, {
+      what: 'CREATE_APPLICATION_TYPE_SELECTION_FAILURE',
+      who: user.username,
+      subjectId: user.userId,
+      subjectType: 'PRISONER_ID',
+      correlationId: expect.any(String),
+      details: {
+        applicationGroupId: '1',
+        applicationTypeId: '1',
+        failureReason: 'Application submission limit reached',
+      },
+    })
   })
 })
