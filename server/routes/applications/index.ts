@@ -54,19 +54,32 @@ export default function applicationsRoutes({
   router.use(confirmationRouter({ auditService }))
   router.use(cancelAppRouter({ auditService }))
   router.get('/api/addresses/find/:query', async (req: Request<{ query: string }>, res: Response) => {
+    const { query } = req.params
+
     try {
-      const { query } = req.params
-      if (!query) {
-        res.status(400).json({ status: 400, error: 'Query parameter is required' })
-        return
-      }
+      let results: Awaited<ReturnType<typeof osPlacesAddressService.getAddressesMatchingQuery>> = []
 
-      const results = await osPlacesAddressService.getAddressesMatchingQuery(query)
+      await auditLogged(
+        'SEARCH_ADDRESS',
+        async (what, extraDetails = {}) => {
+          await auditService.logAuditEvent({
+            what,
+            who: res.locals.user.username,
+            correlationId: req.id,
+            subjectId: query,
+            subjectType: 'SEARCH_TERM',
+            details: extraDetails,
+          })
+        },
+        async () => {
+          results = await osPlacesAddressService.getAddressesMatchingQuery(query)
+        },
+      )
 
-      res.json({ status: 200, results })
+      return res.json({ status: 200, results })
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      res.status(500).json({ status: 500, error: errorMessage })
+      return res.status(500).json({ status: 500, error: errorMessage })
     }
   })
 
