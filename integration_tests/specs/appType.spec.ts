@@ -6,13 +6,16 @@ import { groups } from '../../server/testData/groups/groups'
 import AppGroupPage from '../pages/appGroupPage'
 import AppTypePage from '../pages/appTypePage'
 import AppDetailsPage from '../pages/appDetailsPage'
+import { genericApplicationScenarios } from '../testData/appSubmissionFixtures'
 
-const selectPinPhoneAppGroup = async (page: Page) => {
+const selectAppGroup = async (page: Page, groupName: string) => {
   const appGroupPage = new AppGroupPage(page)
   await appGroupPage.open()
-  await appGroupPage.selectPinPhoneContactApps()
+  await appGroupPage.selectAppGroup(groupName)
   await expect(page).toHaveURL('/log/type')
 }
+
+const selectPinPhoneAppGroup = (page: Page) => selectAppGroup(page, 'Pin Phone Contact Apps')
 
 test.describe('App type', () => {
   test.afterEach(async () => {
@@ -71,6 +74,27 @@ test.describe('App type', () => {
 
       await expect(page).toHaveURL('/log/application-details')
       await appDetailsPage.expectForAppType(appType.name)
+    })
+  })
+
+  genericApplicationScenarios.forEach(({ groupName, groups: appGroups, appTypes }) => {
+    appTypes.forEach(appType => {
+      test(`selecting "${appType.name}" from ${groupName} goes to log details page`, async ({ page }) => {
+        const appTypePage = new AppTypePage(page)
+        const appDetailsPage = new AppDetailsPage(page)
+
+        await managingAppsApi.stubGetPrisonerApps()
+        await managingAppsApi.stubGetGroupsAndTypes(200, appGroups)
+        await managingAppsApi.stubGetPendingAppType(appType.id, 0)
+        await loginWithPrisonerAuth(page)
+
+        await selectAppGroup(page, groupName)
+        await appTypePage.selectAppType(appType.name)
+        await appTypePage.continue()
+
+        await expect(page).toHaveURL('/log/application-details')
+        await appDetailsPage.expectForAppType(appType.name)
+      })
     })
   })
 

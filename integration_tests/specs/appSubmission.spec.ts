@@ -6,7 +6,13 @@ import AppGroupPage from '../pages/appGroupPage'
 import AppTypePage from '../pages/appTypePage'
 import AppDetailsPage from '../pages/appDetailsPage'
 import AppSubmissionPage from '../pages/appSubmissionPage'
-import { gymAppTypes, gymBookingAppType, gymGroups } from '../testData/appSubmissionFixtures'
+import CheckDetailsPage from '../pages/checkDetailsPage'
+import {
+  genericApplicationScenarios,
+  gymAppTypes,
+  gymBookingAppType,
+  gymGroups,
+} from '../testData/appSubmissionFixtures'
 
 test.describe('App submission', () => {
   test.afterEach(async () => {
@@ -17,6 +23,7 @@ test.describe('App submission', () => {
     const appGroupPage = new AppGroupPage(page)
     const appTypePage = new AppTypePage(page)
     const appDetailsPage = new AppDetailsPage(page)
+    const checkDetailsPage = new CheckDetailsPage(page)
     const appSubmissionPage = new AppSubmissionPage(page)
 
     await managingAppsApi.stubGetPrisonerApps()
@@ -38,7 +45,7 @@ test.describe('App submission', () => {
     await appDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirm')
 
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await checkDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirmation')
 
     await appSubmissionPage.expectSuccess('Add emergency phone credit')
@@ -48,6 +55,7 @@ test.describe('App submission', () => {
     const appGroupPage = new AppGroupPage(page)
     const appTypePage = new AppTypePage(page)
     const appDetailsPage = new AppDetailsPage(page)
+    const checkDetailsPage = new CheckDetailsPage(page)
     const appSubmissionPage = new AppSubmissionPage(page)
 
     await managingAppsApi.stubGetPrisonerApps()
@@ -67,22 +75,18 @@ test.describe('App submission', () => {
     await appDetailsPage.fillDetails('Initial enquiry details')
     await appDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirm')
-    await expect(page.getByText('Initial enquiry details')).toBeVisible()
+    await checkDetailsPage.expectDetailsVisible('Initial enquiry details')
 
-    await page
-      .getByRole('link', { name: /Change/ })
-      .first()
-      .click()
+    await checkDetailsPage.changeDetails()
     await expect(page).toHaveURL('/log/application-details')
 
     await appDetailsPage.fillDetails('Updated enquiry details after change')
     await appDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirm')
-    await expect(page.getByText('Updated enquiry details after change')).toBeVisible()
+    await checkDetailsPage.expectDetailsVisible('Updated enquiry details after change')
 
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await checkDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirmation')
-    await expect(page.getByText('You have sent your app')).toBeVisible()
     await appSubmissionPage.expectSuccess('Make a general PIN phone enquiry')
   })
 
@@ -90,6 +94,7 @@ test.describe('App submission', () => {
     const appGroupPage = new AppGroupPage(page)
     const appTypePage = new AppTypePage(page)
     const appDetailsPage = new AppDetailsPage(page)
+    const checkDetailsPage = new CheckDetailsPage(page)
     const appSubmissionPage = new AppSubmissionPage(page)
 
     await managingAppsApi.stubGetPrisonerApps()
@@ -110,10 +115,44 @@ test.describe('App submission', () => {
     await appDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirm')
 
-    await page.getByRole('button', { name: 'Continue' }).click()
+    await checkDetailsPage.continue()
     await expect(page).toHaveURL('/log/confirmation')
 
     await appSubmissionPage.expectSuccess(gymBookingAppType.name)
+  })
+
+  genericApplicationScenarios.forEach(({ groupName, groups, appType, appTypes, details }) => {
+    test(`submits ${appType.name} from ${groupName}`, async ({ page }) => {
+      const appGroupPage = new AppGroupPage(page)
+      const appTypePage = new AppTypePage(page)
+      const appDetailsPage = new AppDetailsPage(page)
+      const checkDetailsPage = new CheckDetailsPage(page)
+      const appSubmissionPage = new AppSubmissionPage(page)
+
+      await managingAppsApi.stubGetPrisonerApps()
+      await managingAppsApi.stubGetGroupsAndTypes(200, groups)
+      await managingAppsApi.stubGetPendingAppType(appType.id, 0)
+      await managingAppsApi.stubSubmitApp()
+      await loginWithPrisonerAuth(page)
+
+      await appGroupPage.open()
+      await appGroupPage.selectAppGroup(groupName)
+      await expect(page).toHaveURL('/log/type')
+      await appTypePage.expectAppTypesVisible(appTypes.map(type => type.name))
+
+      await appTypePage.selectAppType(appType.name)
+      await appTypePage.continue()
+      await expect(page).toHaveURL('/log/application-details')
+
+      await appDetailsPage.fillDetails(details)
+      await appDetailsPage.continue()
+      await expect(page).toHaveURL('/log/confirm')
+
+      await checkDetailsPage.continue()
+      await expect(page).toHaveURL('/log/confirmation')
+
+      await appSubmissionPage.expectSuccess(appType.name)
+    })
   })
 
   test('shows all gym app types when the gym group is selected', async ({ page }) => {
