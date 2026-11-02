@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import managingAppsApi from '../mockApis/managingAppsApi'
-import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
+import { resetStubs, setupApplicationTest } from '../testUtils'
 import AppGroupPage from '../pages/appGroupPage'
 import AppTypePage from '../pages/appTypePage'
 import AppDetailsPage from '../pages/appDetailsPage'
@@ -26,11 +26,8 @@ test.describe('App submission', () => {
     const checkDetailsPage = new CheckDetailsPage(page)
     const appSubmissionPage = new AppSubmissionPage(page)
 
-    await managingAppsApi.stubGetPrisonerApps()
-    await managingAppsApi.stubGetGroupsAndTypes()
-    await managingAppsApi.stubGetPendingAppType(1, 0)
+    await setupApplicationTest(page, { appTypeId: 1 })
     await managingAppsApi.stubSubmitApp()
-    await loginWithPrisonerAuth(page)
 
     await appGroupPage.open()
     await appGroupPage.selectPinPhoneContactApps()
@@ -58,11 +55,8 @@ test.describe('App submission', () => {
     const checkDetailsPage = new CheckDetailsPage(page)
     const appSubmissionPage = new AppSubmissionPage(page)
 
-    await managingAppsApi.stubGetPrisonerApps()
-    await managingAppsApi.stubGetGroupsAndTypes()
-    await managingAppsApi.stubGetPendingAppType(7, 0)
+    await setupApplicationTest(page, { appTypeId: 7 })
     await managingAppsApi.stubSubmitApp()
-    await loginWithPrisonerAuth(page)
 
     await appGroupPage.open()
     await appGroupPage.selectPinPhoneContactApps()
@@ -97,11 +91,8 @@ test.describe('App submission', () => {
     const checkDetailsPage = new CheckDetailsPage(page)
     const appSubmissionPage = new AppSubmissionPage(page)
 
-    await managingAppsApi.stubGetPrisonerApps()
-    await managingAppsApi.stubGetGroupsAndTypes(200, gymGroups)
-    await managingAppsApi.stubGetPendingAppType(gymBookingAppType.id, 0)
+    await setupApplicationTest(page, { groups: gymGroups, appTypeId: gymBookingAppType.id })
     await managingAppsApi.stubSubmitApp()
-    await loginWithPrisonerAuth(page)
 
     await appGroupPage.open()
     await appGroupPage.selectAppGroup('Gym')
@@ -129,11 +120,8 @@ test.describe('App submission', () => {
       const checkDetailsPage = new CheckDetailsPage(page)
       const appSubmissionPage = new AppSubmissionPage(page)
 
-      await managingAppsApi.stubGetPrisonerApps()
-      await managingAppsApi.stubGetGroupsAndTypes(200, groups)
-      await managingAppsApi.stubGetPendingAppType(appType.id, 0)
+      await setupApplicationTest(page, { groups, appTypeId: appType.id })
       await managingAppsApi.stubSubmitApp()
-      await loginWithPrisonerAuth(page)
 
       await appGroupPage.open()
       await appGroupPage.selectAppGroup(groupName)
@@ -159,9 +147,7 @@ test.describe('App submission', () => {
     const appGroupPage = new AppGroupPage(page)
     const appTypePage = new AppTypePage(page)
 
-    await managingAppsApi.stubGetPrisonerApps()
-    await managingAppsApi.stubGetGroupsAndTypes(200, gymGroups)
-    await loginWithPrisonerAuth(page)
+    await setupApplicationTest(page, { groups: gymGroups })
 
     await appGroupPage.open()
     await appGroupPage.selectAppGroup('Gym')
