@@ -1,5 +1,17 @@
 import type { components } from '../../server/@types/managing-prisoner-apps-api'
 
+const genericFormAppType = (
+  id: number,
+  name: string,
+  genericType = false,
+): components['schemas']['ApplicationTypeResponse'] => ({
+  id,
+  name,
+  genericType,
+  genericForm: true,
+  logDetailRequired: true,
+})
+
 export const gymBookingAppType: components['schemas']['ApplicationTypeResponse'] = {
   id: 101,
   name: 'Gym booking',
@@ -197,6 +209,58 @@ export const jobsCoursesGroups: components['schemas']['ApplicationGroupResponse'
   },
 ]
 
+export const omuAppTypes = [
+  genericFormAppType(501, 'Contact case admin'),
+  genericFormAppType(502, 'Contact keyworker'),
+  genericFormAppType(503, 'Contact POM'),
+  genericFormAppType(504, 'Court question'),
+  genericFormAppType(505, 'Equalities questions'),
+  genericFormAppType(506, 'Foreign National status'),
+  genericFormAppType(507, 'Home Detention Curfew (HDC)'),
+  genericFormAppType(508, 'Licence Conditions'),
+  genericFormAppType(509, 'Parole'),
+  genericFormAppType(510, 'Prisoner to Prisoner Contact'),
+  genericFormAppType(511, 'Prison transfer (including on compassionate grounds)'),
+  genericFormAppType(512, 'Release date'),
+  genericFormAppType(513, 'Update my personal details'),
+  genericFormAppType(514, 'OMU (general enquiry)', true),
+]
+
+export const omuGeneralEnquiryAppType = omuAppTypes[omuAppTypes.length - 1]
+
+export const omuGroups: components['schemas']['ApplicationGroupResponse'][] = [
+  {
+    id: 14,
+    name: 'Offender Management Unit (OMU)',
+    appTypes: omuAppTypes,
+  },
+]
+
+export const resettlementAppTypes = [
+  genericFormAppType(601, 'Cell move'),
+  genericFormAppType(602, 'Contact RECONNECT (NHS)'),
+  genericFormAppType(603, 'Contact resettlement practitioner'),
+  genericFormAppType(604, 'Contact Stepping Stones'),
+  genericFormAppType(605, 'Contact Through the Gate charity'),
+  genericFormAppType(606, 'Discharge grant'),
+  genericFormAppType(607, 'Employment'),
+  genericFormAppType(608, 'Housing'),
+  genericFormAppType(609, 'ID or banking'),
+  genericFormAppType(610, 'Probation question'),
+  genericFormAppType(611, 'Universal Credit (Benefits)'),
+  genericFormAppType(612, 'Resettlement (general enquiry)', true),
+]
+
+export const resettlementGeneralEnquiryAppType = resettlementAppTypes[resettlementAppTypes.length - 1]
+
+export const resettlementGroups: components['schemas']['ApplicationGroupResponse'][] = [
+  {
+    id: 15,
+    name: 'Resettlement',
+    appTypes: resettlementAppTypes,
+  },
+]
+
 export const genericApplicationScenarios = [
   {
     groupName: 'Money',
@@ -218,5 +282,19 @@ export const genericApplicationScenarios = [
     appType: educationCourseAppType,
     appTypes: jobsCoursesAppTypes,
     details: 'Please consider my application for an education course.',
+  },
+  {
+    groupName: 'Offender Management Unit (OMU)',
+    groups: omuGroups,
+    appType: omuGeneralEnquiryAppType,
+    appTypes: omuAppTypes,
+    details: 'Please provide an update about my case.',
+  },
+  {
+    groupName: 'Resettlement',
+    groups: resettlementGroups,
+    appType: resettlementGeneralEnquiryAppType,
+    appTypes: resettlementAppTypes,
+    details: 'Please provide an update about my resettlement support.',
   },
 ]
