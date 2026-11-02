@@ -29,7 +29,10 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter:
     process.env.CI && process.env.PLAYWRIGHT_MERGE_REPORTS !== 'true'
-      ? [['blob', { outputDir: 'test_results/playwright/blob-report' }]]
+      ? [
+          ['blob', { outputDir: 'test_results/playwright/blob-report' }],
+          ['junit', { outputFile: 'test_results/playwright/junit.xml' }],
+        ]
       : [
           ['list'],
           ['html', { outputFolder: 'test_results/playwright/report', open: process.env.CI ? 'never' : 'on-failure' }],
