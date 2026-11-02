@@ -3,10 +3,11 @@ import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import prisonerAuth from '../mockApis/prisonerAuth'
 import managingAppsApi from '../mockApis/managingAppsApi'
 import SignInPage from '../pages/signInPage'
+import { APP_BASE_URL } from '../testConfig'
 
 test.describe('SignIn', () => {
   test.use({
-    baseURL: 'http://localhost:3007',
+    baseURL: APP_BASE_URL,
   })
 
   test.afterEach(async () => {
