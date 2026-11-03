@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { stubFor, getMatchingRequests } from './wiremock'
+import { APP_BASE_URL } from '../testConfig'
 
 export interface UserToken {
   name?: string
@@ -64,7 +65,7 @@ export default {
         status: 200,
         headers: {
           'Content-Type': 'text/html',
-          Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
+          Location: `${APP_BASE_URL}/sign-in/callback?code=codexxxx&state=stateyyyy`,
         },
         body: '<html lang="en"><body>Dummy Sign in page<h1>Sign in</h1></body></html>',
       },
@@ -110,7 +111,7 @@ export default {
         status: 200,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
-          Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
+          Location: `${APP_BASE_URL}/sign-in/callback?code=codexxxx&state=stateyyyy`,
         },
         jsonBody: {
           access_token: createToken(userToken),

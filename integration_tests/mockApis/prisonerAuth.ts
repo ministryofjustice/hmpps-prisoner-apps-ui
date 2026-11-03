@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { stubFor, getMatchingRequests } from './wiremock'
+import { APP_BASE_URL, LAUNCHPAD_AUTH_URL } from '../testConfig'
 
 export interface LaunchpadUserToken {
   name: string
@@ -18,7 +19,7 @@ function createRefreshOrAccessToken(userToken: LaunchpadUserToken) {
     name: userToken.name,
     exp: Date.now() / 1000 + userToken.expiresInSeconds,
     scopes: ['user.basic.read', 'user.establishment.read', 'user.booking.read'],
-    iss: 'http://localhost:9091/launchpadauth',
+    iss: LAUNCHPAD_AUTH_URL,
     jti: 'a610a10-cca6-41db-985f-e87efb303aaf',
     ati: 'a610a10-cca6-41db-985f-e87efb303aaf',
   }
@@ -47,7 +48,7 @@ function createIdToken(userToken: LaunchpadUserToken) {
       display_name: establishment.displayName,
       youth: false,
     },
-    iss: 'http://localhost:9091/launchpadauth',
+    iss: LAUNCHPAD_AUTH_URL,
   }
   return jwt.sign(payload, 'secret')
 }
@@ -126,7 +127,7 @@ export default {
         status: 200,
         headers: {
           'Content-Type': 'application/json;charset=UTF-8',
-          Location: 'http://localhost:3007/sign-in/callback?code=codexxxx&state=stateyyyy',
+          Location: `${APP_BASE_URL}/sign-in/callback?code=codexxxx&state=stateyyyy`,
         },
         jsonBody: {
           access_token: createRefreshOrAccessToken(userToken),
