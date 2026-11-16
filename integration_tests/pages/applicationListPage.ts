@@ -46,6 +46,12 @@ export default class ApplicationListPage extends AbstractPage {
     )
   }
 
+  async expectOpenOverdueTagVisible() {
+    const overdueTag = this.openResultsTable.locator('.govuk-tag', { hasText: 'Overdue' })
+    await expect(overdueTag).toBeVisible()
+    await expect(overdueTag).toHaveClass(/govuk-tag--red/)
+  }
+
   async openClosedTab() {
     await this.closedTab.click()
     await expect(this.page).toHaveURL(/#closed/)

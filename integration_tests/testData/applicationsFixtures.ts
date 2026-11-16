@@ -7,6 +7,19 @@ const toPrisonerAppsPage = (apps: ViewAppListDto[]): PrisonerAppsPage => ({
   apps,
 })
 
+export const buildOverdueApplicationsFixture = (): PrisonerAppsPage =>
+  toPrisonerAppsPage([
+    {
+      id: 'overdue-app-1',
+      prisonerId: 'A1234BC',
+      applicationType: 'Make a general PIN phone enquiry',
+      createdDate: '2026-01-10T10:30:00Z',
+      lastUpdatedDate: '2026-01-11T12:00:00Z',
+      status: 'OVERDUE' as ViewAppListDto['status'],
+      hasUnreadMessages: false,
+    },
+  ])
+
 const buildApplicationsStatusFixtures = (): {
   openApps: PrisonerAppsPage
   closedApps: PrisonerAppsPage

@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import managingAppsApi from '../mockApis/managingAppsApi'
-import buildApplicationsStatusFixtures from '../testData/applicationsFixtures'
+import buildApplicationsStatusFixtures, { buildOverdueApplicationsFixture } from '../testData/applicationsFixtures'
 import { loginWithPrisonerAuth, resetStubs } from '../testUtils'
 import ApplicationListPage from '../pages/applicationListPage'
 import ApplicationsPage from '../pages/applicationsPage'
@@ -61,6 +61,15 @@ test.describe('Applications', () => {
     const firstViewLink = resultsTable.getByRole('link', { name: 'Add an official PIN phone contact' }).first()
     await expect(firstViewLink).toBeVisible()
     await expect(firstViewLink).toHaveAttribute('href', /\/applications\/.+/)
+  })
+
+  test('shows the overdue tag for an overdue prisoner app', async ({ page }) => {
+    await managingAppsApi.stubGetPrisonerApps(200, buildOverdueApplicationsFixture())
+    await loginWithPrisonerAuth(page)
+    await page.goto('/applications')
+
+    const applicationListPage = await ApplicationListPage.verifyOnPage(page)
+    await applicationListPage.expectOpenOverdueTagVisible()
   })
 
   test('clicking app name opens app summary page', async ({ page }) => {
