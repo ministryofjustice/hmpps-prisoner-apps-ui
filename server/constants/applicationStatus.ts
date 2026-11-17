@@ -9,6 +9,11 @@ export const APPLICATION_STATUS_TAG_MAP: Record<string, { label: string; classNa
     className: 'govuk-tag--yellow',
     html: '<strong class="govuk-tag govuk-tag--yellow">In progress</strong>',
   },
+  OVERDUE: {
+    label: 'Overdue',
+    className: 'govuk-tag--red',
+    html: '<strong class="govuk-tag govuk-tag--red">Overdue</strong>',
+  },
   APPROVED: {
     label: 'Approved',
     className: 'govuk-tag--green',
