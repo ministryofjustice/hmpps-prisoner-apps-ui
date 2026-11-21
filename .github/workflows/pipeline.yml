@@ -181,7 +181,7 @@ jobs:
           npx playwright merge-reports --config=playwright.config.ts merged-test-reports
       - name: Publish integration test summary
         if: always() && hashFiles('test_results/playwright/junit.xml') != ''
-        uses: dorny/test-reporter@v2
+        uses: dorny/test-reporter@v3
         with:
           name: node integration tests / Run the integration tests summary
           path: test_results/playwright/junit.xml
