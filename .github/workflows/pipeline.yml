@@ -137,7 +137,7 @@ jobs:
         run: npm run int-test -- --shard=${{ matrix.shard }}/5 --workers=1
       - name: Upload shard report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-worker-${{ matrix.shard }}-test-report
           path: |
@@ -163,7 +163,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Download shard reports
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: integration-test-worker-*-test-report
           path: all-test-reports
@@ -188,7 +188,7 @@ jobs:
           reporter: java-junit
       - name: Upload consolidated report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-report
           path: |
